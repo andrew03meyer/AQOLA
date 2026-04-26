@@ -83,12 +83,12 @@ CREATE TABLE IF NOT EXISTS property_data (
     full_address TEXT NOT NULL,        
     postcode VARCHAR(10) REFERENCES postcodes(postcode) ON DELETE CASCADE,
     property_type CHAR(1) NOT NULL,   -- D, S, T, F, O
-    boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
+    boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL
 )
 
 CREATE TABLE IF NOT EXISTS property_transactions (
     transaction_id VARCHAR(45) PRIMARY KEY,
-    property_id SERIAL REFERENCES property_data(property_id) ON DELETE CASCADE,
+    property_id INT REFERENCES property_data(property_id) ON DELETE CASCADE,
     sale_date DATE NOT NULL,
     price INT NOT NULL
 )
