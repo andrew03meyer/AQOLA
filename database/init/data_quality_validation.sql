@@ -108,6 +108,42 @@ WITH completeness_failures AS (
     UNION ALL
     SELECT 'school_data', 'ALL', 'TABLE IS EMPTY', '0'
     WHERE (SELECT COUNT(*) FROM school_data) = 0
+
+    UNION ALL
+
+    -- Property Data
+    SELECT 'property_data', 'street', 'Logical Null (Empty/Spaces)', property_id::text
+    FROM property_data WHERE street ~ '^\s*$'
+    UNION ALL
+    SELECT 'property_data', 'full_address', 'Logical Null (Empty/Spaces)', property_id::text
+    FROM property_data WHERE full_address ~ '^\s*$'
+    UNION ALL
+    SELECT 'property_data', 'property_type', 'Invalid Type Code', property_id::text
+    FROM property_data WHERE property_type NOT IN ('D', 'S', 'T', 'F', 'O')
+    UNION ALL
+    SELECT 'property_data', 'boundary', 'Empty Geometry', property_id::text
+    FROM property_data WHERE ST_IsEmpty(boundary)
+    UNION ALL
+    SELECT 'property_data', 'ALL', 'TABLE IS EMPTY', '0'
+    WHERE (SELECT COUNT(*) FROM property_data) = 0
+
+    UNION ALL
+
+    -- Property Transactions
+    SELECT 'property_transactions', 'price', 'Negative or Zero Price', transaction_id
+    FROM property_transactions WHERE price <= 0
+    UNION ALL
+    SELECT 'property_transactions', 'price', 'Extreme Outlier (> 20M)', transaction_id
+    FROM property_transactions WHERE price > 20000000
+    UNION ALL
+    SELECT 'property_transactions', 'sale_date', 'Future Date (Logical Error)', transaction_id
+    FROM property_transactions WHERE sale_date > CURRENT_DATE
+    UNION ALL
+    SELECT 'property_transactions', 'sale_date', 'Pre-Data Era (< 1995)', transaction_id
+    FROM property_transactions WHERE sale_date < '1995-01-01'
+    UNION ALL
+    SELECT 'property_transactions', 'ALL', 'TABLE IS EMPTY', '0'
+    WHERE (SELECT COUNT(*) FROM property_transactions) = 0
     
 )
 SELECT tbl, col, issue, COUNT(*) AS issue_count, ARRAY_AGG(row_id) AS failing_ids
