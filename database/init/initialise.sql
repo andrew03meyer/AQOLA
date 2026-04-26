@@ -1,5 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 -- Drop child tables first (those that reference others)
+DROP TABLE IF EXISTS property_transactions;
+DROP TABLE IF EXISTS property_data;
 DROP TABLE IF EXISTS school_data;
 DROP TABLE IF EXISTS flood_data;
 DROP TABLE IF EXISTS crime_data;
@@ -15,12 +17,13 @@ DROP TABLE IF EXISTS lsoas;
 DROP TABLE IF EXISTS display_zones;
 
 CREATE TABLE IF NOT EXISTS lsoas (
-    lsoa_id VARCHAR(20) PRIMARY KEY,
+    lsoa_id VARCHAR(20) PRIMARY KEY,    
     area_name VARCHAR(100) NOT NULL,
     population INT,
     area_sq_km DECIMAL(10,4),
     boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
-    centroid GEOMETRY(POINT, 4326) NOT NULL
+    centroid GEOMETRY(POINT, 4326) NOT NULL,
+    avg_house_price INT
 );
 
 CREATE TABLE IF NOT EXISTS postcodes (
@@ -32,7 +35,8 @@ CREATE TABLE IF NOT EXISTS postcodes (
     latitude DECIMAL(9,6) NOT NULL,
     longitude DECIMAL(9,6) NOT NULL,
     boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
-    centroid GEOMETRY(POINT, 4326) NOT NULL
+    centroid GEOMETRY(POINT, 4326) NOT NULL,
+    avg_house_price INT
 );
 
 CREATE TABLE IF NOT EXISTS crime_data (
@@ -70,6 +74,24 @@ CREATE TABLE IF NOT EXISTS school_data (
     longitude DECIMAL(9,6),
     PRIMARY KEY (urn, year_range)
 );
+
+CREATE TABLE IF NOT EXISTS property_data (
+    property_id SERIAL PRIMARY KEY, -- uprn can be used for this
+    paon VARCHAR(100),  -- House number/name
+    saon VARCHAR(100),  -- Flat/Unit number
+    street VARCHAR(255) NOT NULL,
+    full_address TEXT NOT NULL,        
+    postcode VARCHAR(10) REFERENCES postcodes(postcode) ON DELETE CASCADE,
+    property_type CHAR(1) NOT NULL,   -- D, S, T, F, O
+    boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
+)
+
+CREATE TABLE IF NOT EXISTS property_transactions (
+    transaction_id VARCHAR(45) PRIMARY KEY,
+    property_id SERIAL REFERENCES property_data(property_id) ON DELETE CASCADE,
+    sale_date DATE NOT NULL,
+    price INT NOT NULL
+)
 
 CREATE TABLE IF NOT EXISTS flood_occurrences (
     rec_out_id INT PRIMARY KEY,
