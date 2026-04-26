@@ -50,7 +50,6 @@ EXPECTED_COLUMNS = {
     ('school_data', 'latitude', 'numeric', 'YES'),                  # DECIMAL (Nullable)
     ('school_data', 'longitude', 'numeric', 'YES'),                  # DECIMAL (Nullable)
     
-    # property_data Table
     ('property_data', 'property_id', 'integer', 'NO'),                # SERIAL
     ('property_data', 'paon', 'character varying', 'YES'),            # VARCHAR(100)
     ('property_data', 'saon', 'character varying', 'YES'),            # VARCHAR(100)
@@ -60,7 +59,6 @@ EXPECTED_COLUMNS = {
     ('property_data', 'property_type', 'character', 'NO'),            # CHAR(1)
     ('property_data', 'boundary', 'USER-DEFINED', 'NO'),              # GEOMETRY
 
-    # property_transactions Table
     ('property_transactions', 'transaction_id', 'character varying', 'NO'), # VARCHAR(45)
     ('property_transactions', 'property_id', 'integer', 'NO'),               # INT (FK)
     ('property_transactions', 'sale_date', 'date', 'NO'),                    # DATE
