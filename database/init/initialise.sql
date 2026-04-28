@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS property_data (
     postcode VARCHAR(10) REFERENCES postcodes(postcode) ON DELETE CASCADE,
     property_type CHAR(1) NOT NULL,   -- D, S, T, F, O
     boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
+    centroid GEOMETRY(POINT, 4326) NOT NULL,
     latitude DECIMAL(9,6) NOT NULL,
     longitude DECIMAL(9,6) NOT NULL
 );
