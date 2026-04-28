@@ -77,14 +77,11 @@ CREATE TABLE IF NOT EXISTS school_data (
 
 CREATE TABLE IF NOT EXISTS property_data (
     property_id SERIAL PRIMARY KEY, 
-    paon VARCHAR(100),  -- Primary Addressable Object Name. Typically the house number or name.
-    saon VARCHAR(100),  -- 	Secondary Addressable Object Name. Where a property has been divided into separate units, PAON will identify the building and a SAON will be specified that identifies the separate unit/flat.
     street VARCHAR(255) NOT NULL,
     full_address TEXT NOT NULL,        
     postcode VARCHAR(10) NOT NULL REFERENCES postcodes(postcode) ON DELETE CASCADE,
     lsoa_id VARCHAR(20) NOT NULL REFERENCES lsoas(lsoa_id) ON DELETE CASCADE,
     property_type CHAR(1) NOT NULL,   -- D, S, T, F, O
-    boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL,
     centroid GEOMETRY(POINT, 4326) NOT NULL,
     latitude DECIMAL(9,6) NOT NULL,
     longitude DECIMAL(9,6) NOT NULL
