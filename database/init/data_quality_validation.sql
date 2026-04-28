@@ -15,7 +15,7 @@ This means
 
 WITH completeness_failures AS (
 
-    --LSOAs
+    -- LSOAs
     SELECT 'lsoas' AS tbl, 'lsoa_id' AS col, 'Logical Null (Empty/Spaces)' AS issue, lsoa_id::text AS row_id
     FROM lsoas WHERE lsoa_id ~ '^\s*$'
     UNION ALL
@@ -31,6 +31,9 @@ WITH completeness_failures AS (
     SELECT 'lsoas', 'centroid', 'Empty Geometry', lsoa_id::text
     FROM lsoas WHERE ST_IsEmpty(centroid)
     UNION ALL
+    SELECT 'lsoas', 'avg_property_price', 'Unpopulated/Null Price', lsoa_id::text
+    FROM lsoas WHERE avg_property_price IS NULL OR avg_property_price = 0
+    UNION ALL
     SELECT 'lsoas', 'lsoa_id', 'Duplicate Key', lsoa_id
     FROM lsoas GROUP BY lsoa_id HAVING COUNT(*) > 1
     UNION ALL
@@ -39,7 +42,7 @@ WITH completeness_failures AS (
 
     UNION ALL
 
-    --Postcodes
+    -- Postcodes
     SELECT 'postcodes', 'postcode', 'Logical Null (Empty/Spaces)', postcode::text
     FROM postcodes WHERE postcode ~ '^\s*$'
     UNION ALL
@@ -49,12 +52,14 @@ WITH completeness_failures AS (
     SELECT 'postcodes', 'lsoa_id', 'Malformed (Trailing Space)', postcode::text
     FROM postcodes WHERE lsoa_id != TRIM(lsoa_id)
     UNION ALL
+    SELECT 'postcodes', 'avg_property_price', 'Unpopulated/Null Price', postcode::text
+    FROM postcodes WHERE avg_property_price IS NULL OR avg_property_price = 0
+    UNION ALL
     SELECT 'postcodes', 'postcode', 'Duplicate Key', postcode
     FROM postcodes GROUP BY postcode HAVING COUNT(*) > 1
     UNION ALL
     SELECT 'postcodes', 'ALL', 'TABLE IS EMPTY', '0'
     WHERE (SELECT COUNT(*) FROM postcodes) = 0
-
     UNION ALL
 
     --Crime data
@@ -111,7 +116,7 @@ WITH completeness_failures AS (
 
     UNION ALL
 
-    -- Property Data
+  -- Property Data
     SELECT 'property_data', 'street', 'Logical Null (Empty/Spaces)', property_id::text
     FROM property_data WHERE street ~ '^\s*$'
     UNION ALL
@@ -121,8 +126,17 @@ WITH completeness_failures AS (
     SELECT 'property_data', 'property_type', 'Invalid Type Code', property_id::text
     FROM property_data WHERE property_type NOT IN ('D', 'S', 'T', 'F', 'O')
     UNION ALL
+    SELECT 'property_data', 'latitude', 'Out of Kent Bounds', property_id::text
+    FROM property_data WHERE latitude NOT BETWEEN 50.88 AND 51.52
+    UNION ALL
+    SELECT 'property_data', 'longitude', 'Out of Kent Bounds', property_id::text
+    FROM property_data WHERE longitude NOT BETWEEN 0.01 AND 1.47
+    UNION ALL
     SELECT 'property_data', 'boundary', 'Empty Geometry', property_id::text
     FROM property_data WHERE ST_IsEmpty(boundary)
+    UNION ALL
+    SELECT 'property_data', 'centroid', 'Empty Geometry', property_id::text
+    FROM property_data WHERE ST_IsEmpty(centroid)
     UNION ALL
     SELECT 'property_data', 'ALL', 'TABLE IS EMPTY', '0'
     WHERE (SELECT COUNT(*) FROM property_data) = 0

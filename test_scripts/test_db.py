@@ -18,6 +18,7 @@ EXPECTED_COLUMNS = {
     ('lsoas', 'area_sq_km', 'numeric', 'YES'),             # DECIMAL(10,4) (Nullable)
     ('lsoas', 'boundary', 'USER-DEFINED', 'NO'),           # GEOMETRY(MULTIPOLYGON, 4326)
     ('lsoas', 'centroid', 'USER-DEFINED', 'NO'),           # GEOMETRY(POINT, 4326)
+    ('lsoas', 'avg_property_price, integer', 'YES')        # INT (Nullable)
 
     ('postcodes', 'postcode', 'character varying', 'NO'),             # VARCHAR(10)
     ('postcodes', 'lsoa_id', 'character varying', 'NO'),              # VARCHAR(20) (Foreign Key)
@@ -28,6 +29,7 @@ EXPECTED_COLUMNS = {
     ('postcodes', 'longitude', 'numeric', 'NO'),                      # DECIMAL(9,6)
     ('postcodes', 'centroid', 'USER-DEFINED', 'NO'),                  # GEOMETRY(POINT, 4326)
     ('postcodes', 'boundary', 'USER-DEFINED', 'NO'),                  # GEOMETRY(MULTIPOLYGON, 4326)
+    ('postcodes', 'avg_property_price, integer', 'YES')                   # INT (Nullable)
 
     ('crime_data', 'crime_id', 'integer', 'NO'),                            # SERIAL
     ('crime_data', 'lsoa_id', 'character varying', 'NO'),             # VARCHAR(20) (Foreign Key)
@@ -51,11 +53,12 @@ EXPECTED_COLUMNS = {
     ('school_data', 'longitude', 'numeric', 'YES'),                  # DECIMAL (Nullable)
     
     ('property_data', 'property_id', 'integer', 'NO'),                # SERIAL
-    ('property_data', 'paon', 'character varying', 'YES'),            # VARCHAR(100)
-    ('property_data', 'saon', 'character varying', 'YES'),            # VARCHAR(100)
+    ('property_data', 'paon', 'character varying', 'YES'),            # VARCHAR(100) (Nullable)
+    ('property_data', 'saon', 'character varying', 'YES'),            # VARCHAR(100) (Nullable)
     ('property_data', 'street', 'character varying', 'NO'),           # VARCHAR(255)
     ('property_data', 'full_address', 'text', 'NO'),                  # TEXT
-    ('property_data', 'postcode', 'character varying', 'YES'),        # VARCHAR(10) (FK)
+    ('property_data', 'postcode', 'character varying', 'NO'),       # VARCHAR(10) (FK)
+    ('property_data', 'lsoa_id', 'character varying', 'NO'),       # VARCHAR(20) (FK)
     ('property_data', 'property_type', 'character', 'NO'),            # CHAR(1)
     ('property_data', 'boundary', 'USER-DEFINED', 'NO'),              # GEOMETRY
 
@@ -82,6 +85,7 @@ EXPECTED_KEYS = {
     
     ('property_data', 'PRIMARY KEY', 'property_id'),
     ('property_data', 'FOREIGN KEY', 'postcode'),
+    ('property_data', 'FOREIGN KEY', 'lsoa_id'),
 
     ('property_transactions', 'PRIMARY KEY', 'transaction_id'),
     ('property_transactions', 'FOREIGN KEY', 'property_id')
