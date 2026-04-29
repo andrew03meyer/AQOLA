@@ -53,11 +53,11 @@ EXPECTED_COLUMNS = {
     ('school_data', 'longitude', 'numeric', 'YES'),                  # DECIMAL (Nullable)
     
     ('property_data', 'property_id', 'integer', 'NO'),                # SERIAL
-    ('property_data', 'street', 'character varying', 'NO'),           # VARCHAR(255)
     ('property_data', 'full_address', 'text', 'NO'),                  # TEXT
     ('property_data', 'postcode', 'character varying', 'NO'),       # VARCHAR(10) (FK)
     ('property_data', 'lsoa_id', 'character varying', 'NO'),       # VARCHAR(20) (FK)
-    ('property_data', 'property_type', 'character', 'NO')            # CHAR(1)
+    ('property_data', 'property_type', 'character', 'NO'),            # CHAR(1)
+    ('property_data', 'property_age', 'character', 'NO'),            # CHAR(1)
 
     ('property_transactions', 'transaction_id', 'character varying', 'NO'), # VARCHAR(45)
     ('property_transactions', 'property_id', 'integer', 'NO'),               # INT (FK)
