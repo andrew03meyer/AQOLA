@@ -59,7 +59,20 @@ def find_valid_postcode_beginnings(postcode: str, postcode_df):
         print(f"Failed when searching postcodes. -> {e}")
         return
 
+def read_and_transform_flood_shapefile(shapefile_path: Path):
+    """Reads the flood shapefile and transforms it to the correct coordinate reference system (CRS)"""
+    try:
+        import geopandas as gpd
+        flood_gdf = gpd.read_file(shapefile_path)
+        flood_gdf = flood_gdf.to_crs(epsg=4326)  # Transform to WGS 84
+        print(flood_gdf.sample(5))
+        print(flood_gdf.shape)
+    
+        return flood_gdf
 
+    except Exception as e:
+        print(f"Error reading or transforming flood shapefile: {e}")
+        sys.exit(1)
 
 def prepare_data_for_db(flood_df, postcode_df):
     # Makes a copy of passed df (so we can edit without risk of changin the original)
@@ -166,13 +179,27 @@ def make_csv_from_json(flood_rows, output_path: Path):
 
 def flood_process():
 
+    pd.set_option('display.max_columns', None)
+
     INPUT_PATH, OUTPUT_PATH, POSTCODE_PATH = find_file_paths()
     # rofrs = Risk of Flooding from Rivers and Seas
     rofrs_filepath = INPUT_PATH / "RoFRS_PostcodesAtRisk_v202501.csv"
-    try:
-        flood_df = pd.read_csv(rofrs_filepath)
-        
+    flood_shapefile_filepath = INPUT_PATH / "Recorded_Flood_Outlines.gdb"
+    
+    if not flood_shapefile_filepath.exists():
+        print(f"Error: Flood shapefile not found at {flood_shapefile_filepath}")
+        sys.exit(1)
+    
+    if not rofrs_filepath.exists():
+        print(f"Error: RoFRS CSV not found at {rofrs_filepath}")
+        sys.exit(1)
 
+    try:
+
+        flood_outlines = read_and_transform_flood_shapefile(flood_shapefile_filepath)
+
+        flood_df = pd.read_csv(rofrs_filepath)
+    
         postcodes_df = pd.read_csv(POSTCODE_PATH)
 
         flood_data_rows = prepare_data_for_db(flood_df, postcodes_df)
