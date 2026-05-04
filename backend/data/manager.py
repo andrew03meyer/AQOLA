@@ -10,7 +10,6 @@ from cleansing_scripts.flood_cleansing import flood_process
 from cleansing_scripts.flood_occurrence_cleansing import flood_occurance_process
 from cleansing_scripts.property_cleansing import property_process
 from cleansing_scripts.property_transactions import property_transactions_process
-from cleansing_scripts.flood_occurrence_cleansing import flood_occurance_process
 from ingestion import initialise_db, ingest_table, get_rows, get_row_count
 from pathlib import Path
 from testing.reference_checks import reference_check_process
@@ -67,10 +66,6 @@ def run_csv_creation(missingCSVs):
         # print("=======================================================================")
         print("Creating Property Transactions Data CSV...")
         property_transactions_process()    
-    if "flood_occurrences" in missingCSVs:
-        # print("=======================================================================")
-        print("Creating Flood Occurrences CSV...")
-        flood_occurance_process()        
 
 # ensures that the LSOA CSV is present, and if there's more than one to be ingest, that both the LSOA and postcodes table are there
 def ingest_process(dataPath):
@@ -110,7 +105,7 @@ def run_ingest(ingestCSVs, dataPath):
     ingestCSVs.remove(dataPath / "postcodes" / "postcodes.csv")
     # get_rows(5, "postcodes")
     get_row_count("postcodes")
-
+    
     # Ingest property data here because it is a parent table to property_transactions (referential integrity)
     property_data_path = dataPath / "property_data" / "property_data.csv"
     if property_data_path.exists():
@@ -123,7 +118,7 @@ def run_ingest(ingestCSVs, dataPath):
             ingestCSVs.remove(property_data_path)
         get_row_count("property_data")
 
-        
+
     # then ingest everything else
     for csv in ingestCSVs:
         print("=======================================================================")
