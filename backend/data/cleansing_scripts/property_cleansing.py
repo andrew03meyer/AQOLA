@@ -12,11 +12,11 @@ def get_spatial_lookup(postcodes_path):
     spatial_cols = ['postcode', 'lsoa_id', 'latitude', 'longitude', 'centroid']
     df = pd.read_csv(postcodes_path, usecols=spatial_cols)
     
-    # Standardise postcodes immediately for reliable merging
+    # Standardise postcodes
     df['postcode'] = df['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
     return df
 
-# Loads the raw Kent CSV and standardises headers
+# Loads raw Kent CSV and standardises headers
 def load_raw_property_data(input_path):
     if not input_path.exists():
         return pd.DataFrame()
@@ -68,10 +68,7 @@ def build_property_registry(df_kent, df_spatial):
 def export_to_csv(data, output_folder):
     output_path = output_folder / "property_data.csv"
     data.to_csv(output_path, index=False)
-    print(f"SUCCESS: {output_path}")
-    print(f"Total Rows: {len(data)}")
 
-# Main pipeline to output final csv
 def property_process():
     load_dotenv()
     base_dir = Path(os.getenv("DATA_PATH_DEV"))

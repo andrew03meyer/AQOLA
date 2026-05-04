@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS lsoas (
     avg_property_price INT
 );
 
+
 CREATE TABLE IF NOT EXISTS postcodes (
     postcode VARCHAR(10) PRIMARY KEY,
     lsoa_id VARCHAR(20) NOT NULL REFERENCES lsoas(lsoa_id) ON DELETE CASCADE,

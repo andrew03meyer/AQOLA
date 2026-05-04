@@ -139,11 +139,6 @@ def export_to_csv(data, output_folder):
     # Exports finalised school data to output folder
     output_path = output_folder / "school_data.csv"
     data.to_csv(output_path, index=False)
-    print("-------------------------------------")
-    print(f"SUCCESS: {output_path}")
-    print(f"Total Rows: {len(data)}")
-    print(f"Years found: {data['year_range'].unique()}")
-
 
 def school_process():
     load_dotenv()

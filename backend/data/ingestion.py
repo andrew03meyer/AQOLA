@@ -30,7 +30,19 @@ def ingest_table(filePath, tableName, filtered_postcodes):
             # convert geometry if present as WKT
             if 'geometry' in data.columns:
                 data['geometry'] = data['geometry'].apply(wkt.loads)
-
+            
+            # link transactions with property_id using address
+            if tableName == "property_transactions":    
+                
+                query = "SELECT property_id, full_address, postcode FROM property_data"
+                db_properties = pd.read_sql(query, engine).drop_duplicates(subset=['full_address', 'postcode'])
+                
+                data = data.merge(db_properties, on=['full_address', 'postcode'], how='inner')
+                
+                data = data.drop_duplicates(subset=['transaction_id'])
+                
+                data = data[["transaction_id", "property_id", "sale_date", "price"]]
+                
             data.to_sql(
                 tableName,
                 engine,
