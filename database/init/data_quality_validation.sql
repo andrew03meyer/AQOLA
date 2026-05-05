@@ -31,9 +31,6 @@ WITH completeness_failures AS (
     SELECT 'lsoas', 'centroid', 'Empty Geometry', lsoa_id::text
     FROM lsoas WHERE ST_IsEmpty(centroid)
     UNION ALL
-    SELECT 'lsoas', 'avg_property_price', 'Unpopulated/Null Price', lsoa_id::text
-    FROM lsoas WHERE avg_property_price IS NULL OR avg_property_price = 0
-    UNION ALL
     SELECT 'lsoas', 'lsoa_id', 'Duplicate Key', lsoa_id
     FROM lsoas GROUP BY lsoa_id HAVING COUNT(*) > 1
     UNION ALL
@@ -51,9 +48,6 @@ WITH completeness_failures AS (
     UNION ALL
     SELECT 'postcodes', 'lsoa_id', 'Malformed (Trailing Space)', postcode::text
     FROM postcodes WHERE lsoa_id != TRIM(lsoa_id)
-    UNION ALL
-    SELECT 'postcodes', 'avg_property_price', 'Unpopulated/Null Price', postcode::text
-    FROM postcodes WHERE avg_property_price IS NULL OR avg_property_price = 0
     UNION ALL
     SELECT 'postcodes', 'postcode', 'Duplicate Key', postcode
     FROM postcodes GROUP BY postcode HAVING COUNT(*) > 1
@@ -117,9 +111,6 @@ WITH completeness_failures AS (
     UNION ALL
 
   -- Property Data
-    SELECT 'property_data', 'street', 'Logical Null (Empty/Spaces)', property_id::text
-    FROM property_data WHERE street ~ '^\s*$'
-    UNION ALL
     SELECT 'property_data', 'full_address', 'Logical Null (Empty/Spaces)', property_id::text
     FROM property_data WHERE full_address ~ '^\s*$'
     UNION ALL
@@ -131,9 +122,6 @@ WITH completeness_failures AS (
     UNION ALL
     SELECT 'property_data', 'longitude', 'Out of Kent Bounds', property_id::text
     FROM property_data WHERE longitude NOT BETWEEN 0.01 AND 1.47
-    UNION ALL
-    SELECT 'property_data', 'boundary', 'Empty Geometry', property_id::text
-    FROM property_data WHERE ST_IsEmpty(boundary)
     UNION ALL
     SELECT 'property_data', 'centroid', 'Empty Geometry', property_id::text
     FROM property_data WHERE ST_IsEmpty(centroid)

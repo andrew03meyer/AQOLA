@@ -18,7 +18,6 @@ EXPECTED_COLUMNS = {
     ('lsoas', 'area_sq_km', 'numeric', 'YES'),             # DECIMAL(10,4) (Nullable)
     ('lsoas', 'boundary', 'USER-DEFINED', 'NO'),           # GEOMETRY(MULTIPOLYGON, 4326)
     ('lsoas', 'centroid', 'USER-DEFINED', 'NO'),           # GEOMETRY(POINT, 4326)
-    ('lsoas', 'avg_property_price, integer', 'YES')        # INT (Nullable)
 
     ('postcodes', 'postcode', 'character varying', 'NO'),             # VARCHAR(10)
     ('postcodes', 'lsoa_id', 'character varying', 'NO'),              # VARCHAR(20) (Foreign Key)
@@ -29,7 +28,6 @@ EXPECTED_COLUMNS = {
     ('postcodes', 'longitude', 'numeric', 'NO'),                      # DECIMAL(9,6)
     ('postcodes', 'centroid', 'USER-DEFINED', 'NO'),                  # GEOMETRY(POINT, 4326)
     ('postcodes', 'boundary', 'USER-DEFINED', 'NO'),                  # GEOMETRY(MULTIPOLYGON, 4326)
-    ('postcodes', 'avg_property_price, integer', 'YES')                   # INT (Nullable)
 
     ('crime_data', 'crime_id', 'integer', 'NO'),                            # SERIAL
     ('crime_data', 'lsoa_id', 'character varying', 'NO'),             # VARCHAR(20) (Foreign Key)
@@ -39,9 +37,9 @@ EXPECTED_COLUMNS = {
     ('crime_data', 'crime_type', 'character varying', 'NO'),
     
     ('school_data', 'urn', 'character varying', 'NO'),              # VARCHAR(20)
-    ('school_data', 'lsoa_id', 'character varying', 'YES'),          # VARCHAR(20) (FK) (Nullable)
+    ('school_data', 'lsoa_id', 'character varying', 'NO'),          # VARCHAR(20) (FK) (Nullable)
     ('school_data', 'school_name', 'character varying', 'NO'),      # VARCHAR(255)
-    ('school_data', 'postcode', 'character varying', 'YES'),          # VARCHAR(10) (FK) (Nullable)
+    ('school_data', 'postcode', 'character varying', 'NO'),          # VARCHAR(10) (FK) (Nullable)
     ('school_data', 'is_primary', 'boolean', 'NO'),                 # BOOLEAN
     ('school_data', 'is_secondary', 'boolean', 'NO'),               # BOOLEAN
     ('school_data', 'is_post16', 'boolean', 'NO'),                  # BOOLEAN
