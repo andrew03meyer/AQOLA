@@ -5,6 +5,8 @@ DROP TABLE IF EXISTS property_data;
 DROP TABLE IF EXISTS school_data;
 DROP TABLE IF EXISTS flood_data;
 DROP TABLE IF EXISTS crime_data;
+DROP TABLE IF EXISTS postcode_flood_occurrences;
+DROP TABLE IF EXISTS flood_occurrences;
 
 -- Drop secondary parent tables
 DROP TABLE IF EXISTS postcodes;
@@ -92,6 +94,28 @@ CREATE TABLE IF NOT EXISTS property_transactions (
     sale_date DATE NOT NULL,
     price INT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS flood_occurrences (
+    rec_out_id INT PRIMARY KEY,
+    rec_grp_id INT NOT NULL,
+    name VARCHAR(255),
+    start_date DATE,
+    end_date DATE,
+    flood_src VARCHAR(255),
+    flood_caus VARCHAR(255),
+    hfm_status VARCHAR(255),
+    data_src VARCHAR(255),
+    fluvial_f BOOLEAN NOT NULL,
+    coastal_f BOOLEAN NOT NULL,
+    tidal_f BOOLEAN NOT NULL,
+    boundary GEOMETRY(MULTIPOLYGON, 4326) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS postcode_flood_occurrences (
+    postcode VARCHAR(10) REFERENCES postcodes(postcode) ON DELETE CASCADE,
+    rec_out_id INT REFERENCES flood_occurrences(rec_out_id) ON DELETE CASCADE,    
+    PRIMARY KEY (postcode, rec_out_id)
+)
 
 
 -- INSERT INTO lsoas (lsoa_id, area_name, population, area_sq_km, boundary, centroid)

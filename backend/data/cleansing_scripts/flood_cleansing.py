@@ -59,20 +59,6 @@ def find_valid_postcode_beginnings(postcode: str, postcode_df):
         print(f"Failed when searching postcodes. -> {e}")
         return
 
-def read_and_transform_flood_shapefile(shapefile_path: Path):
-    """Reads the flood shapefile and transforms it to the correct coordinate reference system (CRS)"""
-    try:
-        import geopandas as gpd
-        flood_gdf = gpd.read_file(shapefile_path)
-        flood_gdf = flood_gdf.to_crs(epsg=4326)  # Transform to WGS 84
-        print(flood_gdf.sample(5))
-        print(flood_gdf.shape)
-    
-        return flood_gdf
-
-    except Exception as e:
-        print(f"Error reading or transforming flood shapefile: {e}")
-        sys.exit(1)
 
 def prepare_data_for_db(flood_df, postcode_df):
     # Makes a copy of passed df (so we can edit without risk of changin the original)
@@ -195,8 +181,6 @@ def flood_process():
         sys.exit(1)
 
     try:
-
-        flood_outlines = read_and_transform_flood_shapefile(flood_shapefile_filepath)
 
         flood_df = pd.read_csv(rofrs_filepath)
     
