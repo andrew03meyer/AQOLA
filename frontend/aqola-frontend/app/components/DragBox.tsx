@@ -11,14 +11,14 @@ interface WindowProps {
 
 const Window = ({ children, chartName, zIndex  }: WindowProps) => {
 
-  const removeChart = useAppStore((state) => state.removeChart);
+  const removeOpenChart = useAppStore((state) => state.removeOpenChart);
   const focusChart = useAppStore((state) => state.focusChart);
   const minimiseChart = useAppStore((state) => state.minimiseChart);
   const updateChartLocation = useAppStore((state) => state.updateChartLocation);
-  const findChartFromName = useAppStore((state) => state.findChartFromName);
+  const findOpenChartFromName = useAppStore((state) => state.findOpenChartFromName);
   const openCharts = useAppStore((state) => state.openCharts);
 
-  const chart = findChartFromName(chartName);
+  const chart = findOpenChartFromName(chartName);
   const [x, y] = chart ? chart.position : [100 + (10 * openCharts.length), 100 + (10 * openCharts.length)];
   
 
@@ -34,7 +34,7 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
       {/* Top bar of the window, includes close button */}
       <div className="window-titlebar">
         <button onClick={() => minimiseChart && minimiseChart(chartName, [x, y])}> - </button>
-        <button onClick={() => removeChart(chartName)}> ✕ </button>
+        <button onClick={() => removeOpenChart(chartName)}> ✕ </button>
       </div>
 
       {/* Window contents */}

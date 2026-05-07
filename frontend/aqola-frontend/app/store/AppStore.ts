@@ -13,18 +13,18 @@ type AppStore = {
   clearAreas: () => void;
   setDataset: (dataset: string) => void;
   loadChartState: (chartState: StateDefinition) => void;
-  addChart: (chartName: string, position: [number, number]) => void;
+  openChart: (chartName: string, position: [number, number]) => void;
   addOpenCharts: (charts: StateDefinition[]) => void;
   addMinimisedCharts: (charts: StateDefinition[]) => void;
   minimiseChart: (chartName: string, position: [number, number]) => void;
-  reopenMinimisedChart: (chartName: string) => void;
   removeMinimisedChart: (chartName: string) => void;
-  removeChart: (chartName: string) => void;
-  findChartFromName: (chartName: string) => StateDefinition | undefined;
+  removeOpenChart: (chartName: string) => void;
+  findOpenChartFromName: (chartName: string) => StateDefinition | undefined;
+  findMinimisedChartFromName: (chartName: string) => StateDefinition | undefined;
   focusChart: (chartName: string) => void;
   updateChartState: (chartName: string) => void;
   getFocusedChart: () => StateDefinition | undefined;
-  getCharts: () => StateDefinition[];
+  getOpenCharts: () => StateDefinition[];
   getAllCharts: () => StateDefinition[];
   addAreas: (areas: string[]) => void;
   setZoom: (zoom: number) => void;
@@ -72,12 +72,18 @@ const useAppStore = create<AppStore>((set, get) => ({
       selectedDataset: chartState.selectedDataset,
     }),
 
-  // Adds a chart to openCharts with the current app state
-  addChart: (chartName, position) =>
+  // If chart is new, creates new state and adds to openCharts
+  // If chart is minimised, moves it to openCharts
+  openChart: (chartName, position) =>
     set((state) => {
-      // If the chart is minimised, do not add a new one to openCharts
-      if (state.minimisedCharts.find((g) => g.chartName === chartName)) {
-        return state;
+      
+      const isMinimised = state.minimisedCharts.find((g) => g.chartName === chartName);
+      // If the chart is minimised, add its state to open and remove from minimised
+      if (isMinimised !== undefined) {
+        return { 
+          openCharts: [isMinimised, ...state.openCharts],
+          minimisedCharts: state.minimisedCharts.filter((g) => g.chartName !== chartName) 
+        };
       }
       else {
         return {
@@ -132,19 +138,6 @@ const useAppStore = create<AppStore>((set, get) => ({
      };
     }),
 
-  // Reopen minimised chart by moving it from minimisedCharts to openCharts
-  reopenMinimisedChart: (chartName) =>
-    set((state) => {
-      const chartToReopen = state.minimisedCharts.find((g) => g.chartName === chartName);
-      if (!chartToReopen) return state;
-      return {
-        // Add to openCharts
-        openCharts: [chartToReopen, ...state.openCharts],
-        // Remove from minimisedCharts
-        minimisedCharts: state.minimisedCharts.filter((g) => g.chartName !== chartName),
-      };
-    }),
-
   // Remove chart from minimisedCharts by name
   removeMinimisedChart: (chartName) =>
     set((state) => ({
@@ -152,14 +145,19 @@ const useAppStore = create<AppStore>((set, get) => ({
     })),
 
   // Removes a chart from openCharts by name
-  removeChart: (chartName) =>
+  removeOpenChart: (chartName) =>
     set((state) => ({
       openCharts: state.openCharts.filter((g) => g.chartName !== chartName),
     })),
 
   // Finds a chart in openCharts by name
-  findChartFromName: (chartName) => {
+  findOpenChartFromName: (chartName) => {
     return get().openCharts.find((g) => g.chartName === chartName);
+  },
+
+    // Finds a chart in minimisedCharts by name
+  findMinimisedChartFromName: (chartName) => {
+    return get().minimisedCharts.find((g) => g.chartName === chartName);
   },
 
   // Puts the "focused" chart to the front of the openCharts array
@@ -207,7 +205,7 @@ const useAppStore = create<AppStore>((set, get) => ({
   },
 
   // Returns the full chart stack
-  getCharts: () => {
+  getOpenCharts: () => {
     return get().openCharts;
   },
 

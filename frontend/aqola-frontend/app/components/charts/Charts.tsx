@@ -7,7 +7,7 @@ import ChartWindow from "./ChartWindow";
 import { ChartData } from "../../lib/ChartModels";
 
 export default function Charts() {
-    const getCharts = useAppStore((state) => state.getCharts);
+    const getCharts = useAppStore((state) => state.getOpenCharts);
     const focusChart = useAppStore((state) => state.focusChart);
     const minimiseChart = useAppStore((state) => state.minimiseChart);
     const charts = getCharts() as StateDefinition[];
