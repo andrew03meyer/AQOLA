@@ -31,12 +31,23 @@ const stateImport = (e: any) => {
                 const addMinimisedCharts = useAppStore.getState().addMinimisedCharts;
                 if (evt.target?.result) {
                     const data = JSON.parse(evt.target?.result as string);
+
+                    //hide error message if it was previously shown
+                    const invalidFileFormat = document.getElementById("invalid-file-format");
+                    if (invalidFileFormat) {
+                        invalidFileFormat.style.display = "none";
+                    }
+
                     addOpenCharts(data.opened);
                     addMinimisedCharts(data.minimised);
                 }
             } catch (error) {
                console.error("Error reading file:", error);
                console.error("Please ensure the file is in the correct format and try again.");
+               const invalidFileFormat = document.getElementById("invalid-file-format");
+               if (invalidFileFormat) {
+                   invalidFileFormat.style.display = "block";
+               }
             }
         };  
     }

@@ -41,6 +41,9 @@ export default function DataSelector() {
         <button onClick={() => fileUploadRef.current?.click()} title="Upload charts from device">
           <Upload size={20} id="upload" />
         </button>
+        <div id="invalid-file-format" style={{ color: "red", fontSize: "15px" , display: "none", fontWeight: "bold"}}>
+          Invalid file format
+        </div>
       </div>
     </div>
   );
