@@ -11,7 +11,7 @@ export default function LineChart({
   marginTop = 100,
   marginRight = 50,
   marginBottom = 40,
-  marginLeft = 50,
+  marginLeft = 100,
 }) {
   // Json passed in with x and y values for line chart
 
@@ -59,8 +59,9 @@ export default function LineChart({
     // Define the exact axes 
     const xAxis = d3.axisBottom(x);
     const yAxis = isSchoolData 
-      ? d3.axisLeft(y).tickValues([1, 2, 3, 4]).tickFormat(d3.format("d")) // Strict 1,2,3,4
+      ? d3.axisLeft(y).tickValues([1, 2, 3, 4]).tickFormat(d => {return {1: "Outstanding ", 2: "Good ", 3: "Satisfactory ", 4: "Inadequate "}[d]}) // Strict 1,2,3,4
       : d3.axisLeft(y);
+    const axisOffset = isSchoolData ? -40 : 0;
 
     // Draw X Axis
     d3.select(xLabel.current)
@@ -70,6 +71,7 @@ export default function LineChart({
       .attr("y", 35)
       .attr("fill", "white")
       .attr("text-anchor", "middle")
+      .attr("font-weight", "normal")
       .text(data.chart.xlabel);
 
     // Draw Y Axis
@@ -78,10 +80,11 @@ export default function LineChart({
       .append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -height / 2)
-      .attr("y", -35) 
+      .attr("y", -35 + axisOffset) 
       .attr("fill", "white")
       .attr("text-anchor", "middle")
-      .text(isSchoolData ? "Ofsted Ranking" : data.chart.ylabel);
+      .attr("font-weight", "normal")
+      .text(data.chart.ylabel);
 
   }, [x, y, data, chartWidth, height, isSchoolData, marginLeft, marginTop]);
 
@@ -103,8 +106,8 @@ export default function LineChart({
         </text>
 
       {/* add the axis to the chart */}
-      <g ref={xLabel} transform={`translate(0,${height - marginBottom})`} />
-      <g ref={yLabel} transform={`translate(${marginLeft},0)`} />
+      <g ref={xLabel} transform={`translate(0,${height - marginBottom})`} fill="white" />
+      <g ref={yLabel} transform={`translate(${marginLeft},0)`} fill="white" />
 
       {/* for each line in the data input */}
       {data.chart.lines.map((line, i) => (

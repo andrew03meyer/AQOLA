@@ -8,11 +8,11 @@
     "icon": "fi fi-rs-chart-line-up"
   },
   {
-    "id": "crime_by_area",
+    "id": "crime_over_time",
     "label": "Crime by Area",
     "chartComponent": "line",
     "dataset": "crime",
-    "apiCall": "crime_rate_by_area",
+    "apiCall": "crime_rate_over_time",
     "icon": "fi fi-rs-chart-line-up"
   },
   {
@@ -53,15 +53,15 @@
     "chartComponent": "bar",
     "dataset": "schools",
     "apiCall": "school_gender_demographics_by_phase",
-    "icon": "fi fi-rs-stats" 
+    "icon": "fi fi-rs-stats"
   },
   {
-  "id": "individual_school_ofsted_timeline",
-  "label": "Ofsted History",
-  "chartComponent": "line",
-  "dataset": "schools",
-  "apiCall": "get_school_ofsted_history",
-  "icon": "fi fi-rs-chart-line-up"
+    "id": "individual_school_ofsted_timeline",
+    "label": "Ofsted History",
+    "chartComponent": "line",
+    "dataset": "schools",
+    "apiCall": "get_school_ofsted_history",
+    "icon": "fi fi-rs-chart-line-up"
   },
   {
     "id": "flood_risk_frequency",
@@ -71,7 +71,7 @@
     "apiCall": "flood_risk_frequency_by_postcode",
     "icon": "fi fi-rs-stats"
   },
-    {
+  {
     "id": "flood_risk_frequency_spider",
     "label": "Flood Risks",
     "chartComponent": "spider",

@@ -1,6 +1,6 @@
 import datasetConfig from "../store/datasetConfig.json";
 import chartDefinitions from "../store/chartDefinitions.json";
-import { crime_rate_by_type_and_area, crime_rate_by_area } from "./LineChart";
+import { crime_rate_by_type_and_area, crime_rate_over_time } from "./LineChart";
 import {
   ofsted_frequency_by_band,
   ofsted_frequency_yearly,
@@ -12,7 +12,6 @@ import {
 import { ChartData } from "./ChartModels";
 import { get_school_ofsted_history } from "./LineChart";
 import { flood_risk_frequency_by_postcode_spider } from "./SpiderDiagram";
-import { api } from "./Api";
 
 type DatasetKey = keyof typeof datasetConfig;
 
@@ -29,7 +28,7 @@ const apiCallMap: Record<string, (areas: string[]) => Promise<ChartData>> = {
     // Line Graphs
   crime_rate_by_type_and_area: (areas) =>
     crime_rate_by_type_and_area((areas[areas.length-1]), ["Anti-social behaviour","Bicycle theft","Burglary","Criminal damage and arson","Other theft","Robbery","Shoplifting","Theft from the person","Violence and sexual offences"]), // areas[0]
-  crime_rate_by_area: (areas) => crime_rate_by_area(areas),
+  crime_rate_over_time: (areas) => crime_rate_over_time(areas),
   
   //Bar Graphs
   crime_rate_by_lsoa: (areas) => crime_rate_by_lsoa(areas),

@@ -1,6 +1,11 @@
 {
   "crime": {
-    "graphs": ["crime_by_type_over_time", "crime_by_area", "crime_rate_by_lsoa", "crime_rate_by_lsoa_cumulative"],
+    "graphs": [
+      "crime_by_type_over_time",
+      "crime_over_time",
+      "crime_rate_by_lsoa",
+      "crime_rate_by_lsoa_cumulative"
+    ],
     "areaLayers": [{ "areaType": "lsoa", "minZoom": 8 }]
   },
   "schools": {

@@ -98,7 +98,7 @@ export default function BarChart({
         textAnchor="middle"
         fontSize="18px"
         fill="white"
-        fontWeight="bold"
+        // fontWeight="bold"
       >
         {data.title}
       </text>
@@ -181,7 +181,7 @@ export default function BarChart({
                     textAnchor="middle"
                     fontSize="10px"
                     fill="white"
-                    fontWeight="bold"
+                    // fontWeight="bold"
                   >
                     {bar.value.toLocaleString()}
                   </text>
@@ -194,8 +194,15 @@ export default function BarChart({
       <g
         ref={gx}
         transform={`translate(${marginLeft},${height - marginBottom})`}
+        fill="white"
+        stroke="white"
       />
-      <g ref={gy} transform={`translate(${marginLeft},${marginTop})`} />
+      <g 
+        ref={gy} 
+        transform={`translate(${marginLeft},${marginTop})`} 
+        fill="white" 
+        stroke="white" 
+      />
     </svg>
   );
 }

@@ -16,6 +16,10 @@ export const api = axios.create({
 //      crime type (list of strings) - optional
 // returns a graph of crime rate over time in an lsoa
 // Each line represents a crime type
+
+// =============================================================================================
+//       CURRENTLY NOT WORKING CORRECTLY - NEEDS TO BE UPDATED TO TAKE MULTIPLE LSOAs
+// =============================================================================================
 export const crime_rate_by_type_and_area = async (
   lsoa: string,
   crimeTypes?: string[],
@@ -46,9 +50,9 @@ let colorMap: Record<string, string> = {
       area: "postcode",
       chart: {
         lines: [],
-        title: "Crime Rate by Area",
+        title: "Crime Rate by Type (Over Time)",
         xlabel: "Months",
-        ylabel: "Frequency",
+        ylabel: "Number of Crimes",
       }
     } as LineChartResponse;
   }
@@ -83,9 +87,9 @@ let colorMap: Record<string, string> = {
     area: "postcode",
     chart: {
       lines,
-      title: "Crime by Crime Type",
+      title: "Crime Rate by Type (Over Time)",
       xlabel: "Months",
-      ylabel: "Frequency",
+      ylabel: "Number of Crimes",
     },
   };
 
@@ -95,7 +99,7 @@ let colorMap: Record<string, string> = {
 // Gets total crime rate over multiple lsoas
 // Returns a graph of total crime rate over time
 // Each line is an lsoa
-export const crime_rate_by_area = async (lsoas : string[]) : Promise<LineChartResponse> => {
+export const crime_rate_over_time = async (lsoas : string[]) : Promise<LineChartResponse> => {
   let lsoaSlug : string = "";
 
   if (lsoas.length >= 1){
@@ -106,7 +110,6 @@ export const crime_rate_by_area = async (lsoas : string[]) : Promise<LineChartRe
     lsoaSlug = lsoaSlug.substring(0, lsoaSlug.length - 1);
   }
   else{
-    console.log("yerp")
     return (
       {
         chartType: "line",
@@ -114,9 +117,9 @@ export const crime_rate_by_area = async (lsoas : string[]) : Promise<LineChartRe
         area: "postcode",
         chart: {
           lines: [],
-          title: "Crime Rate by Area",
+          title: "Crime Rate Over Time",
           xlabel: "Months",
-          ylabel: "Frequency",
+          ylabel: "Number of Crimes",
         },
       }
     )
@@ -142,9 +145,9 @@ for (const [index, [lsoa, coords]] of Object.entries(crimeCountData).entries()) 
     area: "postcode",
     chart: {
       lines,
-      title: "Crime Rate by Area",
+      title: "Crime Rate Over Time",
       xlabel: "Months",
-      ylabel: "Frequency",
+      ylabel: "Number of Crimes",
     },
   };
 
