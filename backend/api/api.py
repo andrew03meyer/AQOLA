@@ -25,6 +25,15 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://84.8.152.6:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}

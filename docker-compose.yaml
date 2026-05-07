@@ -3,7 +3,10 @@ version: "3.8"
 services:
   # Postgres
   db:
-    image: postgis/postgis:16-3.4
+    build:
+      context: .
+      dockerfile: Dockerfile.postgis
+    platform: linux/arm64/v8
     container_name: aqola-postgres
     environment:
       POSTGRES_DB: aqola
@@ -44,6 +47,10 @@ services:
     build:
       context: ./frontend/aqola-frontend/
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
     container_name: aqola-frontend
     ports:
       - "3000:3000"
