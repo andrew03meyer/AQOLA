@@ -7,10 +7,10 @@ import ChartWindow from "./ChartWindow";
 import { ChartData } from "../../lib/ChartModels";
 
 export default function Charts() {
-    const getCharts = useAppStore((state) => state.getOpenCharts);
+    const getOpenCharts = useAppStore((state) => state.getOpenCharts);
     const focusChart = useAppStore((state) => state.focusChart);
     const minimiseChart = useAppStore((state) => state.minimiseChart);
-    const charts = getCharts() as StateDefinition[];
+    const openCharts = getOpenCharts() as StateDefinition[];
     const { closeChart } = useChartOrchestrator();
 
     // Dictionary of chart name and corresponding data
@@ -23,15 +23,15 @@ export default function Charts() {
     const prevSelectedAreasRef = useRef<string[]>(selectedAreas);
 
     useEffect(() => {
-        const currentCharts = new Set(charts.map((c) => c.chartName));
+        const currentCharts = new Set(openCharts.map((c) => c.chartName));
         const prevRenderedCharts = prevChartNamesRef.current;
 
         // Find new, removed, and updated charts
-        const addedCharts = charts.filter((c) => !prevRenderedCharts.has(c.chartName));
+        const addedCharts = openCharts.filter((c) => !prevRenderedCharts.has(c.chartName));
 
         let changedCharts: StateDefinition[] = [];
-        if (charts.length > 0) {
-            changedCharts = JSON.stringify(prevSelectedAreasRef.current) == JSON.stringify(selectedAreas) ? [] : [charts[0]];
+        if (openCharts.length > 0) {
+            changedCharts = JSON.stringify(prevSelectedAreasRef.current) == JSON.stringify(selectedAreas) ? [] : [openCharts[0]];
         }
         
         const removedCharts = [...prevRenderedCharts].filter((chart) => !currentCharts.has(chart));
@@ -61,11 +61,11 @@ export default function Charts() {
         // Update the ref to the current chart names
         prevChartNamesRef.current = currentCharts;
         prevSelectedAreasRef.current = selectedAreas;
-    }, [charts]);
+    }, [openCharts]);
 
     return (
         <>
-            {charts.map((chart) => {
+            {openCharts.map((chart) => {
                 const data = chartsData[chart.chartName];
                 if (data === undefined) return null;
                 return (
@@ -73,7 +73,7 @@ export default function Charts() {
                         key={chart.chartName}
                         chart={chart}
                         data={data}
-                        zIndex={ 400 + charts.length - charts.findIndex((c) => c.chartName === chart.chartName) }
+                        zIndex={ 400 + openCharts.length - openCharts.findIndex((c) => c.chartName === chart.chartName) }
                     />
                 );
             })}
