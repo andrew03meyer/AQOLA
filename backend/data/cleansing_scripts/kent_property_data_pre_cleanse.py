@@ -1,6 +1,8 @@
-'''NOTE: This pre cleansing script was made to filter property data only for Kent as the original dataset pp-complete.csv was far too large (5 million + MB)
+'''NOTE: This pre cleansing script was made to filter property data only for Kent.
 
-From the original government dataset, only the necessary columns for the schema were fitlered and compiled to get property data for Kent specifically'''
+The original dataset pp-complete.csv was far too large (5 million + MB) which would be too much for the normal cleansing scripts to process.
+
+From the original government dataset, only the potential necessary columns for the schema were filtered and compiled to get Kent property data'''
 
 import pandas as pd
 import csv
