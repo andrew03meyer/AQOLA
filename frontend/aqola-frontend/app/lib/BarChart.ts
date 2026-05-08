@@ -5,12 +5,12 @@ import type {
 } from "./PolygonModels";
 import type { SchoolCounts } from "./ApiModels";
 import type { BarChartResponse } from "./ChartModels";
-import { COLOR } from "./constants"
+import { COLOR } from "./constants";
 
 // method naming convention <area>_<xlabel>_<ylabel>_<bars>
 
 export const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
 });
 
 export const get_bar_info = async () => {
@@ -265,29 +265,34 @@ export const flood_risk_frequency_by_postcode = async (
 };
 
 // Show crime rates per lsoa (split up into each crime type)
-export const crime_rate_by_lsoa = async(lsoas: string[]): Promise<BarChartResponse> => {
+export const crime_rate_by_lsoa = async (
+  lsoas: string[],
+): Promise<BarChartResponse> => {
   // Check if postcodes is empty
-  if (lsoas.length == 0){
-    return (
-    {
+  if (lsoas.length == 0) {
+    return {
       chartType: "bar",
       type: "crime",
       area: "lsoa",
 
       chart: {
-        groups: [{
-          name: "null",
-          bars: [{
-            bar_name: "none",
-            value: 0,
-            color: "black",
-          }]
-        }],
+        groups: [
+          {
+            name: "null",
+            bars: [
+              {
+                bar_name: "none",
+                value: 0,
+                color: "black",
+              },
+            ],
+          },
+        ],
         title: "Crime Rate by LSOA (over all time)",
         xlabel: "Crime Type per LSOA",
         ylabel: "Number of Crimes",
-      }
-    })
+      },
+    };
   }
 
   const response = await api.get("/crime/crime-rate-by-type", {
@@ -322,9 +327,9 @@ export const crime_rate_by_lsoa = async(lsoas: string[]): Promise<BarChartRespon
     bars: Object.entries(crime).map(([crime_type, _], i) => ({
       bar_name: crime_type,
       value: crime_counts[lsoa][crime_type],
-      color: COLOR[i % COLOR.length]
-    }))
-  }))
+      color: COLOR[i % COLOR.length],
+    })),
+  }));
 
   // Create bar response
   const bar_return: BarChartResponse = {
@@ -340,32 +345,37 @@ export const crime_rate_by_lsoa = async(lsoas: string[]): Promise<BarChartRespon
   };
 
   return bar_return;
-}
+};
 
 // Counts the number of crimes in each type, cumulatively (across lsoas)
-export const crime_rate_by_lsoa_cumulative = async(lsoas: string[]): Promise<BarChartResponse> => {
+export const crime_rate_by_lsoa_cumulative = async (
+  lsoas: string[],
+): Promise<BarChartResponse> => {
   // Check if postcodes is empty
-  if (lsoas.length == 0){
-    return (
-    {
+  if (lsoas.length == 0) {
+    return {
       chartType: "bar",
       type: "crime",
       area: "lsoa",
 
       chart: {
-        groups: [{
-          name: "null",
-          bars: [{
-            bar_name: "none",
-            value: 0,
-            color: "black",
-          }]
-        }],
+        groups: [
+          {
+            name: "null",
+            bars: [
+              {
+                bar_name: "none",
+                value: 0,
+                color: "black",
+              },
+            ],
+          },
+        ],
         title: "Cumulative Crime Rate Across LSOAs (over all time)",
         xlabel: "Crime Types",
         ylabel: "Number of Crimes",
-      }
-    })
+      },
+    };
   }
 
   const response = await api.get("/crime/crime-rate-by-type", {
@@ -378,25 +388,28 @@ export const crime_rate_by_lsoa_cumulative = async(lsoas: string[]): Promise<Bar
   });
 
   // Get all crime types
-  const crime_totals: Record<string, number> = {}
-  const crime_types = await api.get("/crime/types")
+  const crime_totals: Record<string, number> = {};
+  const crime_types = await api.get("/crime/types");
   // Initialise the crime counts to 0 - means all types are accounted for
-  crime_types.data.values.forEach((type : string) => crime_totals[type] = 0)
+  crime_types.data.values.forEach((type: string) => (crime_totals[type] = 0));
 
   // Add the response values to the pre-initialised values
-  Object.entries(response.data).map(([_, crime]) => (
+  Object.entries(response.data).map(([_, crime]) =>
     (crime as [string, number][]).map(([crime_type, count]) => {
-      crime_totals[crime_type] += count
-  })))
+      crime_totals[crime_type] += count;
+    }),
+  );
 
-  const groups = [{
-    name: "Cumulative Crime Rate",
-    bars: Object.entries(crime_totals).map(([crime_type, value], i) => ({
-      bar_name: crime_type,
-      value: value,
-      color: COLOR[i % COLOR.length],
-    })),
-  }];
+  const groups = [
+    {
+      name: "Cumulative Crime Rate",
+      bars: Object.entries(crime_totals).map(([crime_type, value], i) => ({
+        bar_name: crime_type,
+        value: value,
+        color: COLOR[i % COLOR.length],
+      })),
+    },
+  ];
 
   const bar_return: BarChartResponse = {
     chartType: "bar",
@@ -412,4 +425,4 @@ export const crime_rate_by_lsoa_cumulative = async(lsoas: string[]): Promise<Bar
   };
 
   return bar_return;
-}
+};
