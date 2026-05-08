@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS property_data (
 
 CREATE TABLE IF NOT EXISTS property_transactions (
     transaction_id VARCHAR(45) PRIMARY KEY,
-    property_id INT REFERENCES NOT NULL property_data(property_id) ON DELETE CASCADE,
+    property_id INT NOT NULL REFERENCES property_data(property_id) ON DELETE CASCADE,
     sale_date DATE NOT NULL,
     price INT NOT NULL
 );
