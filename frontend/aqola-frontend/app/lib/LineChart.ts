@@ -2,8 +2,8 @@ import { stringify } from "querystring";
 import type { Crime, CrimeTypes, UniqueMonths } from "./ApiModels";
 import type { LineChartResponse } from "./ChartModels";
 import axios from "axios";
-import type { School } from "./ApiModels"
-import { COLOR } from "./constants"
+import type { School } from "./ApiModels";
+import { COLOR } from "./constants";
 
 // method naming convention <area>_<xlabel>_<ylabel>_<lines>
 
@@ -26,22 +26,22 @@ export const crime_rate_by_type_and_area = async (
 ): Promise<LineChartResponse> => {
   let crimeTypeSlug: string = "";
 
-let colorMap: Record<string, string> = {
-  "Anti-social behaviour": COLOR[0],
-  "Bicycle theft": COLOR[1],
-  "Burglary": COLOR[2],
-  "Criminal damage and arson": COLOR[3],
-  "Drugs": COLOR[4],
-  "Other crime": COLOR[5],
-  "Other theft": COLOR[6],
-  "Possession of weapons": COLOR[7],
-  "Public order": COLOR[8],
-  "Robbery": COLOR[9],
-  "Shoplifting": COLOR[10],
-  "Theft from the person": COLOR[11],
-  "Vehicle crime": COLOR[12],
-  "Violence and sexual offences": COLOR[13],
-};
+  let colorMap: Record<string, string> = {
+    "Anti-social behaviour": COLOR[0],
+    "Bicycle theft": COLOR[1],
+    Burglary: COLOR[2],
+    "Criminal damage and arson": COLOR[3],
+    Drugs: COLOR[4],
+    "Other crime": COLOR[5],
+    "Other theft": COLOR[6],
+    "Possession of weapons": COLOR[7],
+    "Public order": COLOR[8],
+    Robbery: COLOR[9],
+    Shoplifting: COLOR[10],
+    "Theft from the person": COLOR[11],
+    "Vehicle crime": COLOR[12],
+    "Violence and sexual offences": COLOR[13],
+  };
 
   if (!lsoa) {
     return {
@@ -53,14 +53,14 @@ let colorMap: Record<string, string> = {
         title: "Crime Rate by Type (Over Time)",
         xlabel: "Months",
         ylabel: "Number of Crimes",
-      }
+      },
     } as LineChartResponse;
   }
 
-  if (crimeTypes){
-    crimeTypeSlug = "?"
-    for (let type of crimeTypes){
-      crimeTypeSlug += `crimeType=${type}&`
+  if (crimeTypes) {
+    crimeTypeSlug = "?";
+    for (let type of crimeTypes) {
+      crimeTypeSlug += `crimeType=${type}&`;
     }
     crimeTypeSlug = crimeTypeSlug.substring(0, crimeTypeSlug.length - 1);
   }
@@ -76,8 +76,11 @@ let colorMap: Record<string, string> = {
   for (const [crimeType, coords] of Object.entries(crimeCountData)) {
     lines.push({
       line_name: crimeType,
-      coords: (coords as [Date, number][]).map(([date, count]) => [new Date(date), count]),
-      color: colorMap[crimeType]
+      coords: (coords as [Date, number][]).map(([date, count]) => [
+        new Date(date),
+        count,
+      ]),
+      color: colorMap[crimeType],
     });
   }
 
@@ -99,48 +102,50 @@ let colorMap: Record<string, string> = {
 // Gets total crime rate over multiple lsoas
 // Returns a graph of total crime rate over time
 // Each line is an lsoa
-export const crime_rate_over_time = async (lsoas : string[]) : Promise<LineChartResponse> => {
-  let lsoaSlug : string = "";
+export const crime_rate_over_time = async (
+  lsoas: string[],
+): Promise<LineChartResponse> => {
+  let lsoaSlug: string = "";
 
-  if (lsoas.length >= 1){
-    lsoaSlug = "?"
-    for (let lsoa of lsoas){
-      lsoaSlug += `lsoas=${lsoa}&`
+  if (lsoas.length >= 1) {
+    lsoaSlug = "?";
+    for (let lsoa of lsoas) {
+      lsoaSlug += `lsoas=${lsoa}&`;
     }
     lsoaSlug = lsoaSlug.substring(0, lsoaSlug.length - 1);
-  }
-  else{
-    return (
-      {
-        chartType: "line",
-        type: "crime_data",
-        area: "postcode",
-        chart: {
-          lines: [],
-          title: "Crime Rate Over Time",
-          xlabel: "Months",
-          ylabel: "Number of Crimes",
-        },
-      }
-    )
+  } else {
+    return {
+      chartType: "line",
+      type: "crime_data",
+      area: "postcode",
+      chart: {
+        lines: [],
+        title: "Crime Rate Over Time",
+        xlabel: "Months",
+        ylabel: "Number of Crimes",
+      },
+    };
   }
 
   const apiResponse = await api.get(`/crime/crime-rate-total/${lsoaSlug}`);
   const crimeCountData = apiResponse.data;
-  console.log(crimeCountData)
+  console.log(crimeCountData);
 
   let lines: { line_name: string; coords: [Date, number][]; color: string }[] =
     [];
 
-for (const [index, lsoa] of lsoas.entries()) {
-  const coords = crimeCountData[lsoa];
-  if (!coords) continue;
-  lines.push({
-    line_name: lsoa,
-    coords: (coords as [Date, number][]).map(([date, count]) => [new Date(date), count]),
-    color: COLOR[index % COLOR.length]
-  });
-}
+  for (const [index, lsoa] of lsoas.entries()) {
+    const coords = crimeCountData[lsoa];
+    if (!coords) continue;
+    lines.push({
+      line_name: lsoa,
+      coords: (coords as [Date, number][]).map(([date, count]) => [
+        new Date(date),
+        count,
+      ]),
+      color: COLOR[index % COLOR.length],
+    });
+  }
 
   const response: LineChartResponse = {
     chartType: "line",

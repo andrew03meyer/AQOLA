@@ -10,7 +10,6 @@ export const flood_risk_frequency_by_postcode_spider = async (
   postcodes: string[],
 ): Promise<SpiderDiagramResponse> => {
   // When there are no postcodes selected, return an empty object
-  console.log("yeeeeeee")
   if (postcodes.length == 0) {
     return {
       chartType: "spider",
