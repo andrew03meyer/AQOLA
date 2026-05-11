@@ -272,7 +272,7 @@ export const crime_rate_by_lsoa = async (
 ): Promise<BarChartResponse> => {
   // Check if postcodes is empty
   if (lsoas.length == 0) {
-    return {
+    return ({
       chartType: "bar",
       type: "crime",
       area: "lsoa",
@@ -355,7 +355,7 @@ export const crime_rate_by_lsoa_cumulative = async (
 ): Promise<BarChartResponse> => {
   // Check if postcodes is empty
   if (lsoas.length == 0) {
-    return {
+    return ({
       chartType: "bar",
       type: "crime",
       area: "lsoa",
