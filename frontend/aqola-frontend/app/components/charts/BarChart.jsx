@@ -195,13 +195,11 @@ export default function BarChart({
         ref={gx}
         transform={`translate(${marginLeft},${height - marginBottom})`}
         fill="white"
-        stroke="white"
       />
       <g 
         ref={gy} 
         transform={`translate(${marginLeft},${marginTop})`} 
         fill="white" 
-        stroke="white" 
       />
     </svg>
   );
