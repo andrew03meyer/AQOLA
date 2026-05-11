@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from testing.error_logging import error_process
 
 # Creates a single address string from PAON, SAON, and Street.
 def construct_full_address(df):
@@ -37,6 +38,24 @@ def property_transactions_process():
     
     # Standardise postcodes
     df['postcode'] = df['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
+    
+
+    # temporary dataframe of the records with missing postcodes that are to be removed
+    missing_postcodes = df[df['postcode'].isna()]
+
+    # Logging the dropped rows in error log
+    if not missing_postcodes.empty:
+        print(f"Logging {len(missing_postcodes)} transactions with missing postcodes...")
+        for _, row in missing_postcodes.iterrows():
+            errNoPostcode = {
+                # Use transaction_id as the unique identifier for this table
+                "data": [f"Transaction ID: {row['transaction_id']}"], 
+                "where": ["property_transactions_cleansing -> clean_transactions"],
+                "desc": ["Transaction dropped due to missing postcode"],
+                "impact": ["Sale record excluded; cannot be linked to a specific property"],
+                "cause": ["Postcode field is NaN in the raw Land Registry data"]
+            }
+            error_process(errNoPostcode)
     
     # Drop rows with missing postcodes
     df = df.dropna(subset=['postcode'])

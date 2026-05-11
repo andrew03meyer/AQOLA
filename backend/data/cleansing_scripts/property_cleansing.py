@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from testing.error_logging import error_process
 
 # Loads and standardises spatial reference data
 def get_spatial_lookup(postcodes_path):
@@ -99,8 +100,26 @@ def property_process():
         "longitude"
     ]
     
+    # temporary dataframe of the records with missing lsoa that are to be removed
+    dropped_rows = final_properties[final_properties['lsoa_id'].isna()]
+
+    # Logging the dropped rows in error log
+    if not dropped_rows.empty:
+        for _, row in dropped_rows.iterrows():
+            errNoLSOA = {
+                "data": [f"{row['full_address']}, {row['postcode']}"],
+                "where": ["property_cleansing -> build_property_registry"],
+                "desc": ["Property dropped: no spatial LSOA link"],
+                "impact": ["Excluded from database ingestion"],
+                "cause": ["LSOA ID is NaN; spatial join failed to find a polygon match"]
+            }
+            error_process(errNoLSOA)
+    
+
+    
     # Drop rows that didn't match a spatial LSOA for data integrity
     final_output = final_properties.dropna(subset=['lsoa_id'])[final_columns]
+    
     
     export_to_csv(final_output, output_dir)
 
