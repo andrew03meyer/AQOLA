@@ -272,7 +272,7 @@ export const crime_rate_by_lsoa = async (
 ): Promise<BarChartResponse> => {
   // Check if postcodes is empty
   if (lsoas.length == 0) {
-    return {
+    return ({
       chartType: "bar",
       type: "crime",
       area: "lsoa",
@@ -293,8 +293,8 @@ export const crime_rate_by_lsoa = async (
         title: "Crime Rate by LSOA (over all time)",
         xlabel: "Crime Type per LSOA",
         ylabel: "Number of Crimes",
-      },
-    };
+      }
+    });
   }
 
   const response = await api.get("/crime/crime-rate-by-type", {
@@ -355,7 +355,7 @@ export const crime_rate_by_lsoa_cumulative = async (
 ): Promise<BarChartResponse> => {
   // Check if postcodes is empty
   if (lsoas.length == 0) {
-    return {
+    return ({
       chartType: "bar",
       type: "crime",
       area: "lsoa",
