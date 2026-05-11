@@ -1,5 +1,5 @@
 import { useAppStore } from "../../store/AppStore";
-import { fetchChartData, getChartDefinition } from "../../lib/ChartConfig";
+import { fetchChartData } from "../../lib/ChartConfig";
 import { StateDefinition } from "../../store/ChartStateModel";
 import { useEffect, useRef, useState, memo } from "react";
 import { useChartOrchestrator } from "../../lib/hooks/ChartOrchestrator";
