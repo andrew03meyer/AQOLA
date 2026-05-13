@@ -1,7 +1,8 @@
 import { Rnd } from 'react-rnd';
-import { useState, ReactNode, memo } from 'react';
-import { useAppStore } from '../store/AppStore';
-import { find } from 'lodash';
+import { ReactNode } from 'react';
+import { useAppStore } from '../store/AppStore'
+import InformationIcon from "./InformationIcon"
+import { getChartDefinition } from '../lib/ChartConfig';
 
 interface WindowProps {
   children: ReactNode
@@ -28,11 +29,13 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
       bounds="parent"
       style={{ zIndex: zIndex }}
       className="rnd-window"
+      dragHandleClassName="window-titlebar"
       onMouseDown={() => focusChart && focusChart(chartName)} // For focusing element on click
       onDragStop={(_, data) => updateChartLocation && updateChartLocation(chartName, [data.x, data.y])} // Update chart location on drag end
     >
       {/* Top bar of the window, includes close button */}
       <div className="window-titlebar">
+        <InformationIcon content={getChartDefinition(chartName)}/>
         <button onClick={() => minimiseChart && minimiseChart(chartName, [x, y])}> - </button>
         <button onClick={() => removeOpenChart(chartName)}> ✕ </button>
       </div>
