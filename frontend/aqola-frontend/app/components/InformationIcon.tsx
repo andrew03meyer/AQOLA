@@ -7,49 +7,28 @@ interface InformationalIconProps {
 }
 
 const InformationalIcon = ({ content }: InformationalIconProps) => {
-    const [isHovered, setIsHovered] = useState(false);
-    const [isLocked, setIsLocked] = useState(false);
-
-    const handleClick = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        setIsLocked(prev => !prev);
-    };
+    const [boxHovered, setBoxHovered] = useState(false);
+    const [iconHovered, setIconHovered] = useState(false);
 
     return (
-        <div
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            onClick={handleClick}
-        >
+        <>
             <BadgeInfo
                 data-tooltip-id={content.id + "info-tooltip"}
+                onMouseOver={() => setIconHovered(true)}
+                onMouseLeave={() => setIconHovered(false)}
             />
             <Tooltip
                 id={content.id + "info-tooltip"}
                 className="tooltip"
-                style={{ maxWidth: "30%" }}
-                isOpen={isHovered || isLocked}
-                render={() => (
-                    <div
-                        onMouseEnter={() => setIsHovered(true)}
-                        onMouseLeave={() => setIsHovered(false)}
-                        onMouseDown={(e) => e.stopPropagation()}
-                    >
-                        <p>{content.blurb}</p>
-                        {content.docLinks.length > 0 && (
-                            <>
-                                <p>For more information, please see:</p>
-                                {content.docLinks.map((item: Record<string, string>) =>
-                                    Object.entries(item).map(([label, href]) => (
-                                        <a key={href} href={href}>{label}</a>
-                                    ))
-                                )}
-                            </>
-                        )}
-                    </div>
-                )}
-            />
-        </div>
+                style={{ maxWidth: "50%" }}
+                delayHide={500}
+            >
+                <div>
+                    <div>{content.blurb}</div>
+                    <div style={{padding: "5px", fontStyle:"italic", fontSize:"10px"}}>For more information, please see documentation</div>
+                </div>
+            </Tooltip>
+        </>
     );
 };
 
