@@ -34,39 +34,39 @@ body {
 
 /* ─── Typography ───────────────────────────────────────────────────── */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+ h1,
+ h2,
+ h3,
+ h4,
+ h5,
+ h6 {
   color: cyan;
   padding: 10px;
 }
 
-p,
-li,
-ul,
-ol,
-span,
-div,
-td {
+ p,
+ li,
+ ul,
+ ol,
+ span,
+ div,
+ td {
   color: white;
   padding: 5px;
 }
 
-a {
+ a {
   color: white;
   text-decoration: none;
   font-style: italic;
 }
 
-a:hover {
+ a:hover {
   text-decoration: underline;
   color: red;
 }
 
-h1 {
+ h1 {
   font-size: 24px;
   font-weight: bold;
   margin-top: 16px;
@@ -75,7 +75,7 @@ h1 {
   text-align: center;
 }
 
-h2 {
+ h2 {
   font-size: 20px;
   font-weight: bold;
   margin-top: 12px;
@@ -83,7 +83,7 @@ h2 {
   padding-bottom: 0;
 }
 
-h3 {
+ h3 {
   font-size: 18px;
   font-weight: bold;
   margin-top: 8px;
@@ -124,6 +124,40 @@ tr {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.popup .leaflet-popup-content-wrapper {
+  background-color: rgba(15, 30, 40, 0.9);
+}
+
+.popup .leaflet-popup-tip {
+  background-color: rgba(15, 30, 40, 0.9);
+  /* makes the arrow match */
+}
+
+.popup .leaflet-popup-close-button {
+  margin: 10px;
+}
+
+.leaflet-control-zoom-in span {
+  color: white;
+  background-color: rgba(15, 30, 40, 0.55);
+}
+
+.leaflet-control-zoom-out span {
+  color: white;
+  background-color: rgba(15, 30, 40, 0.55);
+}
+
+.leaflet-control-zoom-out:hover span {
+  color: cyan;
+}
+
+.leaflet-control-zoom-in:hover span {
+  color: cyan;
+}
+.leaflet-control-zoom {
+  border: none;
 }
 
 /* ─── Top navigation overlay ───────────────────────────────────────── */
@@ -252,7 +286,7 @@ tr {
   cursor: grab;
 }
 
-.window-titlebar button {
+.button {
   background: none;
   width: 28px;
   height: 28px;
@@ -265,7 +299,7 @@ tr {
   padding: 0 4px;
 }
 
-.window-titlebar button:hover {
+.button:hover {
   color: cyan;
   font-weight: bold;
 }
@@ -377,6 +411,22 @@ tr {
   flex-direction: row;
   align-items: center;
   text-align: center;
+  justify-content: space-between;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  /* align-items: center;
+  text-align: center; */
+  justify-content: space-between;
+}
+
+.flex-col-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .contents-bar {
@@ -420,6 +470,10 @@ tr {
   align-items: center;
   text-align: center;
   /* margin: 20px; */
+}
+
+.tag a:hover {
+  color: cyan;
 }
 
 .warning {

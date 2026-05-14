@@ -33,8 +33,8 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
     >
       {/* Top bar of the window, includes close button */}
       <div className="window-titlebar">
-        <button onClick={() => minimiseChart && minimiseChart(chartName, [x, y])}> - </button>
-        <button onClick={() => removeOpenChart(chartName)}> ✕ </button>
+        <button className="button" onClick={() => minimiseChart && minimiseChart(chartName, [x, y])}> - </button>
+        <button className="button" onClick={() => removeOpenChart(chartName)}> ✕ </button>
       </div>
 
       {/* Window contents */}
