@@ -44,6 +44,8 @@ export default function DataSelector() {
         <div id="invalid-file-format" style={{ color: "red", fontSize: "15px" , display: "none", fontWeight: "bold"}}>
           Invalid file format
         </div>
+        {/* Documentation Button */}
+        <div className="tag"><a href="/docs">Documentation</a></div>
       </div>
     </div>
   );
