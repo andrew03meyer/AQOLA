@@ -6,15 +6,7 @@
     "dataset": "crime",
     "apiCall": "crime_rate_by_type_and_area",
     "icon": "fi fi-rs-chart-line-up",
-    "blurb": "A line chart showing the count of crime for each crime type. From 2010-2025",
-    "docLinks": [
-      {
-        "Line Charts": "/docs#charts"
-      },
-      {
-        "Data": "/docs#data"
-      }
-    ]
+    "blurb": "A line chart showing the total count of crime for each crime type, in all the selected areas. Data shown is from 2010-2025"
   },
   {
     "id": "crime_over_time",
@@ -23,8 +15,7 @@
     "dataset": "crime",
     "apiCall": "crime_rate_over_time",
     "icon": "fi fi-rs-chart-line-up",
-    "blurb": "A line chart showing the count of all crime. From 2010-2025",
-    "docLinks": []
+    "blurb": "A line chart showing the count of all crime, where each line represents a selected area. Data shown is from 2010-2025"
   },
   {
     "id": "crime_rate_by_lsoa",
@@ -33,8 +24,7 @@
     "dataset": "crime",
     "apiCall": "crime_rate_by_lsoa",
     "icon": "fi fi-rs-stats",
-    "blurb": "A bar chart showing the count of all crime, separated into different areas. From 2010-2025",
-    "docLinks": []
+    "blurb": "A bar chart showing the count of all crime, separated into different crime types. Each group of bars represents an area. From 2010-2025"
   },
   {
     "id": "crime_rate_by_lsoa_cumulative",
@@ -43,8 +33,7 @@
     "dataset": "crime",
     "apiCall": "crime_rate_by_lsoa_cumulative",
     "icon": "fi fi-rs-stats",
-    "blurb": "TO DO",
-    "docLinks": []
+    "blurb": "A count of crime in the different crime types, for all selected areas. Data is for over all time"
   },
   {
     "id": "school_ofsted_frequency",
@@ -53,8 +42,7 @@
     "dataset": "schools",
     "apiCall": "ofsted_frequency_by_band",
     "icon": "fi fi-rs-stats",
-    "blurb": "TO DO",
-    "docLinks": []
+    "blurb": "TO DO"
   },
   {
     "id": "school_ofsted_frequency_yearly",
@@ -63,8 +51,7 @@
     "dataset": "schools",
     "apiCall": "ofsted_frequency_yearly",
     "icon": "fi fi-rs-stats",
-    "blurb": "TO DO",
-    "docLinks": []
+    "blurb": "TO DO"
   },
   {
     "id": "school_gender_demographics",
@@ -73,8 +60,7 @@
     "dataset": "schools",
     "apiCall": "school_gender_demographics_by_phase",
     "icon": "fi fi-rs-stats",
-    "blurb": "TO DO",
-    "docLinks": []
+    "blurb": "TO DO"
   },
   {
     "id": "individual_school_ofsted_timeline",
@@ -83,8 +69,7 @@
     "dataset": "schools",
     "apiCall": "get_school_ofsted_history",
     "icon": "fi fi-rs-chart-line-up",
-    "blurb": "TO DO",
-    "docLinks": []
+    "blurb": "TO DO"
   },
   {
     "id": "flood_risk_frequency",
@@ -93,8 +78,7 @@
     "dataset": "flood",
     "apiCall": "flood_risk_frequency_by_postcode",
     "icon": "fi fi-rs-stats",
-    "blurb": "TO DO",
-    "docLinks": []
+    "blurb": "TO DO"
   },
   {
     "id": "flood_risk_frequency_spider",
@@ -103,7 +87,6 @@
     "dataset": "flood",
     "apiCall": "flood_risk_frequency_by_postcode_spider",
     "icon": "fi fi-rs-spider-web",
-    "blurb": "TO DO",
-    "docLinks": []
+    "blurb": "TO DO"
   }
 ]

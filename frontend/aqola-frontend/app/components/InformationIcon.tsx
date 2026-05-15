@@ -29,7 +29,11 @@ const InformationalIcon = ({ content }: InformationalIconProps) => {
             <Tooltip
                 id={content.id + "-info-tooltip"}
                 className="tooltip"
-                style={{ maxWidth: "50%", borderRadius:"10px"}}
+                style={{ 
+                    maxWidth: "50%", 
+                    borderRadius:"10px",
+                    zIndex: 4000
+                }}
                 delayHide={500}
                 clickable={true}
                 isOpen={isOpen}
