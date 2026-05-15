@@ -37,7 +37,7 @@ const Tutorial = () => {
                 <button className="button" style={{alignSelf:"flex-end"}} onMouseDown={() => setShowWelcome(false)}> ✕ </button>
                 <img src="koala.png" style={{borderRadius: "20px", width:"50px", height:"50px"}} />
                 <div>Welcome to AQOLA. The tool designed to help you with all your locational data needs!</div>
-                <div>There is a quick tutorial to show you round. If you have any questions, please go see our <a href="/docs">documentation</a></div>
+                <div>There is a quick tutorial to show you round. If you have any questions, please go see our <a href="/docs" style={{color:"teal"}}>documentation</a></div>
             </Rnd>
 
             {/* Rendering all the informational icons */}
