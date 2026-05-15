@@ -101,6 +101,8 @@ CREATE TABLE IF NOT EXISTS kent_property_averages (
      avg_price INT NOT NULL,
      avg_price_sqm INT,
      count INT
+
+     PRIMARY KEY (property_type, period)
 );
 
 
