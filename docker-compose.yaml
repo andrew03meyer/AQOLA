@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.postgis
-    platform: linux/arm64/v8
+    # platform: linux/arm64/v8
     container_name: aqola-postgres
     environment:
       POSTGRES_DB: aqola

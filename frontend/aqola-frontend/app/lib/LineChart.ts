@@ -8,7 +8,7 @@ import { COLOR } from "./constants"
 // method naming convention <area>_<xlabel>_<ylabel>_<lines>
 
 export const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
 });
 
 // Gets crime rate for:
