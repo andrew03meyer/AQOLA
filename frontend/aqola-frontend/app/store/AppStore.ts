@@ -8,7 +8,9 @@ type AppStore = {
   selectedAreas: string[];
   selectedDataset: string;
   currentZoom: number;
+  tutorialDone: boolean;  
 
+  setTutorialDone: (val:boolean) => void;
   toggleArea: (area: string) => void;
   clearAreas: () => void;
   setDataset: (dataset: string) => void;
@@ -37,7 +39,11 @@ const useAppStore = create<AppStore>((set, get) => ({
   selectedAreas: [],
   selectedDataset: "crime",
   currentZoom: 7, // Decently zoomed out
+  tutorialDone: false,
 
+  setTutorialDone: (val) => set({ tutorialDone: val }),
+
+  
   // Toggles an area in the selectedAreas array
   toggleArea: (area) =>
     set((state) => ({

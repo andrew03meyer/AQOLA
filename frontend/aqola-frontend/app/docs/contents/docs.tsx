@@ -1,14 +1,21 @@
+"use client";
+
 import ContentsBar from "./ContentsBar";
 import { OctagonAlert } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+
 
 const Content = () => {
+    const router = useRouter()
+
     return (
         <div className="docs-page">
 
             {/* ── Heading — natural height, never overlaps ── */}
             <div className="heading">
                 <div className="flex-row-centered">
-                    <img src="/koala.png" style={{width: "70px", borderRadius:"20px"}} />
+                    <img src="/koala.png" style={{width: "70px", borderRadius:"20px"}} onClick={() => router.push("/")} />
                     <div className="tag" style={{margin:"20px"}}>Documentation</div>
                 </div>
             </div>
@@ -46,24 +53,24 @@ const Content = () => {
                                 . This should allow you to go between all our available datsets
                             </li>
                             <li>
-                                <b className="highlight">To open our graphs</b>, please look at the bottom of your screen, 
+                                <b className="highlight">To open our graphs</b>, look at the bottom of your screen, 
                                 where you'll see a bar showing all the available charts for that 
                                 dataset. On hover, you should be able to see the name of the 
                                 chart, which should hopefully give you a good idea of what it's 
                                 for.
                             </li>
                             <li>
-                                <b className="highlight">To minimise/close charts</b>, click the "-"/"x" in the top right corner of the 
-                                chart pop-up. To reopen them. Please click on the graph name, on the right 
-                                hand side of the screen. You can also close them from there, using the "x" 
+                                <b className="highlight">To minimise/close charts</b>, click the -/x in the top right corner of the 
+                                chart pop-up. To reopen them, click on the graph name, on the right 
+                                hand side of the screen. You can also close them from there, using the X icon.
                                 button
                             </li>
                             <li>
-                                <b className="highlight">To resize graphs</b>, please hover over the bottom right corner of graphs,
+                                <b className="highlight">To resize graphs</b>, hover over the bottom right corner of graphs,
                                 left click and drag.
                             </li>
                             <li>
-                                <b className="highlight">To save your work</b>, please click the download icon in the top left.
+                                <b className="highlight">To save your work</b>, click the download icon in the top left.
                                 This will save a local copy of the app state to your PC. You can then 
                                 reload this using the upload button. Please note that the download will 
                                 not show you graphs in any other software, you have to reload it to our 
@@ -203,7 +210,7 @@ const Content = () => {
                         </div>
                         <div>
                             Charts will only update when they are selected (or focused). To 
-                            focus a chart, please click on it. The screen should update to 
+                            focus a chart, click on it. The screen should update to 
                             show any areas that graph has already, and then you can add/remove
                             what you want.
                         </div>

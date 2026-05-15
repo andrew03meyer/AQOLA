@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { Rnd } from "react-rnd"
+import { useAppStore } from "../store/AppStore"
 
 const content = [
     "Click here to change dataset",
@@ -12,8 +13,9 @@ const Tutorial = () => {
     const [location, setLocation] = useState<number[]>([])
     const [ready, setReady] = useState(false)
     const [stage, setStage] = useState(0)
-    const [finished, setFinished] = useState(false)
     const [showWelcome, setShowWelcome] = useState(true)
+    const tutorialDone = useAppStore((state) => state.tutorialDone);
+    const setTutorialDone = useAppStore((state) => state.setTutorialDone)
 
     useEffect(() => {
         const w = screen.width
@@ -27,7 +29,7 @@ const Tutorial = () => {
         setReady(true)
     }, [])
 
-    if (!ready || finished) return null
+    if (!ready || tutorialDone) return null
 
     return (
         <>
@@ -66,17 +68,25 @@ const Tutorial = () => {
                     <div className="docs">{val}</div>
 
                     <div className="flex-row" style={{ background: "rgba(15, 30, 40, 0.55)" }}>
-                        <button className="button" onClick={() => setStage(prev => prev - 1)}
-                            style={{ alignSelf: "flex-start", fontStyle: "italic", width: "25%", textAlign: "right", fontSize: "16px" }}>
-                            Prev
-                        </button>
+                        {index !== 0 && (
+                            <button className="button" onClick={() => setStage(prev => prev - 1)}
+                                style={{ 
+                                    alignSelf: "flex-start", 
+                                    fontStyle: "italic", 
+                                    width: "25%", 
+                                    textAlign: "right", 
+                                    fontSize: "16px",
+                                }}>
+                                Prev
+                            </button>
+                        )}
                         <button className="button"
-                            onClick={() => index === content.length - 1 ? setFinished(true) : setStage(prev => prev + 1)}
+                            onClick={() => index === content.length - 1 ? setTutorialDone(true) : setStage(prev => prev + 1)}
                             style={{ alignSelf: "flex-start", fontStyle: "italic", width: "25%", textAlign: "left", fontSize: "16px" }}>
-                            {stage === content.length - 1 ? "Finished" : "Next"}
+                            {stage === content.length - 1 ? "Finish" : "Next"}
                         </button>
                         {stage !== content.length - 1 &&
-                            <button className="button" onClick={() => setFinished(true)}
+                            <button className="button" onClick={() => setTutorialDone(true)}
                                 style={{ alignSelf: "flex-end", marginRight: "12px", fontStyle: "italic", width: "50%", textAlign: "right", fontSize: "16px" }}>
                                 Skip
                             </button>
