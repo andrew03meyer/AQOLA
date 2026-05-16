@@ -3,6 +3,7 @@ import { Rnd } from "react-rnd"
 import { useAppStore } from "../store/AppStore"
 
 const content = [
+    "For mouse users: scroll/drag to interact with the map (for touchscreen users pinch/drag for the same effect).", 
     "Click here to change dataset",
     "Use this bar to open up new charts. Hover the icon to get more information about that graph",
     "Use these buttons to save your work and come back later",
@@ -21,6 +22,7 @@ const Tutorial = () => {
         const w = screen.width
         const h = screen.height
         setLocations([
+            [w * 0.25, h * 0.5],
             [w * 0.015, h * 0.06],
             [w * 0.25,  h * 0.6],
             [w * 0.1,   h * 0.06],
@@ -29,13 +31,24 @@ const Tutorial = () => {
         setReady(true)
     }, [])
 
+    useEffect(() => {
+        console.log("Tutorial done: " + tutorialDone)
+    }, [tutorialDone])
+
     if (!ready || tutorialDone) return null
 
     return (
         <>
             <Rnd
                 default={{ x: location[0], y: location[1], width: "auto", height: "auto" }}
-                style={{ visibility: showWelcome ? "visible" : "hidden", alignItems: "center", alignContent: "center", display: "flex", flexDirection: "column" }}
+                style={{ 
+                    visibility: showWelcome ? "visible" : "hidden", 
+                    alignItems: "center", 
+                    alignContent: "center", 
+                    display: "flex",
+                    flexDirection: "column",
+                    zIndex: 3000
+                 }}
                 className="rnd-window"
             >
                 <button className="button" style={{ alignSelf: "flex-end" }} onMouseDown={() => setShowWelcome(false)}>✕</button>

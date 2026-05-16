@@ -5,10 +5,8 @@ import { OctagonAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 
-
 const Content = () => {
     const router = useRouter()
-
     return (
         <div className="docs-page">
 
@@ -43,14 +41,14 @@ const Content = () => {
                         <h2 id="getting-started">Getting Started</h2>
                         <ul style={{listStyle:"disc"}}>
                             <li>
-                                <b className="highlight">Interacting with the map</b> is much like Google/Apple maps. Pinch 
+                                <b className="highlight">Interacting with the map</b> is much like Google/Apple maps. Pinch, scroll, 
                                  or double tap to zoom, click and drag to move around, click to 
                                  select locations.
                             </li>
                             <li>
-                                <b className="highlight">To change dataset</b> (i.e. looking for Flood risk), go 
+                                <b className="highlight">To change dataset</b> (i.e. looking for flood risk), go 
                                 to the top left corner of the screen, and click the dropdown
-                                . This should allow you to go between all our available datsets
+                                . This should allow you to go between all our available datasets.
                             </li>
                             <li>
                                 <b className="highlight">To open our graphs</b>, look at the bottom of your screen, 
@@ -76,6 +74,10 @@ const Content = () => {
                                 not show you graphs in any other software, you have to reload it to our 
                                 website.
                             </li>
+                            <li>
+                                <b className="highlight">To get more information on charts</b>, open the chart and click/hover
+                                over the "i" icon, located next to the minimise button in the top right.
+                            </li>
                         </ul>
                     </div>
 
@@ -85,16 +87,21 @@ const Content = () => {
                         <div>
                             <div className="tag"><a href="https://www.ons.gov.uk/methodology/geography/ukgeographies/statisticalgeographies">LSOAS</a> | Lower Layer Super Output Areas</div>
                             <div style={{fontSize:"10px"}}>Typically contains 1,000–3,000 residents or 400–1,200 households</div>
+                            <div className="tag">Polygons</div>
+                            <div style={{fontSize:"10px"}}>The shapes drawn for postcodes and LSOAs on the map. Shows the physical area on the map</div>
                         </div>
                     </div>
 
                     <div className="contents-items">
                         {/* -------- API Docs ---------- */}
-                        <h3>API Documentation</h3>
-                        <div>
-                            <a href="http://aqola.andrewmeyer.co.uk:8000/docs">
-                                API Documentation
+                        <h2>API Documentation</h2>
+                        <div className="flex-col-centered">
+                            <a href="http://aqola.andrewmeyer.co.uk:8000/docs" className="highlight">
+                                Found here
                             </a>
+                            This will give you information on what each method in our API does. These are accessible to you,
+                            so if you want to use the data for your own goals, feel free!
+                            <div style={{fontSize: "10px"}}>Generally speaking the route is /[dataset]/[method]. Each method has parameters. Usually postcodes/lsoas and sometimes some method specific ones like crime type</div>
                         </div>
                     </div>
 
