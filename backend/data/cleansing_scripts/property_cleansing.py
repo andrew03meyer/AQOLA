@@ -30,7 +30,7 @@ def load_raw_property_data(input_path):
 # Loads target identity and structural area metrics from the raw energy price certificate file
 def load_epc_lookup(epc_path):
     if not epc_path.exists():
-        print(f"Warning: EPC dataset not found at {epc_path}")
+        print(f"Warning: energy price certificate dataset not found at {epc_path}")
         return pd.DataFrame()
     
     df = pd.read_csv(epc_path, usecols=['address', 'uprn', 'total_floor_area'])
@@ -86,7 +86,6 @@ def property_process():
     spatial_file = base_dir / "postcodes" / "postcodes.csv"
     output_dir = base_dir / "property_data"
     
-    print("Loading data files...")
     df_raw = load_raw_property_data(input_file)
     df_spatial = get_spatial_lookup(spatial_file)
     df_epc = load_epc_lookup(epc_file)
@@ -95,7 +94,6 @@ def property_process():
         print("Error: Missing core raw datasets. Execution halted.")
         return
 
-    print("Building registry and joining datasets...")
     processed_registry = build_property_registry(df_raw, df_spatial, df_epc)
     
     # # Log records missing an EPC reference mapping
@@ -145,7 +143,7 @@ def property_process():
     
     final_output = valid_registry[final_columns]
     export_to_csv(final_output, output_dir)
-    print(f"Successfully processed and exported {len(final_output)} unique properties!")
+    print(f"Successfully processed and exported {len(final_output)} unique properties")
 
 if __name__ == "__main__":
     property_process()

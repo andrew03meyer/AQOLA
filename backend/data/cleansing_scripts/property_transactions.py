@@ -39,7 +39,6 @@ def property_transactions_process():
         print("Error: Cleaned property master registry file not found. Please run property_cleansing.py first.")
         return
 
-    print("Loading master property registry for UPRN mapping...")
     df_prop_master = pd.read_csv(cleaned_property_registry, usecols=['property_id', 'full_address', 'postcode', 'square_meters'])
     
     # Prepare the lookup columns using a combination of standardised address and postcode
@@ -48,7 +47,6 @@ def property_transactions_process():
     
     df_lookup = df_prop_master[['clean_prop_addr', 'postcode', 'property_id', 'square_meters']].drop_duplicates()
 
-    print("Loading raw transaction data...")
     df_trans = pd.read_csv(input_file)
     df_trans.columns = [c.strip().lower() for c in df_trans.columns]
     df_trans['postcode'] = df_trans['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
@@ -75,7 +73,6 @@ def property_transactions_process():
     df_trans = construct_full_address(df_trans)
     df_trans['clean_trans_addr'] = standardise_address_key(df_trans['full_address'])
 
-    print("Matching transactions against master property records...")
     # Use a left join to ensure transactions without an EPC UPRN link are NOT dropped
     df_merged = df_trans.merge(
         df_lookup, 
@@ -84,7 +81,6 @@ def property_transactions_process():
         how='left'
     )
 
-    print("Calculating price per square metre metrics...")
     
     def calculate_price_per_sqm(row):
         if pd.notnull(row['square_meters']) and row['square_meters'] > 0:
@@ -114,7 +110,7 @@ def property_transactions_process():
     
     os.makedirs(output_dir, exist_ok=True)
     export_to_csv(final_output, output_dir)
-    print(f"Successfully processed and exported {len(final_output)} property transactions!")
+    print(f"Successfully processed and exported {len(final_output)} property transactions")
 
 if __name__ == "__main__":
     property_transactions_process()
