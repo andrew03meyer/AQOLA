@@ -2,7 +2,11 @@ import pandas as pd
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from testing.error_logging import error_process
+# from testing.error_logging import error_process
+
+# standardises the full address
+def standardise_address_key(address_series):
+    return address_series.astype(str).str.lower().str.replace(r'[^a-z0-9]', '', regex=True)
 
 # Loads and standardises spatial reference data
 def get_spatial_lookup(postcodes_path):
@@ -10,22 +14,33 @@ def get_spatial_lookup(postcodes_path):
         print(f"Warning: {postcodes_path.name} not found.")
         return pd.DataFrame()
     
-    spatial_cols = ['postcode', 'lsoa_id', 'latitude', 'longitude', 'centroid']
+    spatial_cols = ['postcode', 'lsoa_id', 'latitude', 'longitude']
     df = pd.read_csv(postcodes_path, usecols=spatial_cols)
-    
     # Standardise postcodes
     df['postcode'] = df['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
     return df
-
 # Loads raw Kent CSV and standardises headers
 def load_raw_property_data(input_path):
     if not input_path.exists():
         return pd.DataFrame()
-    
     df = pd.read_csv(input_path)
-    # Standardise headers to lowercase and strip whitespace
     df.columns = [c.strip().lower() for c in df.columns]
     return df
+
+# Loads target identity and structural area metrics from the raw energy price certificate file
+def load_epc_lookup(epc_path):
+    if not epc_path.exists():
+        print(f"Warning: EPC dataset not found at {epc_path}")
+        return pd.DataFrame()
+    
+    df = pd.read_csv(epc_path, usecols=['address', 'uprn', 'total_floor_area'])
+    df = df.dropna(subset=['uprn', 'total_floor_area'])
+    
+    df['clean_epc_addr'] = standardise_address_key(df['address'])
+    df['uprn'] = df['uprn'].astype(str).str.split('.').str[0].str.strip()
+    df['square_meters'] = df['total_floor_area'].astype(int)
+    
+    return df[['clean_epc_addr', 'uprn', 'square_meters']]
 
 # Creates a single address string from PAON, SAON, and Street.
 def construct_full_address(df):
@@ -39,32 +54,24 @@ def construct_full_address(df):
 
     df['full_address'] = df.apply(format_row, axis=1)
     return df
-
 # Handles deduplication, address creation, and spatial data
-def build_property_registry(df_kent, df_spatial):
-    
-    # Define identity columns for distinct properties
-    identity_cols = ['paon', 'saon', 'street', 'postcode', 'type', 'old/new']
+def build_property_registry(df_kent, df_spatial, df_epc):
+    identity_cols = ['paon', 'saon', 'street', 'postcode', 'type']
     properties = df_kent[identity_cols].drop_duplicates().copy()
-    
-    # Standardise property postcodes
     properties['postcode'] = properties['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
-
-    # Apply address construction
     properties = construct_full_address(properties)
-
-    # Merge spatial data
+    
+    properties['clean_prop_addr'] = standardise_address_key(properties['full_address'])
+    
+    # Match against EPC dataset for uprn and floor area metrics
+    properties = properties.merge(df_epc, left_on='clean_prop_addr', right_on='clean_epc_addr', how='left')
+    
+    # Match against spatial lookup to get LSOA, latitude and longitude
     if not df_spatial.empty:
         properties = properties.merge(df_spatial, on='postcode', how='left')
-    
-    # Rename for SQL Schema consistency
-    properties = properties.rename(columns={
-        'type': 'property_type',
-        'old/new': 'property_age'
-    })
-    
+        
+    properties = properties.rename(columns={'type': 'property_type', 'uprn': 'property_id'})
     return properties
-
 # Saves the final dataframe to output path
 def export_to_csv(data, output_folder):
     output_path = output_folder / "property_data.csv"
@@ -75,53 +82,70 @@ def property_process():
     base_dir = Path(os.getenv("DATA_PATH_DEV"))
     
     input_file = base_dir / "property_data" / "raw" / "kent_property_data.csv"
+    epc_file = base_dir / "property_data" / "raw" / "kent_domestic_energy_performance_certificate.csv"
     spatial_file = base_dir / "postcodes" / "postcodes.csv"
     output_dir = base_dir / "property_data"
     
-    
+    print("Loading data files...")
     df_raw = load_raw_property_data(input_file)
-    if df_raw.empty:
-        print("Error: No raw data found.")
+    df_spatial = get_spatial_lookup(spatial_file)
+    df_epc = load_epc_lookup(epc_file)
+    
+    if df_raw.empty or df_epc.empty:
+        print("Error: Missing core raw datasets. Execution halted.")
         return
 
-    df_spatial = get_spatial_lookup(spatial_file)
+    print("Building registry and joining datasets...")
+    processed_registry = build_property_registry(df_raw, df_spatial, df_epc)
     
-
-    final_properties = build_property_registry(df_raw, df_spatial)
+    # # Log records missing an EPC reference mapping
+    # dropped_epc = processed_registry[processed_registry['property_id'].isna()]
+    # if not dropped_epc.empty:
+    #     print(f"Logging {len(dropped_epc)} unmatched EPC records...")
+    #     for _, row in dropped_epc.iterrows():
+    #         error_process({
+    #             "data": [f"{row['full_address']}, {row['postcode']}"],
+    #             "where": ["property_cleansing -> build_property_registry"],
+    #             "desc": ["Property dropped: no matching uprn found in EPC dataset"],
+    #             "impact": ["Excluded from database ingestion; no structural square meters metric available"],
+    #             "cause": ["Address string matching failed against government EPC registry references"]
+    #         })
+            
+    valid_registry = processed_registry.dropna(subset=['property_id']).copy()
+    
+    # # Log records missing an LSOA link
+    # dropped_lsoa = valid_registry[valid_registry['lsoa_id'].isna()]
+    # if not dropped_lsoa.empty:
+    #     print(f"Logging {len(dropped_lsoa)} unmatched spatial records...")
+    #     for _, row in dropped_lsoa.iterrows():
+    #         error_process({
+    #             "data": [f"UPRN: {row['property_id']}, Address: {row['full_address']}"],
+    #             "where": ["property_cleansing -> spatial_validation"],
+    #             "desc": ["Property dropped: no spatial lsoa link"],
+    #             "impact": ["Excluded from database ingestion due to missing spatial coordinates boundary contexts"],
+    #             "cause": ["Postcode reference could not be resolved against master postcodes lookup schema"]
+    #         })
+            
+    # Drop rows missing structural data or boundary contexts
+    valid_registry = valid_registry.dropna(subset=['lsoa_id', 'latitude', 'longitude'])
+    
+    # Enforce database uniqueness constraints using UPRN
+    valid_registry = valid_registry.drop_duplicates(subset=['property_id'])
     
     final_columns = [
+        "property_id",
         "full_address",
         "postcode",
         "lsoa_id",
-        "property_type", 
-        "property_age",
-        "centroid",
+        "property_type",
+        "square_meters",
         "latitude",
         "longitude"
     ]
     
-    # temporary dataframe of the records with missing lsoa that are to be removed
-    dropped_rows = final_properties[final_properties['lsoa_id'].isna()]
-
-    # Logging the dropped rows in error log
-    if not dropped_rows.empty:
-        for _, row in dropped_rows.iterrows():
-            errNoLSOA = {
-                "data": [f"{row['full_address']}, {row['postcode']}"],
-                "where": ["property_cleansing -> build_property_registry"],
-                "desc": ["Property dropped: no spatial LSOA link"],
-                "impact": ["Excluded from database ingestion"],
-                "cause": ["LSOA ID is NaN; spatial join failed to find a polygon match"]
-            }
-            error_process(errNoLSOA)
-    
-
-    
-    # Drop rows that didn't match a spatial LSOA for data integrity
-    final_output = final_properties.dropna(subset=['lsoa_id'])[final_columns]
-    
-    
+    final_output = valid_registry[final_columns]
     export_to_csv(final_output, output_dir)
+    print(f"Successfully processed and exported {len(final_output)} unique properties!")
 
 if __name__ == "__main__":
     property_process()
