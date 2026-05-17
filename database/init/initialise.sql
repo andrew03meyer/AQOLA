@@ -87,12 +87,14 @@ CREATE TABLE IF NOT EXISTS property_data (
 );
 
 CREATE TABLE IF NOT EXISTS property_transactions (
-    transaction_id VARCHAR(45) PRIMARY KEY,
+    transaction_id VARCHAR(45),
     property_id VARCHAR(15) REFERENCES property_data(property_id) ON DELETE CASCADE,
     is_new_build CHAR(1) NOT NULL,     -- Y = a newly built property, N = an established residential building
     sale_date DATE NOT NULL,
     price INT NOT NULL,
-    price_per_sqm INT
+    price_per_sqm INT,
+
+    PRIMARY KEY (transaction_id, sale_date)
 );
 
 CREATE TABLE IF NOT EXISTS kent_property_averages (
