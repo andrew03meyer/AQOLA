@@ -21,6 +21,7 @@ def construct_full_address(df):
 
     df['full_address'] = df.apply(format_row, axis=1)
     return df
+
 # Saves the final dataframe to output path
 def export_to_csv(data, output_folder):
     output_path = output_folder / "property_transactions.csv"
@@ -72,13 +73,17 @@ def property_transactions_process():
     # Build full address for the mapping join token
     df_trans = construct_full_address(df_trans)
     df_trans['clean_trans_addr'] = standardise_address_key(df_trans['full_address'])
+    
+    df_lookup_distinct = df_lookup.drop_duplicates(
+    subset=['clean_prop_addr', 'postcode'], 
+    keep='first'
+    )
 
-    # Use a left join to ensure transactions without an EPC UPRN link are NOT dropped
     df_merged = df_trans.merge(
-        df_lookup, 
-        left_on=['clean_trans_addr', 'postcode'], 
-        right_on=['clean_prop_addr', 'postcode'], 
-        how='left'
+    df_lookup_distinct, 
+    left_on=['clean_trans_addr', 'postcode'], 
+    right_on=['clean_prop_addr', 'postcode'], 
+    how='left'
     )
 
     
@@ -86,14 +91,29 @@ def property_transactions_process():
         if pd.notnull(row['square_meters']) and row['square_meters'] > 0:
             return int(round(row['price'] / row['square_meters']))
         return np.nan
+    
+    def clean_property_id(val):
+        if pd.isna(val) or val == '' or str(val).strip().lower() == 'nan':
+            return None
+        try:
+            # This strips out '.0' from floats and keeps it as a clean string integer
+            return str(int(float(val)))
+        except (ValueError, TypeError):
+            # Fallback just in case there's an unexpected text string in the column
+            return str(val)
 
     df_merged['price_per_sqm'] = df_merged.apply(calculate_price_per_sqm, axis=1)
-
     df_merged['is_new_build'] = df_merged['old/new'].str.strip().str.upper()
     df_merged['sale_date'] = pd.to_datetime(df_merged['date']).dt.strftime('%Y-%m-%d')
 
-    df_merged['property_id'] = df_merged['property_id'].astype(str).str.split('.').str[0]
-    df_merged.loc[df_merged['property_id'] == 'nan', 'property_id'] = np.nan
+    df_merged['property_id'] = df_merged['property_id'].apply(clean_property_id)
+    
+    # Set any IDs not present in property_data to None
+    valid_property_ids = set(df_prop_master['property_id'].astype(str))
+    df_merged['property_id'] = df_merged['property_id'].apply(
+        lambda x: x if (x is None or str(x) in valid_property_ids) else None
+    )
+    
 
     final_columns = [
         "transaction_id", 

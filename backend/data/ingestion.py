@@ -21,7 +21,17 @@ def ingest_table(filePath, tableName, filtered_postcodes):
         print(f"Table doesn't exist: {tableName}")
     else:
         try:
-            data = pd.read_csv(filePath)
+            # Force property_id to read as a string if processing transactions
+            if tableName == "property_transactions":
+                data = pd.read_csv(filePath, dtype={"property_id": str})
+                
+                # Strip out any '.0' and convert 'nan' back to true None
+                if "property_id" in data.columns:
+                    data["property_id"] = data["property_id"].apply(
+                        lambda x: str(int(float(x))) if pd.notnull(x) and str(x).strip() != '' and str(x).strip().lower() != 'nan' else None
+                    )
+            else:
+                data = pd.read_csv(filePath)
             print(f"CSV Row Count: {data.shape[0]}")
             
             # drop all data with invalid lsoa/posctode refs
@@ -31,17 +41,6 @@ def ingest_table(filePath, tableName, filtered_postcodes):
             if 'geometry' in data.columns:
                 data['geometry'] = data['geometry'].apply(wkt.loads)
             
-            # link transactions with property_id using address
-            if tableName == "property_transactions":    
-                
-                query = "SELECT property_id, full_address, postcode FROM property_data"
-                db_properties = pd.read_sql(query, engine).drop_duplicates(subset=['full_address', 'postcode'])
-                
-                data = data.merge(db_properties, on=['full_address', 'postcode'], how='inner')
-                
-                data = data.drop_duplicates(subset=['transaction_id'])
-                
-                data = data[["transaction_id", "property_id", "sale_date", "price"]]
                 
             data.to_sql(
                 tableName,
