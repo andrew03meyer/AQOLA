@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS kent_property_averages (
      period VARCHAR(7) NOT NULL,  --e.g. Q1-1995 meaning 1st quarter months in 1995
      avg_price INT NOT NULL,
      avg_price_sqm INT,
-     count INT
+     count INT,
 
      PRIMARY KEY (property_type, period)
 );
