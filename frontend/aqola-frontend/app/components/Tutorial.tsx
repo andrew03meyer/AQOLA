@@ -4,7 +4,7 @@ import { useAppStore } from "../store/AppStore"
 
 const content = [
     "For mouse users: scroll/drag to interact with the map (for touchscreen users pinch/drag for the same effect).", 
-    "Click here to change dataset",
+    "Click here to change dataset. Once selected, graphs for this dataset will show at the bottom.",
     "Use this bar to open up new charts. Hover the icon to get more information about that graph",
     "Use these buttons to save your work and come back later",
 ]
