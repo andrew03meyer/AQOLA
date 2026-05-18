@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import { getPostcodeBoundaries } from "@/app/lib/Postcode";
 import { getLsoaBoundaries } from "@/app/lib/Lsoa";
 import { DomEvent, Layer } from "leaflet";
+import { getFloodBoundaries } from "@/app/lib/Flood";
 
 interface PolygonProps {
   postcode_name: string;
@@ -80,6 +81,8 @@ const Polygons = () => {
           min_lng: bounds.getWest(),
           max_lng: bounds.getEast(),
         });
+      } else if (areaType === "flood") {
+        boundaries = getFloodBoundaries();
       }
 
       // If we can't find the boundaries from the API
@@ -133,7 +136,10 @@ const Polygons = () => {
   // For each polygon, bind a tooltip and click/hover events.
   const onEachFeature = (feature: Feature, layer: Layer) => {
     const areaName =
-      feature.properties?.postcode || feature.properties?.lsoa || "Unknown";
+      feature.properties?.postcode ||
+      feature.properties?.lsoa ||
+      feature.properties?.rec_out_id ||
+      "Unknown";
 
     if (areaName) {
       layer.bindTooltip(areaName, {
@@ -189,6 +195,7 @@ const Polygons = () => {
           const areaName =
             feature.properties?.postcode ||
             feature.properties?.lsoa ||
+            feature.properties?.rec_out_id ||
             "Unknown";
           return getStyle(areaName);
         } else {
