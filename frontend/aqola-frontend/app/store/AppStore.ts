@@ -170,13 +170,14 @@ toggleDatasetWideEditing: () => {
   // Puts the "focused" chart to the front of the openCharts array
   focusChart: (chartName) =>
     set((state) => {
-      // if not already focused
+      // if already focused
       if (
         state.openCharts[0]?.chartName === chartName &&
         state.selectedDataset === state.openCharts[0]?.selectedDataset
-      )
+      ){
         return state; // if already focused, do nothing
-      console.log("Focusing chart: ", chartName);
+      }
+        console.log("Focusing chart: ", chartName);
       const chartToFocus = state.openCharts.find(
         (g) => g.chartName === chartName,
       );

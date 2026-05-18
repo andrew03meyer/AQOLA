@@ -20,6 +20,7 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
   const minimiseChart = useAppStore((state) => state.minimiseChart);
   const updateChartLocation = useAppStore((state) => state.updateChartLocation);
   const findOpenChartFromName = useAppStore((state) => state.findOpenChartFromName);
+  const getFocusedChart = useAppStore((state) => state.getFocusedChart)
   const openCharts = useAppStore((state) => state.openCharts);
   const clearAreas = useAppStore((state) => state.clearAreas)
   const updateChartState = useAppStore((state) => state.updateChartState)
@@ -45,7 +46,7 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
         <InformationIcon content={getChartDefinition(chartName)} />
         <Eraser 
           data-tooltip-id= {chartName + "eraser-tooltip"}
-          onClick={() => { 
+          onClick={() => {
             // let editingChanged = false;
             
             // if (datasetWideEditing) {
@@ -53,9 +54,10 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
             //   editingChanged = true;
             // }
 
-            // focusChart(chartName)
+            focusChart(chartName)
+            
             clearAreas();
-            updateChartState(chartName);
+            // updateChartState(chartName);
             
             // if (editingChanged) {
             //   toggleDatasetWideEditing();
@@ -63,6 +65,9 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
             // }
           }} 
           className="titlebar-contents"
+          style={{
+              visibility: getFocusedChart()?.chartName === chartName ? "visible" : "hidden"
+          }}
         />
         <Tooltip
           id={chartName + "eraser-tooltip"}

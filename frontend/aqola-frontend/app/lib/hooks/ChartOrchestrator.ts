@@ -41,12 +41,11 @@ const useChartOrchestrator = () => {
     }
   }, [selectedDataset]);
 
+
   // Update activeChart ID when stack changes
   // Keeps local ref up to date
   useEffect(() => {
     setActiveChartId(getFocusedChart()?.chartName ?? "");
-    // console.log("change to openCarts")
-    console.log(openCharts)
   }, [openCharts]);
 
   // Update selected areas and dataset when active chart updates
@@ -62,6 +61,10 @@ const useChartOrchestrator = () => {
   // Update chart state if the active chart's dataset is the same as the user selected dataset
   const updateLiveChart = async () => {
     if (findOpenChartFromName(activeChartId)?.selectedDataset == selectedDataset) {
+      console.log("change to openCarts")
+      console.log(getFocusedChart())
+      console.log("active cart id")
+      console.log(activeChartId)
       updateChartState(activeChartId);
     }
   };
