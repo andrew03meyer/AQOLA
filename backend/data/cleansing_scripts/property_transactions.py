@@ -40,13 +40,13 @@ def property_transactions_process():
         print("Error: Cleaned property master registry file not found. Please run property_cleansing.py first.")
         return
 
-    df_prop_master = pd.read_csv(cleaned_property_registry, usecols=['property_id', 'full_address', 'postcode', 'square_meters'])
+    df_prop_master = pd.read_csv(cleaned_property_registry, usecols=['property_id', 'full_address', 'postcode', 'square_metres'])
     
     # Prepare the lookup columns using a combination of standardised address and postcode
     df_prop_master['clean_prop_addr'] = standardise_address_key(df_prop_master['full_address'])
     df_prop_master['postcode'] = df_prop_master['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
     
-    df_lookup = df_prop_master[['clean_prop_addr', 'postcode', 'property_id', 'square_meters']].drop_duplicates()
+    df_lookup = df_prop_master[['clean_prop_addr', 'postcode', 'property_id', 'square_metres']].drop_duplicates()
 
     df_trans = pd.read_csv(input_file)
     df_trans.columns = [c.strip().lower() for c in df_trans.columns]
@@ -88,8 +88,8 @@ def property_transactions_process():
 
     
     def calculate_price_per_sqm(row):
-        if pd.notnull(row['square_meters']) and row['square_meters'] > 0:
-            return int(round(row['price'] / row['square_meters']))
+        if pd.notnull(row['square_metres']) and row['square_metres'] > 0:
+            return int(round(row['price'] / row['square_metres']))
         return np.nan
     
     def clean_property_id(val):

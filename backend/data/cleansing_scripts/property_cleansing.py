@@ -38,9 +38,9 @@ def load_epc_lookup(epc_path):
     
     df['clean_epc_addr'] = standardise_address_key(df['address'])
     df['uprn'] = df['uprn'].astype(str).str.split('.').str[0].str.strip()
-    df['square_meters'] = df['total_floor_area'].astype(int)
+    df['square_metres'] = df['total_floor_area'].astype(int)
     
-    return df[['clean_epc_addr', 'uprn', 'square_meters']]
+    return df[['clean_epc_addr', 'uprn', 'square_metres']]
 
 # Creates a single address string from PAON, SAON, and Street.
 def construct_full_address(df):
@@ -105,7 +105,7 @@ def property_process():
     #             "data": [f"{row['full_address']}, {row['postcode']}"],
     #             "where": ["property_cleansing -> build_property_registry"],
     #             "desc": ["Property dropped: no matching uprn found in EPC dataset"],
-    #             "impact": ["Excluded from database ingestion; no structural square meters metric available"],
+    #             "impact": ["Excluded from database ingestion; no structural square metres metric available"],
     #             "cause": ["Address string matching failed against government EPC registry references"]
     #         })
             
@@ -136,7 +136,7 @@ def property_process():
         "postcode",
         "lsoa_id",
         "property_type",
-        "square_meters",
+        "square_metres",
         "latitude",
         "longitude"
     ]
