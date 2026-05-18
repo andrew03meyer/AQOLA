@@ -27,5 +27,9 @@
       { "areaType": "lsoa", "minZoom": 8, "maxZoom": 14 },
       { "areaType": "postcode", "minZoom": 14 }
     ]
+  },
+  "flood-occurrences": {
+    "graphs": [""],
+    "areaLayers": [{ "areaType": "flood", "minZoom": 7 }]
   }
 }

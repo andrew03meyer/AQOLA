@@ -30,18 +30,37 @@ export default function DataSelector() {
           <option value="crime">Crime</option>
           <option value="schools">Schools</option>
           <option value="flood">Flood Risk</option>
+          <option value="flood-occurrences">Flood Occurrences</option>
         </select>
       </div>
 
       <div className="top-nav-contents">
         {/* Temporary download button */}
-        <button onClick={() => stateExport()} title="Download charts to device"><Save size={20} id="download" /></button>
+        <button onClick={() => stateExport()} title="Download charts to device">
+          <Save size={20} id="download" />
+        </button>
         {/* Temporary upload button */}
-        <input ref={fileUploadRef} type="file" onChange={(e) =>stateImport(e)} style={{display: "none"}}/>
-        <button onClick={() => fileUploadRef.current?.click()} title="Upload charts from device">
+        <input
+          ref={fileUploadRef}
+          type="file"
+          onChange={(e) => stateImport(e)}
+          style={{ display: "none" }}
+        />
+        <button
+          onClick={() => fileUploadRef.current?.click()}
+          title="Upload charts from device"
+        >
           <Upload size={20} id="upload" />
         </button>
-        <div id="invalid-file-format" style={{ color: "red", fontSize: "15px" , display: "none", fontWeight: "bold"}}>
+        <div
+          id="invalid-file-format"
+          style={{
+            color: "red",
+            fontSize: "15px",
+            display: "none",
+            fontWeight: "bold",
+          }}
+        >
           Invalid file format
         </div>
       </div>

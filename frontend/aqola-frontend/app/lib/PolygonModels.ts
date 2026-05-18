@@ -40,6 +40,10 @@ type LsoaProperties = {
   lsoa: string;
 };
 
+type FloodProperties = {
+  rec_out_id: string;
+};
+
 type LsoaGeoJson = Feature<Polygon | MultiPolygon, LsoaProperties>;
 
 type LsoaResponse = {
@@ -52,6 +56,13 @@ type LsoaPolygonResponse = {
   boundary: Polygon | MultiPolygon;
 };
 
+type FloodPolygonResponse = {
+  rec_out_id: string;
+  boundary: Polygon | MultiPolygon;
+};
+
+type FloodGeoJson = Feature<Polygon | MultiPolygon, FloodProperties>;
+
 export {
   type PostcodeGeoJson,
   type PostcodeResponse,
@@ -61,4 +72,6 @@ export {
   type LsoaPolygonResponse,
   type YearlyOfstedResponse,
   type GenderDemographicsResponse,
+  type FloodPolygonResponse,
+  type FloodGeoJson,
 };
