@@ -25,12 +25,11 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
 
   return (
     <Rnd
-      default={{ x: x, y: y, width: 600, height: 380 }}
+      default={{ x: x, y: y, width: "66%", height: 480 }}
       bounds="parent"
       style={{ zIndex: zIndex }}
       className="rnd-window"
       dragHandleClassName="window-titlebar"
-      onMouseDown={() => focusChart && focusChart(chartName)} // For focusing element on click
       onDragStop={(_, data) => updateChartLocation && updateChartLocation(chartName, [data.x, data.y])} // Update chart location on drag end
     >
       {/* Top bar of the window, includes close button */}
@@ -41,7 +40,19 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
       </div>
 
       {/* Window contents */}
-      <div className="window-content"> { children } </div>
+      <div 
+        className="window-content"
+        style={{
+          width: "95%",
+          height: "90%",
+          padding:"0%",
+          margin: "0%",
+          position: "absolute"
+        }}
+        onMouseDown={() => focusChart && focusChart(chartName)} // For focusing element on click
+      > 
+        { children } 
+      </div>
     </Rnd>
   );
 };
