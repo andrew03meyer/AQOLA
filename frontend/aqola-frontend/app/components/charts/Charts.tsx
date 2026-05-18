@@ -10,6 +10,7 @@ export default function Charts() {
     const getOpenCharts = useAppStore((state) => state.getOpenCharts);
     const focusChart = useAppStore((state) => state.focusChart);
     const minimiseChart = useAppStore((state) => state.minimiseChart);
+    const getFocusedChart = useAppStore((state) => state.getFocusedChart)
     const openCharts = getOpenCharts() as StateDefinition[];
     const { closeChart } = useChartOrchestrator();
 
@@ -31,8 +32,16 @@ export default function Charts() {
 
         let changedCharts: StateDefinition[] = [];
         if (openCharts.length > 0) {
-            changedCharts = JSON.stringify(prevSelectedAreasRef.current) == JSON.stringify(selectedAreas) ? [] : [openCharts[0]];
+            changedCharts = JSON.stringify(prevSelectedAreasRef.current) == JSON.stringify(selectedAreas) ? [] : openCharts.filter((chart) => chart.selectedDataset == getFocusedChart()?.selectedDataset);
         }
+
+        console.log("----------------------\nchangedCharts\n---------------")
+        console.log(changedCharts)
+        console.log("-----------------------------")
+        console.log("----------------------\nopenedCharts\n---------------")
+        console.log(openCharts)
+        console.log("-----------------------------")
+        
         
         const removedCharts = [...prevRenderedCharts].filter((chart) => !currentCharts.has(chart));
         
@@ -49,11 +58,11 @@ export default function Charts() {
             Promise.all(
                 Array.from(chartsToUpdate).map(async (chart) => {
                     const data = await fetchChartData(chart.chartName, chart.selectedAreas);
-                    console.log(`Fetched data for chart ${chart.chartName}:`, data);
+                    // console.log(`Fetched data for chart ${chart.chartName}:`, data);
                     return [chart.chartName, data];
                 }))
             .then((chartDataToAdd) => {
-                console.log("Updating chart data with:", Object.fromEntries(chartDataToAdd));
+                // console.log("Updating chart data with:", Object.fromEntries(chartDataToAdd));
                 setChartsData((prevChartData) => ({ ...prevChartData, ...Object.fromEntries(chartDataToAdd) }));
             });
         }

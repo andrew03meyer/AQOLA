@@ -45,6 +45,8 @@ const useChartOrchestrator = () => {
   // Keeps local ref up to date
   useEffect(() => {
     setActiveChartId(getFocusedChart()?.chartName ?? "");
+    // console.log("change to openCarts")
+    console.log(openCharts)
   }, [openCharts]);
 
   // Update selected areas and dataset when active chart updates

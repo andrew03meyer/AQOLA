@@ -2,6 +2,7 @@ import { useAppStore } from "../store/AppStore";
 import { stateExport, stateImport } from "../lib/FileHandling";
 import { Download, Upload, Save } from "lucide-react";
 import React from "react";
+import Toggle from "./toggle";
 
 export default function DataSelector() {
   // Read the value from Zustand directly — no useState needed
@@ -44,6 +45,10 @@ export default function DataSelector() {
         <div id="invalid-file-format" style={{ color: "red", fontSize: "15px" , display: "none", fontWeight: "bold"}}>
           Invalid file format
         </div>
+      </div>
+
+      <div className="top-nav-contents" >
+        <Toggle />
       </div>
     </div>
   );

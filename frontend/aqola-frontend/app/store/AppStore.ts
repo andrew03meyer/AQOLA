@@ -8,7 +8,9 @@ type AppStore = {
   selectedAreas: string[];
   selectedDataset: string;
   currentZoom: number;
+  datasetWideEditing: boolean,
 
+  toggleDatasetWideEditing: () => void;
   toggleArea: (area: string) => void;
   clearAreas: () => void;
   setDataset: (dataset: string) => void;
@@ -37,6 +39,11 @@ const useAppStore = create<AppStore>((set, get) => ({
   selectedAreas: [],
   selectedDataset: "crime",
   currentZoom: 7, // Decently zoomed out
+  datasetWideEditing: true,
+
+toggleDatasetWideEditing: () => {
+  set((state) => ({ datasetWideEditing: !state.datasetWideEditing }))
+},
 
   // Toggles an area in the selectedAreas array
   toggleArea: (area) =>
@@ -183,21 +190,43 @@ const useAppStore = create<AppStore>((set, get) => ({
     }),
 
   // Updates the state of a chart in openCharts by name
-  updateChartState: (chartName) =>
-    set((state) => ({
-      openCharts: state.openCharts.map((g) =>
-        g.chartName === chartName
-          ? {
-              ...g,
-              ...{
-                chartName: chartName,
-                selectedAreas: [...get().selectedAreas],
-                selectedDataset: get().selectedDataset,
-              },
-            }
-          : g,
-      ),
-    })),
+  updateChartState: (chartName, singleChart?:boolean) =>
+    set((state) => {
+      if(!state.datasetWideEditing || singleChart){
+        return{
+          openCharts: state.openCharts.map((g) =>
+            g.chartName === chartName
+              ? {
+                  ...g,
+                  ...{
+                    selectedAreas: [...get().selectedAreas],
+                    selectedDataset: get().selectedDataset,
+                  },
+                }
+              : g,
+          ),
+        }
+      } else {
+        console.log("in the change everything")
+        const chartsToUpdate = state.openCharts.filter(
+          (chart) => chart.selectedDataset == 
+          state.findOpenChartFromName(chartName)?.selectedDataset
+        )
+        return{
+          openCharts: state.openCharts.map((g) =>
+            chartsToUpdate.includes(g)
+              ? {
+                  ...g,
+                  ...{
+                    selectedAreas: [...get().selectedAreas],
+                    selectedDataset: get().selectedDataset,
+                  },
+                }
+              : g,
+          ),
+        }
+      }
+  }),
 
   // Returns the top chart in the stack
   getFocusedChart: () => {
