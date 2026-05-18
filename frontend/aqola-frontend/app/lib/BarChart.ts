@@ -168,7 +168,7 @@ export const school_gender_demographics_by_phase = async (
     const phaseData = rawData.filter((d) => d.phase === phase);
 
     const bars = phaseData.map((d) => ({
-      bar_name: d.gender,
+      bar_name: d.gender + " Schools",
       value: d.count,
       color: genderColours[d.gender] || "grey",
     }));

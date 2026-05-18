@@ -105,6 +105,19 @@ export default function LineChart({
             { data.chart.title }
         </text>
 
+      {y.ticks(isSchoolData ? 4 : undefined).map((tick, i) => (
+        <line
+          key={i}
+          x1={marginLeft}
+          x2={chartWidth - marginRight}
+          y1={y(tick)}
+          y2={y(tick)}
+          stroke="white"
+          strokeOpacity={0.15}
+          strokeWidth={1}
+        />
+      ))}
+      
       {/* add the axis to the chart */}
       <g ref={xLabel} transform={`translate(0,${height - marginBottom})`} fill="white" />
       <g ref={yLabel} transform={`translate(${marginLeft},0)`} fill="white" />
