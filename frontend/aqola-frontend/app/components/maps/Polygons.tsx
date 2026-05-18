@@ -138,7 +138,7 @@ const Polygons = () => {
     const areaName =
       feature.properties?.postcode ||
       feature.properties?.lsoa ||
-      feature.properties?.rec_out_id ||
+      feature.properties?.rec_out_id?.toString() ||
       "Unknown";
 
     if (areaName) {
@@ -195,7 +195,7 @@ const Polygons = () => {
           const areaName =
             feature.properties?.postcode ||
             feature.properties?.lsoa ||
-            feature.properties?.rec_out_id ||
+            feature.properties?.rec_out_id?.toString() ||
             "Unknown";
           return getStyle(areaName);
         } else {
