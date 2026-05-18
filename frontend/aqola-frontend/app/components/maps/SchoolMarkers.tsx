@@ -66,38 +66,44 @@ interface SchoolMarkersProps {
             }}
           >
             <Popup className="popup">
-      <div className="text-black p-1" style={{ minWidth: '220px' }}>
-        <h3 className="font-bold text-lg border-b border-gray-200 mb-2 pb-1">
-          {school.school_name}
-        </h3>
-        
-        <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
-          <span className="text-gray-500 font-medium">URN:</span> 
-          <span>{school.urn}</span>
-          
-          <span className="text-gray-500 font-medium">Postcode:</span> 
-          <span>{school.postcode}</span>
-          
-          <span className="text-gray-500 font-medium">Ofsted:</span> 
-            {school.ofsted_ranking === 0 || school.ofsted_ranking === -1
-            ? "Not judged"
-            : school.ofsted_ranking ?? "N/A"}
-          
-          <span className="text-gray-500 font-medium">Gender:</span> 
-          <span>{school.gender}</span>
-          
-          <span className="text-gray-500 font-medium">Year Range:</span> 
-          <span>{school.year_range}</span>
-          
-          <span className="text-gray-500 font-medium">Education level:</span>
-            {[
-              school.is_primary && "Primary",
-              school.is_secondary && "Secondary",
-              school.is_post16 && "Post-16"
-            ].filter(Boolean).join(", ") || "None"}
+              <div 
+                className="text-black p-1" 
+                style={{ 
+                  minWidth: '220px', 
+              
+                }}  
+              >
+                <h3 className="font-bold text-lg border-b border-gray-200 mb-2 pb-1">
+                  {school.school_name}
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-sm">
+                  <span className="text-gray-500 font-medium">URN:</span> 
+                  <span>{school.urn}</span>
+                  
+                  <span className="text-gray-500 font-medium">Postcode:</span> 
+                  <span>{school.postcode}</span>
+                  
+                  <span className="text-gray-500 font-medium">Ofsted:</span> 
+                    {school.ofsted_ranking === 0 || school.ofsted_ranking === -1
+                    ? "Not judged"
+                    : school.ofsted_ranking ?? "N/A"}
+                  
+                  <span className="text-gray-500 font-medium">Gender:</span> 
+                  <span>{school.gender}</span>
+                  
+                  <span className="text-gray-500 font-medium">Year Range:</span> 
+                  <span>{school.year_range}</span>
+                  
+                  <span className="text-gray-500 font-medium">Education level:</span>
+                    {[
+                      school.is_primary && "Primary",
+                      school.is_secondary && "Secondary",
+                      school.is_post16 && "Post-16"
+                    ].filter(Boolean).join(", ") || "None"}
 
-          <span className="text-gray-500 font-medium">LSOA ID:</span> 
-          <span className="text self-center">{school.lsoa_id}</span>
+                  <span className="text-gray-500 font-medium">LSOA ID:</span> 
+                  <span className="text self-center">{school.lsoa_id}</span>
                 </div>
               </div>
             </Popup>

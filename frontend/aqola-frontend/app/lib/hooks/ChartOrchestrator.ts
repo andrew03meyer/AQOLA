@@ -45,6 +45,7 @@ const useChartOrchestrator = () => {
   // Keeps local ref up to date
   useEffect(() => {
     setActiveChartId(getFocusedChart()?.chartName ?? "");
+    console.log(getFocusedChart()?.selectedAreas)
   }, [openCharts]);
 
   // Update selected areas and dataset when active chart updates

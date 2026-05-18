@@ -49,11 +49,11 @@ export default function Charts() {
             Promise.all(
                 Array.from(chartsToUpdate).map(async (chart) => {
                     const data = await fetchChartData(chart.chartName, chart.selectedAreas);
-                    console.log(`Fetched data for chart ${chart.chartName}:`, data);
+                    // console.log(`Fetched data for chart ${chart.chartName}:`, data);
                     return [chart.chartName, data];
                 }))
             .then((chartDataToAdd) => {
-                console.log("Updating chart data with:", Object.fromEntries(chartDataToAdd));
+                // console.log("Updating chart data with:", Object.fromEntries(chartDataToAdd));
                 setChartsData((prevChartData) => ({ ...prevChartData, ...Object.fromEntries(chartDataToAdd) }));
             });
         }

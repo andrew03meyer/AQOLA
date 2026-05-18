@@ -28,8 +28,8 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
       bounds="parent"
       style={{ zIndex: zIndex }}
       className="rnd-window"
-      onMouseDown={() => focusChart && focusChart(chartName)} // For focusing element on click
-      onDragStop={(_, data) => updateChartLocation && updateChartLocation(chartName, [data.x, data.y])} // Update chart location on drag end
+      onMouseDown={() => focusChart && focusChart(chartName)}
+      onDragStop={(_, data) => updateChartLocation && updateChartLocation(chartName, [data.x, data.y])}
     >
       {/* Top bar of the window, includes close button */}
       <div className="window-titlebar">

@@ -127,17 +127,20 @@ export const crime_rate_over_time = async (lsoas : string[]) : Promise<LineChart
 
   const apiResponse = await api.get(`/crime/crime-rate-total/${lsoaSlug}`);
   const crimeCountData = apiResponse.data;
+  console.log(crimeCountData)
 
   let lines: { line_name: string; coords: [Date, number][]; color: string }[] =
     [];
 
-for (const [index, [lsoa, coords]] of Object.entries(crimeCountData).entries()) {
+for (const [index, lsoa] of lsoas.entries()) {
+  const coords = crimeCountData[lsoa];
+  if (!coords) continue;
   lines.push({
-      line_name: lsoa,
-      coords: (coords as [Date, number][]).map(([date, count]) => [new Date(date), count]),
-      color: COLOR[index % COLOR.length]
-    });
-  }
+    line_name: lsoa,
+    coords: (coords as [Date, number][]).map(([date, count]) => [new Date(date), count]),
+    color: COLOR[index % COLOR.length]
+  });
+}
 
   const response: LineChartResponse = {
     chartType: "line",

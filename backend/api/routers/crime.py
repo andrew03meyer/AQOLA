@@ -111,7 +111,9 @@ async def get_crime_rate_by_type(
         values = [result.crime_type, result.count]
         dataDict[result.lsoa_id].append(values)
 
-    return dataDict
+    reordered_dict = {k: dataDict[k] for k in lsoas}
+
+    return reordered_dict
 
 @router.get("/timeseries")
 async def crime_timeseries(
