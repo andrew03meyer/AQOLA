@@ -67,10 +67,7 @@ def read_and_transform_flood_shapefile(shapefile_path: Path):
 
 def prepare_data_for_db(flood_occurrence_df, postcode_df):
 
-    # Copy the df so we can edit this without cahnging the original.
     flood_occurrence_df = flood_occurrence_df.copy()
-
-    flood_occurrence_df_filtered = flood_occurrence_df[['rec_out_id', "rec_grp_id", "name", "start_date", "end_date", "flood_src", "flood_caus", "hfm_status", "data_src", "fluvial_f", "coastal_f", "tidal_f", "geometry"]]
 
     postcode_df["geometry"] = postcode_df["boundary"].apply(wkt.loads)
 
@@ -81,21 +78,29 @@ def prepare_data_for_db(flood_occurrence_df, postcode_df):
     )
 
     kent_floods = gpd.sjoin(flood_occurrence_df, postcode_polygons, how="inner", predicate="intersects")
-    postcode_floods = kent_floods[["postcode", "rec_out_id"]] 
-    flood_occurrences_df_filtered = kent_floods[['rec_out_id', "rec_grp_id", "name", "start_date", "end_date", "flood_src", "flood_caus", "hfm_status", "data_src", "fluvial_f", "coastal_f", "tidal_f", "geometry"]]
-    print(kent_floods.sample(10))
+
+    # Postcode-flood junction table — reset index so duplicates aren't lost
+    postcode_floods = kent_floods[["postcode", "rec_out_id"]].reset_index(drop=True)
+
+    # Flood occurrences — deduplicate back to one row per flood
+    flood_occurrences_df_filtered = kent_floods[
+        ['rec_out_id', "rec_grp_id", "name", "start_date", "end_date",
+         "flood_src", "flood_caus", "hfm_status", "data_src",
+         "fluvial_f", "coastal_f", "tidal_f", "geometry"]
+    ].drop_duplicates(subset="rec_out_id").reset_index(drop=True)
 
     # Convert geometry to WKT for DB insertion
     flood_occurrences_df_filtered = flood_occurrences_df_filtered.copy()
     flood_occurrences_df_filtered["geometry"] = flood_occurrences_df_filtered["geometry"].apply(lambda g: g.wkt)
-
-    # Rename to match DB column name
     flood_occurrences_df_filtered = flood_occurrences_df_filtered.rename(columns={"geometry": "boundary"})
 
     postcode_flood_occurrences = postcode_floods.to_dict()
     flood_occurrences = flood_occurrences_df_filtered.to_dict()
 
+    print(f"Floods: {len(flood_occurrences_df_filtered)}, Postcode-flood pairs: {len(postcode_floods)}")
+
     return postcode_flood_occurrences, flood_occurrences
+
 
 def make_csv_from_json(flood_occurrence, output_path: Path):
     """Utility function to create a CSV from Flood occurrence data for inspection."""

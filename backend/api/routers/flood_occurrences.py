@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, extract
 from typing import List, Optional
 from api.database import get_db
-from api.models.db_models import FloodOccurrences
+from api.models.db_models import FloodOccurrences, PostcodeFloodOccurrences
 from api.models.response_models.flood_occurrences import FloodOccurrencesResponse
 
 from geoalchemy2.shape import to_shape
@@ -44,3 +44,27 @@ async def list_flood_occurrences(
         for floodOccurrenceRow in floodOccurrenceData
     ]
 
+@router.get("/timeline")
+async def list_flood_occurrence_timelines(
+    postcodes: list[str] = Query(default=[]),
+    db: Session = Depends(get_db)
+):
+    """Return flood occurrence counts per year, optionally filtered by postcodes."""
+    query = db.query(
+        extract("year", FloodOccurrences.start_date).label("year"),
+        func.count(FloodOccurrences.rec_out_id).label("count")
+    )
+
+    if postcodes:
+        query = query.join(
+            PostcodeFloodOccurrences,
+            FloodOccurrences.rec_out_id == PostcodeFloodOccurrences.rec_out_id
+        ).filter(PostcodeFloodOccurrences.postcode.in_(postcodes))
+
+    query = query.group_by("year").order_by("year")
+    results = query.all()
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No flood occurrence records found.")
+
+    return {str(int(row.year)): row.count for row in results}

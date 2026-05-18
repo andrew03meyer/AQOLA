@@ -78,5 +78,13 @@
     "dataset": "flood",
     "apiCall": "flood_risk_frequency_by_postcode_spider",
     "icon": "fi fi-rs-spider-web"
+  },
+  {
+    "id": "flood_occurrences_history",
+    "label": "History of Flood Occurrences.",
+    "chartComponent": "line",
+    "dataset": "flood_occurrences",
+    "apiCall": "flood_occurrences_history",
+    "icon": "fi fi-rs-raindrops"
   }
 ]

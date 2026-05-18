@@ -1,6 +1,10 @@
 import datasetConfig from "../store/datasetConfig.json";
 import chartDefinitions from "../store/chartDefinitions.json";
-import { crime_rate_by_type_and_area, crime_rate_over_time } from "./LineChart";
+import {
+  crime_rate_by_type_and_area,
+  crime_rate_over_time,
+  get_flood_occurrences_history,
+} from "./LineChart";
 import {
   ofsted_frequency_by_band,
   ofsted_frequency_yearly,
@@ -21,23 +25,32 @@ type DatasetKey = keyof typeof datasetConfig;
 // apiCall (in the json) : (params) => actual_function_in_frontend(params);
 
 const apiCallMap: Record<string, (areas: string[]) => Promise<ChartData>> = {
-  
-// =============================================================================================
+  // =============================================================================================
   // Crime API calls
-// =============================================================================================
-    // Line Graphs
+  // =============================================================================================
+  // Line Graphs
   crime_rate_by_type_and_area: (areas) =>
-    crime_rate_by_type_and_area((areas[areas.length-1]), ["Anti-social behaviour","Bicycle theft","Burglary","Criminal damage and arson","Other theft","Robbery","Shoplifting","Theft from the person","Violence and sexual offences"]), // areas[0]
+    crime_rate_by_type_and_area(areas[areas.length - 1], [
+      "Anti-social behaviour",
+      "Bicycle theft",
+      "Burglary",
+      "Criminal damage and arson",
+      "Other theft",
+      "Robbery",
+      "Shoplifting",
+      "Theft from the person",
+      "Violence and sexual offences",
+    ]), // areas[0]
   crime_rate_over_time: (areas) => crime_rate_over_time(areas),
-  
+
   //Bar Graphs
   crime_rate_by_lsoa: (areas) => crime_rate_by_lsoa(areas),
-  crime_rate_by_lsoa_cumulative: (areas) => crime_rate_by_lsoa_cumulative(areas),
+  crime_rate_by_lsoa_cumulative: (areas) =>
+    crime_rate_by_lsoa_cumulative(areas),
 
-
-// =============================================================================================
+  // =============================================================================================
   //School API calls
-// =============================================================================================
+  // =============================================================================================
 
   ofsted_frequency_by_band: () => ofsted_frequency_by_band(),
   ofsted_frequency_yearly: () => ofsted_frequency_yearly(),
@@ -49,6 +62,11 @@ const apiCallMap: Record<string, (areas: string[]) => Promise<ChartData>> = {
     flood_risk_frequency_by_postcode(areas),
   flood_risk_frequency_by_postcode_spider: (areas) =>
     flood_risk_frequency_by_postcode_spider(areas),
+
+  // =============================================================================================
+  //Flood Occurrences API calls
+  // =============================================================================================
+  flood_occurrences_history: (areas) => get_flood_occurrences_history(areas),
 };
 
 // Gets available charts from datasetConfig.json
@@ -79,8 +97,8 @@ const fetchChartData = async (
   if (!apiFn) throw new Error(`No API function mapped for: ${chart.apiCall}`);
 
   //Run function
-  const data = await apiFn(selectedAreas)
-  console.log(data)
+  const data = await apiFn(selectedAreas);
+  console.log(data);
   return data;
 };
 
