@@ -6,7 +6,8 @@
     "dataset": "crime",
     "apiCall": "crime_rate_by_type_and_area",
     "icon": "fi fi-rs-chart-line-up",
-    "blurb": "A line chart showing the total count of crime for each crime type, in all the selected areas. Data shown is from 2010-2025"
+    "blurb": "A line chart showing the total count of crime for each crime type, in all the selected areas. Data shown is from 2010-2025",
+    "src": "crime_by_type_over_time.png"
   },
   {
     "id": "crime_over_time",
@@ -15,7 +16,8 @@
     "dataset": "crime",
     "apiCall": "crime_rate_over_time",
     "icon": "fi fi-rs-chart-line-up",
-    "blurb": "A line chart showing the count of all crime, where each line represents a selected area. Data shown is from 2010-2025"
+    "blurb": "A line chart showing the count of all crime, where each line represents a selected area. Data shown is from 2010-2025",
+    "src": "crime_over_time.png"
   },
   {
     "id": "crime_rate_by_lsoa",
@@ -24,7 +26,8 @@
     "dataset": "crime",
     "apiCall": "crime_rate_by_lsoa",
     "icon": "fi fi-rs-stats",
-    "blurb": "A bar chart showing the count of all crime, separated into different crime types. Each group of bars represents an area. From 2010-2025"
+    "blurb": "A bar chart showing the count of all crime, separated into different crime types. Each group of bars represents an area. From 2010-2025",
+    "src": "crime_rate_by_lsoa.png"
   },
   {
     "id": "crime_rate_by_lsoa_cumulative",
@@ -33,7 +36,8 @@
     "dataset": "crime",
     "apiCall": "crime_rate_by_lsoa_cumulative",
     "icon": "fi fi-rs-stats",
-    "blurb": "A total count of crime in the different crime types, for all selected areas. Data is for over all time"
+    "blurb": "A total count of crime in the different crime types, for all selected areas. Data is for over all time",
+    "src": "crime_rate_by_lsoa_cumulative.png"
   },
   {
     "id": "school_ofsted_frequency",
@@ -42,7 +46,8 @@
     "dataset": "schools",
     "apiCall": "ofsted_frequency_by_band",
     "icon": "fi fi-rs-stats",
-    "blurb": "The count of all schools in Kent that fall into each of the Ofsted categories. Takes the most recent Ofsted rating for each school"
+    "blurb": "The count of all schools in Kent that fall into each of the Ofsted categories. Takes the most recent Ofsted rating for each school",
+    "src": "school_ofsted_frequency.png"
   },
   {
     "id": "school_ofsted_frequency_yearly",
@@ -51,7 +56,8 @@
     "dataset": "schools",
     "apiCall": "ofsted_frequency_yearly",
     "icon": "fi fi-rs-stats",
-    "blurb": "The count of all schools in Kent that fall into each of the Ofsted categories. Split up into yearly bar groupings."
+    "blurb": "The count of all schools in Kent that fall into each of the Ofsted categories. Split up into yearly bar groupings.",
+    "src": "school_ofsted_frequency_yearly.png"
   },
   {
     "id": "school_gender_demographics",
@@ -60,7 +66,8 @@
     "dataset": "schools",
     "apiCall": "school_gender_demographics_by_phase",
     "icon": "fi fi-rs-stats",
-    "blurb": "Displays the split of boys-only, girls-only, and mixed-gender schools across all Kent. Bars are grouped by stages in education."
+    "blurb": "Displays the split of boys-only, girls-only, and mixed-gender schools across all Kent. Bars are grouped by stages in education.",
+    "src": "school_gender_demographics.png"
   },
   {
     "id": "individual_school_ofsted_timeline",
@@ -69,7 +76,8 @@
     "dataset": "schools",
     "apiCall": "get_school_ofsted_history",
     "icon": "fi fi-rs-chart-line-up",
-    "blurb": "Shows a school's Ofsted performance, over time. Represents each selected school as a coloured line."
+    "blurb": "Shows a school's Ofsted performance, over time. Represents each selected school as a coloured line.",
+    "src": "individual_school_ofsted_timeline.png"
   },
   {
     "id": "flood_risk_frequency",
@@ -78,7 +86,8 @@
     "dataset": "flood",
     "apiCall": "flood_risk_frequency_by_postcode",
     "icon": "fi fi-rs-stats",
-    "blurb": "Shows the count of houses at certain levels of risk from flooding. Selected areas show as the different groups of bars on the x-axis."
+    "blurb": "Shows the count of houses at certain levels of risk from flooding. Selected areas show as the different groups of bars on the x-axis.",
+    "src": "flood_risk_frequency.png"
   },
   {
     "id": "flood_risk_frequency_spider",
@@ -87,6 +96,7 @@
     "dataset": "flood",
     "apiCall": "flood_risk_frequency_by_postcode_spider",
     "icon": "fi fi-rs-spider-web",
-    "blurb": "Shows the count of houses at certain levels of risk from flooding. Each spoke on the chart represents a risk factor. The more houses that are in a certain risk factor, the further the point, on that spoke, is from the center. A polygon is drawn for each selected area."
+    "blurb": "Shows the count of houses at certain levels of risk from flooding. Each spoke on the chart represents a risk factor. The more houses that are in a certain risk factor, the further the point, on that spoke, is from the center. A polygon is drawn for each selected area.",
+    "src": "flood_risk_frequency_spider.png"
   }
 ]
