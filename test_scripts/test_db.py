@@ -55,12 +55,22 @@ EXPECTED_COLUMNS = {
     ('property_data', 'postcode', 'character varying', 'NO'),       # VARCHAR(10) (FK)
     ('property_data', 'lsoa_id', 'character varying', 'NO'),       # VARCHAR(20) (FK)
     ('property_data', 'property_type', 'character', 'NO'),            # CHAR(1)
-    ('property_data', 'property_age', 'character', 'NO'),            # CHAR(1)
+    ('property_data', 'square_metres', 'character', 'NO'),          # INT
+    ('property_data', 'latitude', 'numeric', 'NO'),                  # DECIMAL (Nullable)
+    ('property_data', 'longitude', 'numeric', 'NO'),                  # DECIMAL (Nullable)
 
     ('property_transactions', 'transaction_id', 'character varying', 'NO'), # VARCHAR(45)
-    ('property_transactions', 'property_id', 'integer', 'NO'),               # INT (FK)
+    ('property_transactions', 'property_id', 'integer', 'YES'),               # INT (FK)
     ('property_transactions', 'sale_date', 'date', 'NO'),                    # DATE
-    ('property_transactions', 'price', 'integer', 'NO')                     # INT
+    ('property_transactions', 'is_new_build', 'character', 'NO'),            # INT
+    ('property_transactions', 'price', 'integer', 'NO'),                     # INT
+    ('property_transactions', 'price_per_sqm', 'integer', 'YES'),             # INT
+    
+    ('kent_property_averages', 'property_type', 'character', 'NO'),          # CHAR(1)
+    ('kent_property_averages', 'period', 'character', 'NO'),          # CHAR(1)
+    ('kent_property_averages', 'avg_price', 'integer', 'NO'),          # CHAR(1)
+    ('kent_property_averages', 'avg_price_sqm', 'integer', 'YES'),          # CHAR(1)
+    ('kent_property_averages', 'count', 'integer', 'No')          # CHAR(1)
     }
 
 # Format: (table, type, column)
@@ -83,7 +93,11 @@ EXPECTED_KEYS = {
     ('property_data', 'FOREIGN KEY', 'lsoa_id'),
 
     ('property_transactions', 'PRIMARY KEY', 'transaction_id'),
-    ('property_transactions', 'FOREIGN KEY', 'property_id')
+    ('property_transactions', 'PRIMARY KEY', 'sale_date'),
+    ('property_transactions', 'FOREIGN KEY', 'property_id'),
+    
+    ('kent_property_averages', 'PRIMARY KEY', 'property_type'),
+    ('kent_property_averages', 'PRIMARY KEY', 'period')
 }
 
 # ---  TEST CLASSES ---
