@@ -28,8 +28,8 @@
       { "areaType": "postcode", "minZoom": 14 }
     ]
   },
-  "flood-occurrences": {
-    "graphs": [""],
+  "flood_occurrences": {
+    "graphs": ["flood_occurrences_history"],
     "areaLayers": [{ "areaType": "flood", "minZoom": 7 }]
   }
 }

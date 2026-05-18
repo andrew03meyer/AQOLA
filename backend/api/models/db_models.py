@@ -74,6 +74,12 @@ class FloodOccurrences(Base):
     tidal_f	= Column(Boolean)
     boundary = Column(Geometry('GEOMETRY', srid=4326))
 
+class PostcodeFloodOccurrences(Base):
+    __tablename__ = "postcodes_flood_occurrences"
+
+    postcode = Column(String, primary_key=True)
+    rec_out_id = Column(String, primary_key=True)
+
     
 class School(Base):
     __tablename__ = "school_data"

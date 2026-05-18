@@ -234,3 +234,39 @@ export const get_school_ofsted_history = async (
     },
   };
 };
+
+export const get_flood_occurrences_history = async (
+  postcodes?: string[],
+): Promise<LineChartResponse> => {
+  const params = postcodes?.length
+    ? "?" + postcodes.map((p) => `postcodes=${p}`).join("&")
+    : "";
+
+  const apiResponse = await api.get(`/flood-occurrences/timeline${params}`);
+  const timelineData: Record<string, number> = apiResponse.data;
+  // Expected shape: { "2005": 3, "2007": 12, "2012": 5, ... }
+
+  const coords: [Date, number][] = Object.entries(timelineData)
+    .map(
+      ([year, count]) => [new Date(`${year}-01-01`), count] as [Date, number],
+    )
+    .sort((a, b) => a[0].getTime() - b[0].getTime());
+
+  return {
+    chartType: "line",
+    type: "flood_data",
+    area: "postcode",
+    chart: {
+      lines: [
+        {
+          line_name: postcodes?.length ? "Selected Areas" : "All Kent",
+          coords,
+          color: COLOR[0],
+        },
+      ],
+      title: "Flood Occurrences Over Time",
+      xlabel: "Year",
+      ylabel: "Number of Floods",
+    },
+  };
+};

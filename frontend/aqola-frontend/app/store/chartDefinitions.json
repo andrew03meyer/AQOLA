@@ -98,5 +98,13 @@
     "icon": "fi fi-rs-spider-web",
     "blurb": "Shows the count of houses at certain levels of risk from flooding. Each spoke on the chart represents a risk factor. The more houses that are in a certain risk factor, the further the point, on that spoke, is from the center. A polygon is drawn for each selected area.",
     "src": "flood_risk_frequency_spider.png"
+  },
+  {
+    "id": "flood_occurrences_history",
+    "label": "History of Flood Occurrences.",
+    "chartComponent": "line",
+    "dataset": "flood_occurrences",
+    "apiCall": "flood_occurrences_history",
+    "icon": "fi fi-rs-raindrops"
   }
 ]

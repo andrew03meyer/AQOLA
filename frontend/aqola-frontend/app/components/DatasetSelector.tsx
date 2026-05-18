@@ -32,7 +32,7 @@ export default function DataSelector() {
           <option value="crime">Crime</option>
           <option value="schools">Schools</option>
           <option value="flood">Flood Risk</option>
-          <option value="flood-occurrences">Flood Occurrences</option>
+          <option value="flood_occurrences">Flood Occurrences</option>
         </select>
       </div>
 
