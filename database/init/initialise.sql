@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS property_data (
     postcode VARCHAR(10) NOT NULL REFERENCES postcodes(postcode) ON DELETE CASCADE,
     lsoa_id VARCHAR(20) NOT NULL REFERENCES lsoas(lsoa_id) ON DELETE CASCADE,
     property_type CHAR(1) NOT NULL,   -- D, S, T, F, O
-    square_meters INT NOT NULL,
+    square_metres INT NOT NULL,
     latitude DECIMAL(9,6) NOT NULL,
     longitude DECIMAL(9,6) NOT NULL
 );
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS kent_property_averages (
      period VARCHAR(7) NOT NULL,  --e.g. Q1-1995 meaning 1st quarter months in 1995
      avg_price INT NOT NULL,
      avg_price_sqm INT,
-     count INT,
+     count INT NOT NULL,
 
      PRIMARY KEY (property_type, period)
 );
