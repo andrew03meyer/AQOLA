@@ -3,10 +3,11 @@ import { Rnd } from "react-rnd"
 import { useAppStore } from "../store/AppStore"
 
 const content = [
-    "For mouse users: scroll/drag to interact with the map (for touchscreen users pinch/drag for the same effect).", 
     "Click here to change dataset. Once selected, graphs for this dataset will show at the bottom.",
     "Use this bar to open up new charts. Hover the icon to get more information about that graph",
     "Use these buttons to save your work and come back later",
+    "For mouse users: scroll/drag to interact with the map (for touchscreen users pinch/drag for the same effect).", 
+    "Toggle here to edit all charts of the same dataset. Disable to edit charts individually.",
 ]
 
 const Tutorial = () => {
@@ -22,10 +23,11 @@ const Tutorial = () => {
         const w = screen.width
         const h = screen.height
         setLocations([
-            [w * 0.25, h * 0.5],
             [w * 0.015, h * 0.06],
             [w * 0.25,  h * 0.6],
             [w * 0.1,   h * 0.06],
+            [w * 0.25, h * 0.5],
+            [w * 0.2,   h * 0.06],
         ])
         setLocation([w * 0.25, h * 0.25])
         setReady(true)
@@ -89,6 +91,7 @@ const Tutorial = () => {
                                     width: "25%", 
                                     textAlign: "right", 
                                     fontSize: "16px",
+                                    marginRight:"8px",
                                 }}>
                                 Prev
                             </button>

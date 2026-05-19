@@ -14,6 +14,7 @@ const useChartOrchestrator = () => {
   const openChart = useAppStore((state) => state.openChart);
   const addAreas = useAppStore((state) => state.addAreas);
   const findOpenChartFromName = useAppStore((state) => state.findOpenChartFromName);
+  const findMinimisedChartFromName = useAppStore((state) => state.findMinimisedChartFromName)
   const focusChart = useAppStore((state) => state.focusChart);
   const removeOpenChart = useAppStore((state) => state.removeOpenChart);
   const getFocusedChart = useAppStore((state) => state.getFocusedChart);

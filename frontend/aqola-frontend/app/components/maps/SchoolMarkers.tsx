@@ -43,6 +43,8 @@ interface SchoolMarkersProps {
     (school) => school.year_range === "2024-2025"
   );
 
+  const ofstedDict = { "-1": "Ungraded", "0": "Ungraded", "1": "Inadequate", "2": "Satisfactory", "3": "Good", "4": "Outstanding" };
+
   return (
     <>
       {recentSchools.map((school) => {
@@ -79,9 +81,12 @@ interface SchoolMarkersProps {
           <span>{school.postcode}</span>
           
           <span className="text-gray-500 font-medium">Ofsted:</span> 
-            {school.ofsted_ranking === 0 || school.ofsted_ranking === -1
+            {/* {school.ofsted_ranking === 0 || school.ofsted_ranking === -1
             ? "Not judged"
-            : school.ofsted_ranking ?? "N/A"}
+            : school.ofsted_ranking ?? "N/A"} */}
+            <span>
+              {ofstedDict[String(school.ofsted_ranking) as keyof typeof ofstedDict] ?? "N/A"}
+            </span>
           
           <span className="text-gray-500 font-medium">Gender:</span> 
           <span>{school.gender}</span>
