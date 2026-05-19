@@ -1,4 +1,5 @@
 import { create, useStore } from "zustand";
+import { persist } from "zustand/middleware";
 import { StateDefinition } from "./ChartStateModel";
 import { AreaLayer, resolveAreaType } from "../lib/DatasetConfig";
 import { stat } from "fs";
@@ -11,7 +12,9 @@ type AppStore = {
   currentZoom: number;
   datasetWideEditing: boolean;
   clearChartCalled: boolean;
+  tutorialDone: boolean;
 
+  setTutorialDone: (val:boolean) => void;
   toggleArea: (area: string) => void;
   clearAreas: () => void;
   setDataset: (dataset: string) => void;
@@ -45,6 +48,7 @@ const useAppStore = create<AppStore>((set, get) => ({
   currentZoom: 7, // Decently zoomed out
   datasetWideEditing: true,
   clearChartCalled: false,
+  tutorialDone: false,
 
   resetClearChartCalled: () => {
     set((state) => ({ clearChartCalled: false }))
@@ -74,127 +78,145 @@ toggleDatasetWideEditing: () => {
   });
 },
 
-  // Toggles an area in the selectedAreas array
-  toggleArea: (area) =>
-    set((state) => ({
-      selectedAreas: state.selectedAreas.includes(area)
-        ? state.selectedAreas.filter((a) => a !== area)
-        : [...state.selectedAreas, area],
-    })),
+    setTutorialDone: (val) => set({ tutorialDone: val }),
 
-  // Add an array of areas, only the ones that aren't in the selectedAreas already
-  addAreas: (areas) =>
-    set((state) => ({
-      selectedAreas: [
-        ...state.selectedAreas,
-        ...areas.filter((a) => !state.selectedAreas.includes(a)),
-      ],
-    })),
+    
+    // Toggles an area in the selectedAreas array
+    toggleArea: (area) =>
+      set((state) => ({
+        selectedAreas: state.selectedAreas.includes(area)
+          ? state.selectedAreas.filter((a) => a !== area)
+          : [...state.selectedAreas, area],
+      })),
 
-  // Empties the selectedAreas array
-  clearAreas: () => set({ selectedAreas: [] }),
+    // Add an array of areas, only the ones that aren't in the selectedAreas already
+    addAreas: (areas) =>
+      set((state) => ({
+        selectedAreas: [
+          ...state.selectedAreas,
+          ...areas.filter((a) => !state.selectedAreas.includes(a)),
+        ],
+      })),
 
-  // Sets the selected dataset and clears selected areas
-  setDataset: (dataset) =>
-    set({
-      selectedDataset: dataset,
-      selectedAreas: [],
-    }),
+    // Empties the selectedAreas array
+    clearAreas: () => set({ selectedAreas: [] }),
 
-  // Loads a chart state from openCharts into the main app state
-  loadChartState: (chartState) =>
-    set({
-      selectedAreas: chartState.selectedAreas,
-      selectedDataset: chartState.selectedDataset,
-    }),
+    // Sets the selected dataset and clears selected areas
+    setDataset: (dataset) =>
+      set({
+        selectedDataset: dataset,
+        selectedAreas: [],
+      }),
 
-  // If chart is new, creates new state and adds to openCharts
-  // If chart is minimised, moves it to openCharts
-  openChart: (chartName, position) =>
-    set((state) => {
-      
-      const isMinimised = state.minimisedCharts.find((g) => g.chartName === chartName);
-      // If the chart is minimised, add its state to open and remove from minimised
-      if (isMinimised !== undefined) {
-        return { 
-          openCharts: [isMinimised, ...state.openCharts],
-          minimisedCharts: state.minimisedCharts.filter((g) => g.chartName !== chartName) 
-        };
-      }
-      else {
+    // Loads a chart state from openCharts into the main app state
+    loadChartState: (chartState) =>
+      set({
+        selectedAreas: chartState.selectedAreas,
+        selectedDataset: chartState.selectedDataset,
+      }),
+
+    // If chart is new, creates new state and adds to openCharts
+    // If chart is minimised, moves it to openCharts
+    openChart: (chartName, position) =>
+      set((state) => {
+        
+        const isMinimised = state.minimisedCharts.find((g) => g.chartName === chartName);
+        // If the chart is minimised, add its state to open and remove from minimised
+        if (isMinimised !== undefined) {
+          return { 
+            openCharts: [isMinimised, ...state.openCharts],
+            minimisedCharts: state.minimisedCharts.filter((g) => g.chartName !== chartName) 
+          };
+        }
+        else {
+          return {
+            openCharts: [
+              {
+                chartName: chartName,
+                selectedAreas: state.selectedAreas,
+                selectedDataset: state.selectedDataset,
+                position: position,
+              },
+              ...state.openCharts,
+            ],
+          };
+        }
+      }),
+
+    addOpenCharts : (charts: StateDefinition[]) =>
+      set((state) => {
         return {
           openCharts: [
+            ...state.openCharts, 
+            ...charts.filter(chart => !state.openCharts.some(openChart => openChart.chartName === chart.chartName))]
+        };
+      }),
+
+    addMinimisedCharts : (charts: StateDefinition[]) =>
+      set((state) => {
+        return {
+          minimisedCharts: [
+            ...state.minimisedCharts, 
+            ...charts.filter(chart => !state.minimisedCharts.some(minimisedChart => minimisedChart.chartName === chart.chartName))]
+        };
+      }),
+
+    // Moves a chart from openCharts to minimisedCharts, keeping its state
+    minimiseChart: (chartName, position) =>
+      set((state) => {
+        const chartToMinimise = state.openCharts.find((g) => g.chartName === chartName);
+        // Add to minimisedCharts
+        return{
+          minimisedCharts: [
             {
               chartName: chartName,
-              selectedAreas: state.selectedAreas,
-              selectedDataset: state.selectedDataset,
+              selectedAreas: chartToMinimise?.selectedAreas || [],
+              selectedDataset: chartToMinimise?.selectedDataset || state.selectedDataset,
               position: position,
-            },
-            ...state.openCharts,
+          },
+            ...state.minimisedCharts,
           ],
-        };
-      }
-    }),
-
-  addOpenCharts : (charts: StateDefinition[]) =>
-    set((state) => {
-      return {
-        openCharts: [
-          ...state.openCharts, 
-          ...charts.filter(chart => !state.openCharts.some(openChart => openChart.chartName === chart.chartName))]
+          // Remove from openCharts
+          openCharts: state.openCharts.filter((g) => g.chartName !== chartName)
       };
-    }),
+      }),
 
-  addMinimisedCharts : (charts: StateDefinition[]) =>
-    set((state) => {
-      return {
-        minimisedCharts: [
-          ...state.minimisedCharts, 
-          ...charts.filter(chart => !state.minimisedCharts.some(minimisedChart => minimisedChart.chartName === chart.chartName))]
-      };
-    }),
+    // Remove chart from minimisedCharts by name
+    removeMinimisedChart: (chartName) =>
+      set((state) => ({
+        minimisedCharts: state.minimisedCharts.filter((g) => g.chartName !== chartName),
+      })),
 
-  // Moves a chart from openCharts to minimisedCharts, keeping its state
-  minimiseChart: (chartName, position) =>
-    set((state) => {
-      const chartToMinimise = state.openCharts.find((g) => g.chartName === chartName);
-      // Add to minimisedCharts
-      return{
-        minimisedCharts: [
-          {
-            chartName: chartName,
-            selectedAreas: chartToMinimise?.selectedAreas || [],
-            selectedDataset: chartToMinimise?.selectedDataset || state.selectedDataset,
-            position: position,
-        },
-          ...state.minimisedCharts,
-        ],
-        // Remove from openCharts
-        openCharts: state.openCharts.filter((g) => g.chartName !== chartName)
-     };
-    }),
+    // Removes a chart from openCharts by name
+    removeOpenChart: (chartName) =>
+      set((state) => ({
+        openCharts: state.openCharts.filter((g) => g.chartName !== chartName),
+      })),
 
-  // Remove chart from minimisedCharts by name
-  removeMinimisedChart: (chartName) =>
-    set((state) => ({
-      minimisedCharts: state.minimisedCharts.filter((g) => g.chartName !== chartName),
-    })),
+    // Finds a chart in openCharts by name
+    findOpenChartFromName: (chartName) => {
+      return get().openCharts.find((g) => g.chartName === chartName);
+    },
 
-  // Removes a chart from openCharts by name
-  removeOpenChart: (chartName) =>
-    set((state) => ({
-      openCharts: state.openCharts.filter((g) => g.chartName !== chartName),
-    })),
+      // Finds a chart in minimisedCharts by name
+    findMinimisedChartFromName: (chartName) => {
+      return get().minimisedCharts.find((g) => g.chartName === chartName);
+    },
+    // Returns the top chart in the stack
+    getFocusedChart: () => {
+      return get().openCharts[0];
+    },
 
-  // Finds a chart in openCharts by name
-  findOpenChartFromName: (chartName) => {
-    return get().openCharts.find((g) => g.chartName === chartName);
-  },
+    // Returns the full chart stack
+    getOpenCharts: () => {
+      return get().openCharts;
+    },
 
-    // Finds a chart in minimisedCharts by name
-  findMinimisedChartFromName: (chartName) => {
-    return get().minimisedCharts.find((g) => g.chartName === chartName);
-  },
+    getAllCharts: () => {
+      return [...get().openCharts, ...get().minimisedCharts];
+    },
+
+    setZoom: (zoom) => set({ currentZoom: zoom }),
 
   // Puts the "focused" chart to the front of the openCharts array
   focusChart: (chartName) =>
@@ -248,22 +270,6 @@ updateChartState: (chartName) =>
       };
     }
   }),
-
-  // Returns the top chart in the stack
-  getFocusedChart: () => {
-    return get().openCharts[0];
-  },
-
-  // Returns the full chart stack
-  getOpenCharts: () => {
-    return get().openCharts;
-  },
-
-  getAllCharts: () => {
-    return [...get().openCharts, ...get().minimisedCharts];
-  },
-
-  setZoom: (zoom) => set({ currentZoom: zoom }),
 
   updateChartLocation: (chartName: string, pos: [number, number]) => {
     set((state) => ({

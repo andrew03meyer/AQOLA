@@ -65,7 +65,7 @@ interface SchoolMarkersProps {
               },
             }}
           >
-            <Popup>
+            <Popup className="popup">
       <div className="text-black p-1" style={{ minWidth: '220px' }}>
         <h3 className="font-bold text-lg border-b border-gray-200 mb-2 pb-1">
           {school.school_name}

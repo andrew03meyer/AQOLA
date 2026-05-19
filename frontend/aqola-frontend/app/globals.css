@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #000000;
   --foreground: #171717;
   /* Tooltips */
     /* --rt-color-white: #fff;
@@ -22,12 +22,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
+
+/* ─── Reset & base ─────────────────────────────────────────────────── */
 
 html,
 body {
@@ -35,14 +37,83 @@ body {
   margin: 0;
   padding: 0;
   overflow: hidden;
-}
-
-body {
-  height: 100%;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ─── Typography ───────────────────────────────────────────────────── */
+
+ h1,
+ h2,
+ h3,
+ h4,
+ h5,
+ h6 {
+  color: cyan;
+  padding: 10px;
+}
+
+ p,
+ li,
+ ul,
+ ol,
+ span,
+ div,
+ td {
+  color: white;
+  padding: 5px;
+}
+
+ a {
+  color: white;
+  text-decoration: none;
+  font-style: italic;
+}
+
+ a:hover {
+  text-decoration: underline;
+  color: red;
+}
+
+ h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 16px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  text-align: center;
+}
+
+ h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 12px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+ h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 8px;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* ─── Tables ───────────────────────────────────────────────────────── */
+
+td,
+th {
+  padding: 8px;
+}
+
+td,
+tr {
+  border: 1px solid white;
+}
+
+/* ─── Page layout ──────────────────────────────────────────────────── */
 
 .page-container {
   height: 100%;
@@ -51,24 +122,68 @@ body {
   overflow: hidden;
 }
 
+/* ─── Map ──────────────────────────────────────────────────────────── */
 
-/* Parent container for overlay positioning */
 .map-wrapper {
   position: relative;
   isolation: isolate;
   flex: 1;
-  min-height: 100%;
-  height: 100%;
+  min-height: 0;
+  /* allow flex child to shrink */
   z-index: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* .data-select-wrapper {
+.popup .leaflet-popup-content-wrapper {
+  background-color: rgba(15, 30, 40, 0.9);
+}
+
+.popup .leaflet-popup-tip {
+  background-color: rgba(15, 30, 40, 0.9);
+  /* makes the arrow match */
+}
+
+.popup .leaflet-popup-close-button {
+  margin: 10px;
+}
+
+.leaflet-control-zoom-in span {
+  color: white;
+  background-color: rgba(15, 30, 40, 0.55);
+}
+
+.leaflet-control-zoom-out span {
+  color: white;
+  background-color: rgba(15, 30, 40, 0.55);
+}
+
+.leaflet-control-zoom-out:hover span {
+  color: cyan;
+}
+
+.leaflet-control-zoom-in:hover span {
+  color: cyan;
+}
+.leaflet-control-zoom {
+  border: none;
+}
+
+/* ─── Top navigation overlay ───────────────────────────────────────── */
+
+.top-nav {
   position: absolute;
   top: 20px;
   left: 60px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  z-index: 1;
+}
+
+.top-nav-contents {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -79,9 +194,53 @@ body {
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
 
-  z-index: 1;
-} */
+#upload,
+#download {
+  color: white;
+}
+
+#upload:hover,
+#download:hover {
+  color: cyan;
+}
+
+/* ─── Bottom navigation overlay ────────────────────────────────────── */
+
+.bottom-nav {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 20px;
+  border-radius: 40px;
+  background: rgba(60, 90, 100, 0.65);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.nav-button {
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  background: rgba(120, 180, 185, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* ─── Data select ──────────────────────────────────────────────────── */
 
 .data-label {
   font-size: 14px;
@@ -91,69 +250,12 @@ body {
 }
 
 .data-select {
-  /*top: 20px;
-  left: 10%;
-  transform: translateX(-10%); */
-
   background: rgba(60, 90, 100, 0.65);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* Bottom navigation overlay */
-.bottom-nav {
-  position: absolute;
-
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  display: flex;
-  align-items: center;
-  gap: 18px;
-
-  padding: 14px 20px;
-  border-radius: 40px;
-
-  /* glass style background */
-  background: rgba(60, 90, 100, 0.65);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-
-  z-index: 2;
-
-  /* prevent layout from being affected by map interactions */
-  pointer-events: auto;
-  white-space: nowrap;
-}
-.nav-button {
-  width: 60px;
-  height: 60px;
-
-  border-radius: 18px;
-  border: none;
-
-  font-size: 24px;
-  cursor: pointer;
-
-  background: rgba(120, 180, 185, 0.85);
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition: all 0.2s ease;
-}
-
-/* .nav-button i {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.nav-button i::before {
-  vertical-align: middle;
-} */
+/* ─── Postcode tooltip ─────────────────────────────────────────────── */
 
 .postcode-tooltip {
   background: white;
@@ -165,10 +267,11 @@ body {
   padding: 4px 8px;
 }
 
-/* Remove the default tooltip arrow */
 .postcode-tooltip::before {
   display: none;
 }
+
+/* ─── Draggable windows ────────────────────────────────────────────── */
 
 .rnd-window {
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -193,6 +296,16 @@ body {
   cursor: grab;
 }
 
+.window-content {
+  flex: 1;
+  overflow: auto;
+  z-index: 2000;
+  width: 99%;
+  height: 95%;
+  margin-top: 5%;
+  position: absolute;
+}
+
 .window-titlebar button {
   background: none;
   width: 28px;
@@ -210,40 +323,9 @@ body {
   text-align: center;
 }
 
-.window-titlebar button:hover {
+.button:hover {
   color: cyan;
   font-weight: bold;
-}
-
-.titlebar-contents {
-  background: none;
-  width: 28px;
-  height: 28px;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  padding: 0 4px;
-  height:100%;
-  /* margin: 5px; */
-}
-
-.titlebar-contents:hover{
-  color: cyan;
-  font-weight: bold;
-}
-
-.window-content {
-  flex: 1;
-  overflow: auto;
-  z-index: 2000;
-  width: 100%;
-  height: 100%;
-  margin: 0%;
-  padding: 0%;
-  position: absolute;
 }
 
 .minimised-element {
@@ -262,38 +344,24 @@ body {
   cursor: pointer;
 }
 
-.minimised-container {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: fit-content;
-  width: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 3000;
-  padding: 8px;
-}
-
 .minimised-element:hover {
-  border: teal solid 1px;
+  border-color: rgba(15, 30, 40, 0.55);
 }
 
-.minimised-element:hover #minimised-element-text{
+.minimised-element:hover #minimised-element-text {
   font-weight: bold;
 }
 
 .minimised-close {
-  background-color: none;
   border-radius: 4px;
   width: 20px;
   height: 20px;
-  text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2px;
 }
+
 .minimised-close:hover {
   color: cyan;
   font-weight: bold;
@@ -307,37 +375,120 @@ body {
   flex: 1;
 }
 
-.top-nav {
-  position: absolute;
+/* ─── Docs page ────────────────────────────────────────────────────── */
+
+.docs-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.heading {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(15, 30, 40, 0.55);
+  color: white;
+  padding-bottom: 12px;
+}
+
+.docs-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: row;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.flex-row-centered {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 12px;
-  position: absolute;
-  top: 20px;
-  left: 60px;
-  z-index: 1;
+  text-align: center;
+  justify-content: space-between;
 }
 
-.top-nav-contents {
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  /* align-items: center;
+  text-align: center; */
+  justify-content: space-between;
+}
+
+.flex-col-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.contents-bar {
+  width: 20%;
+  flex-shrink: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.contents-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.contents-items {
+  /* width: 100%; */
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-top: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 50%;
+  /* text-align: center; */
+}
+
+/* ─── Tags ─────────────────────────────────────────────────────────── */
+.tag {
+  background-color: teal;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  height: fit-content;
+  border-radius: 4px;
+  /* align-self: flex-start; */
+  align-items: center;
+  text-align: center;
+  /* margin: 20px; */
+}
+
+.tag a:hover {
+  color: cyan;
+}
+
+.warning {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 16px;
-  border-radius: 16px;
-  background: rgba(15, 30, 40, 0.55);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  width: fit-content;
+  background-color: #d45c00;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 20px 0;
 }
 
-#upload {
-  color: white;
-}
-#download {
-  color: white;
-}
-#upload:hover, #download:hover {
-  color: cyan;
+.highlight {
+  color: teal;
 }

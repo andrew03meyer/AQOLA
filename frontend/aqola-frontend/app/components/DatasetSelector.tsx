@@ -73,6 +73,11 @@ export default function DataSelector() {
           content="Toggle on for same dataset graphs to match. Off allows individual chart editing"
         />
       </div>
+
+      <div className="top-nav-contents">
+        {/* Documentation Button */}
+        <div><a href="/docs">Documentation</a></div>
+      </div>
     </div>
   );
 }

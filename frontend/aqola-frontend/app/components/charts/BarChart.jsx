@@ -40,7 +40,7 @@ export default function BarChart({
   yScale
     .domain([
       0,
-      d3.max(data.groups, (group) => d3.max(group.bars, (bar) => bar.value)),
+      Math.max(1, d3.max(data.groups, (group) => d3.max(group.bars, (bar) => bar.value)))
     ])
     .range([innerHeight, 0]);
 
@@ -70,7 +70,8 @@ export default function BarChart({
     [subgx, xSubgroupScale],
   );
 
-  const maxVal = d3.max(data.groups, (g) => d3.max(g.bars, (b) => b.value));
+  const maxVal = Math.max(1, d3.max(data.groups, (g) => d3.max(g.bars, (b) => b.value)));
+
   const logTicks = [
     0,
     ...d3
@@ -79,13 +80,11 @@ export default function BarChart({
   ];
 
   // Pull the tick values into a shared constant
-  const yTickValues = isSymlog ? logTicks : yScale.ticks();
+  const yTickValues = isSymlog ? logTicks : yScale.ticks(Math.min(10, maxVal));
 
   useEffect(() => {
     const axis = d3.axisLeft(yScale);
-    if (isSymlog) {
-      axis.tickValues(yTickValues);
-    }
+    axis.tickValues(yTickValues)
     d3.select(gy.current).call(axis.tickFormat(d3.format(",.0f")));
   }, [gy, yScale, isSymlog]);
 
