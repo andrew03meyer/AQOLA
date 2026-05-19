@@ -24,6 +24,7 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
   const openCharts = useAppStore((state) => state.openCharts);
   const clearAreas = useAppStore((state) => state.clearAreas)
   const updateChartState = useAppStore((state) => state.updateChartState)
+  const clearChartState = useAppStore((state) => state.clearChartState)
   const toggleDatasetWideEditing = useAppStore((state) => state.toggleDatasetWideEditing)
   const datasetWideEditing = useAppStore((state) => state.datasetWideEditing)
 
@@ -55,9 +56,9 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
             // }
 
             focusChart(chartName)
-            
-            clearAreas();
-            // updateChartState(chartName);
+            // clearChartState(chartName);
+            clearAreas()
+            updateChartState(chartName)
             
             // if (editingChanged) {
             //   toggleDatasetWideEditing();
@@ -66,7 +67,7 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
           }} 
           className="titlebar-contents"
           style={{
-              visibility: getFocusedChart()?.chartName === chartName ? "visible" : "hidden"
+              // visibility: getFocusedChart()?.chartName === chartName ? "visible" : "hidden"
           }}
         />
         <Tooltip

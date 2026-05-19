@@ -8,9 +8,8 @@ type AppStore = {
   selectedAreas: string[];
   selectedDataset: string;
   currentZoom: number;
-  datasetWideEditing: boolean,
+  datasetWideEditing: boolean;
 
-  toggleDatasetWideEditing: () => void;
   toggleArea: (area: string) => void;
   clearAreas: () => void;
   setDataset: (dataset: string) => void;
@@ -31,6 +30,8 @@ type AppStore = {
   addAreas: (areas: string[]) => void;
   setZoom: (zoom: number) => void;
   updateChartLocation: (chartName: string, pos: [number, number]) => void;
+  toggleDatasetWideEditing: () => void;
+  clearChartState: (chartName: string) => void;
 };
 
 const useAppStore = create<AppStore>((set, get) => ({
@@ -170,14 +171,13 @@ toggleDatasetWideEditing: () => {
   // Puts the "focused" chart to the front of the openCharts array
   focusChart: (chartName) =>
     set((state) => {
-      // if already focused
+      // if not already focused
       if (
         state.openCharts[0]?.chartName === chartName &&
         state.selectedDataset === state.openCharts[0]?.selectedDataset
-      ){
+      )
         return state; // if already focused, do nothing
-      }
-        console.log("Focusing chart: ", chartName);
+      console.log("Focusing chart: ", chartName);
       const chartToFocus = state.openCharts.find(
         (g) => g.chartName === chartName,
       );
@@ -191,43 +191,35 @@ toggleDatasetWideEditing: () => {
     }),
 
   // Updates the state of a chart in openCharts by name
-  updateChartState: (chartName, singleChart?:boolean) =>
+  updateChartState: (chartName) =>
     set((state) => {
-      if(!state.datasetWideEditing || singleChart){
-        return{
+      if(!state.datasetWideEditing){
+        return {
           openCharts: state.openCharts.map((g) =>
             g.chartName === chartName
               ? {
                   ...g,
-                  ...{
-                    selectedAreas: [...get().selectedAreas],
-                    selectedDataset: get().selectedDataset,
-                  },
+                  selectedAreas: [...get().selectedAreas],
+                  selectedDataset: get().selectedDataset,
                 }
               : g,
           ),
-        }
+        };
       } else {
-        console.log("in the change everything")
-        const chartsToUpdate = state.openCharts.filter(
-          (chart) => chart.selectedDataset == 
-          state.findOpenChartFromName(chartName)?.selectedDataset
-        )
-        return{
+        const changedCharts = state.openCharts.filter((chart) => chart.chartName == chartName)
+        return {
           openCharts: state.openCharts.map((g) =>
-            chartsToUpdate.includes(g)
+            g.selectedDataset == state.findOpenChartFromName(chartName)?.selectedDataset
               ? {
                   ...g,
-                  ...{
-                    selectedAreas: [...get().selectedAreas],
-                    selectedDataset: get().selectedDataset,
-                  },
+                  selectedAreas: [...get().selectedAreas],
+                  selectedDataset: state.findOpenChartFromName(chartName)?.selectedDataset,
                 }
               : g,
           ),
-        }
+        };
       }
-  }),
+    }),
 
   // Returns the top chart in the stack
   getFocusedChart: () => {
@@ -251,7 +243,20 @@ toggleDatasetWideEditing: () => {
         chart.chartName === chartName ? { ...chart, position: pos } : chart
       ),
     }));
-  }
+  },
+
+  clearChartState: (chartName: string) =>
+    set((state) => ({
+      openCharts: state.openCharts.map((g) =>
+        g.chartName === chartName
+          ? {
+              ...g,
+              selectedAreas: [],
+            }
+          : g,
+      ),
+      selectedAreas: []
+    })),
 }));
 
 // gets the areaLayer for a given zoom and dataset.
