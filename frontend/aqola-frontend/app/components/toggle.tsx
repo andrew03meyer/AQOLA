@@ -1,5 +1,6 @@
 //https://tailgrids.com/docs/components/toggle
 import { useAppStore } from "../store/AppStore";
+import { Tooltip } from "react-tooltip";
 
 function Toggle(){
   const toggleDatasetWideEditing = useAppStore((state) => state.toggleDatasetWideEditing)

@@ -1,6 +1,7 @@
 import { create, useStore } from "zustand";
 import { StateDefinition } from "./ChartStateModel";
 import { AreaLayer, resolveAreaType } from "../lib/DatasetConfig";
+import { stat } from "fs";
 
 type AppStore = {
   openCharts: StateDefinition[];
@@ -45,12 +46,32 @@ const useAppStore = create<AppStore>((set, get) => ({
   datasetWideEditing: true,
   clearChartCalled: false,
 
-resetClearChartCalled: () => {
-  set((state) => ({ clearChartCalled: false }))
-},
+  resetClearChartCalled: () => {
+    set((state) => ({ clearChartCalled: false }))
+  },
 
 toggleDatasetWideEditing: () => {
-  set((state) => ({ datasetWideEditing: !state.datasetWideEditing }))
+  set((state) => {
+    // // If turning dataset wide editing ON, copy focused chart's areas to all charts in that dataset
+    if (!state.datasetWideEditing) {
+      const targetDataset = state.getFocusedChart()?.selectedDataset;
+      if (!targetDataset) return { datasetWideEditing: !state.datasetWideEditing };
+      return {
+        datasetWideEditing: true,
+        openCharts: state.openCharts.map((g) =>
+          g.selectedDataset === targetDataset
+            ? {
+                ...g,
+                selectedAreas: [...get().selectedAreas],
+                selectedDataset: get().selectedDataset,
+              }
+            : g,
+        ),
+      };
+    }
+    return { datasetWideEditing: false };
+    // return {datasetWideEditing: !state.datasetWideEditing}
+  });
 },
 
   // Toggles an area in the selectedAreas array
@@ -184,7 +205,6 @@ toggleDatasetWideEditing: () => {
         state.selectedDataset === state.openCharts[0]?.selectedDataset
       )
         return state; // if already focused, do nothing
-      console.log("Focusing chart: ", chartName);
       const chartToFocus = state.openCharts.find(
         (g) => g.chartName === chartName,
       );

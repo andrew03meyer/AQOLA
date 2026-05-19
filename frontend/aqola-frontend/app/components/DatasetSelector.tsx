@@ -3,6 +3,7 @@ import { stateExport, stateImport } from "../lib/FileHandling";
 import { Download, Upload, Save } from "lucide-react";
 import React from "react";
 import Toggle from "./toggle";
+import { Tooltip } from "react-tooltip";
 
 export default function DataSelector() {
   // Read the value from Zustand directly — no useState needed
@@ -34,7 +35,7 @@ export default function DataSelector() {
         </select>
       </div>
 
-      <div className="top-nav-contents">
+      <div className="top-nav-contents" data-tooltip-id="state-save-tooltip">
         {/* Temporary download button */}
         <button onClick={() => stateExport()} title="Download charts to device"><Save size={20} id="download" /></button>
         {/* Temporary upload button */}
@@ -45,10 +46,32 @@ export default function DataSelector() {
         <div id="invalid-file-format" style={{ color: "red", fontSize: "15px" , display: "none", fontWeight: "bold"}}>
           Invalid file format
         </div>
+        <Tooltip
+          id={"state-save-tooltip"}
+          className="tooltip"
+          style={{ 
+              // maxWidth: "50%", 
+              borderRadius:"10px",
+              zIndex: 4000
+          }}
+          // delayHide={500}
+          content="Save your work, to upload later."
+        />
       </div>
 
-      <div className="top-nav-contents" >
+      <div className="top-nav-contents" data-tooltip-id={"dataset-level-editing-tooltip"} >
         <Toggle />
+        <Tooltip
+          id={"dataset-level-editing-tooltip"}
+          className="tooltip"
+          style={{ 
+              // maxWidth: "50%", 
+              borderRadius:"10px",
+              zIndex: 4000
+          }}
+          // delayHide={500}
+          content="Toggle on for same dataset graphs to match. Off allows individual chart editing"
+        />
       </div>
     </div>
   );

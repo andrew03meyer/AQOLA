@@ -21,7 +21,9 @@ export default function Charts() {
     // Ref to selected areas in appstore
     const selectedAreas = useAppStore((state) => state.selectedAreas);
     // Ref to previous selected areas
-    const prevSelectedAreasRef = useRef<string[]>(selectedAreas);
+    const prevChartAreasRef = useRef<Record<string, string[]>>(
+        Object.fromEntries(getOpenCharts().map((chart) => [chart.chartName, chart.selectedAreas]))
+    );
 
     useEffect(() => {
         const currentCharts = new Set(openCharts.map((c) => c.chartName));
@@ -33,9 +35,10 @@ export default function Charts() {
         let changedCharts: StateDefinition[] = [];
         if (openCharts.length > 0) {
             changedCharts = 
-                JSON.stringify(prevSelectedAreasRef.current) == JSON.stringify(getFocusedChart()?.selectedAreas) 
-                ? [] 
-                : openCharts.filter((chart) => chart.selectedDataset == getFocusedChart()?.selectedDataset);
+                openCharts.filter((chart) => {
+                    const prevAreas = prevChartAreasRef.current[chart.chartName];
+                    return JSON.stringify(prevAreas) !== JSON.stringify(chart.selectedAreas);
+                });
         }
 
         console.log("----------------------\nchangedCharts\n---------------")
@@ -72,7 +75,9 @@ export default function Charts() {
 
         // Update the ref to the current chart names
         prevChartNamesRef.current = currentCharts;
-        prevSelectedAreasRef.current = selectedAreas;
+        prevChartAreasRef.current = Object.fromEntries(
+            openCharts.map((c) => [c.chartName, c.selectedAreas])
+        );
     }, [openCharts]);
 
     return (
