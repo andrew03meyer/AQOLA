@@ -4,10 +4,11 @@ import { Tooltip } from "react-tooltip";
 const ChartControls = () => {
   const { availableCharts, activeChartId, triggerChart } = useChartOrchestrator();
   return (
-    <div className="bottom-nav">
+    <div className="bottom-nav" id="bottom-nav-bar">
       {availableCharts.map((chart) => (
-        <div data-tooltip-id={chart.id+"-tooltip"}>
+        <div data-tooltip-id={chart.id+"-tooltip"} key={chart.id+"-key"}>
           <img 
+            id= {chart.id+"-img"}
             src={chart.src}           
             key={chart.id}
             onClick={() => triggerChart(chart.id)}
