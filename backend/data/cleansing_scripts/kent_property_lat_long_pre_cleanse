@@ -45,7 +45,7 @@ def extract_os_coordinates():
         writer.writerow(["property_id", "latitude", "longitude"])
         
         for row in reader:
-            # Normalize keys to lowercase and strip whitespace vulnerabilities
+            # Normalise keys to lowercase and strip whitespace vulnerabilities
             clean_row = {str(k).strip().lower(): str(v).strip() for k, v in row.items() if k is not None}
             
             # Extract attributes using standard lowercase keys safely

@@ -14,11 +14,12 @@ def get_spatial_lookup(postcodes_path):
         print(f"Warning: {postcodes_path.name} not found.")
         return pd.DataFrame()
     
-    spatial_cols = ['postcode', 'lsoa_id', 'latitude', 'longitude']
+    spatial_cols = ['postcode', 'lsoa_id']
     df = pd.read_csv(postcodes_path, usecols=spatial_cols)
     # Standardise postcodes
     df['postcode'] = df['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
     return df
+
 # Loads raw Kent CSV and standardises headers
 def load_raw_property_data(input_path):
     if not input_path.exists():
@@ -42,6 +43,15 @@ def load_epc_lookup(epc_path):
     
     return df[['clean_epc_addr', 'uprn', 'square_metres']]
 
+# load the exact Ordnance Survey UPRN coordinates lookup
+def load_uprn_coordinates(coords_path):
+    if not coords_path.exists():
+        print(f"Warning: UPRN coordinates file not found at {coords_path}")
+        return pd.DataFrame()
+    df = pd.read_csv(coords_path)
+    df['property_id'] = df['property_id'].astype(str).str.split('.').str[0].str.strip()
+    return df[['property_id', 'latitude', 'longitude']]
+
 # Creates a single address string from PAON, SAON, and Street.
 def construct_full_address(df):
     def format_row(row):
@@ -54,8 +64,9 @@ def construct_full_address(df):
 
     df['full_address'] = df.apply(format_row, axis=1)
     return df
+
 # Handles deduplication, address creation, and spatial data
-def build_property_registry(df_kent, df_spatial, df_epc):
+def build_property_registry(df_kent, df_spatial, df_epc, df_coords):
     identity_cols = ['paon', 'saon', 'street', 'postcode', 'type']
     properties = df_kent[identity_cols].drop_duplicates().copy()
     properties['postcode'] = properties['postcode'].str.replace(r'\s+', '', regex=True).str.upper()
@@ -66,12 +77,18 @@ def build_property_registry(df_kent, df_spatial, df_epc):
     # Match against EPC dataset for uprn and floor area metrics
     properties = properties.merge(df_epc, left_on='clean_prop_addr', right_on='clean_epc_addr', how='left')
     
-    # Match against spatial lookup to get LSOA, latitude and longitude
+    # Match against spatial lookup to get LSOA
     if not df_spatial.empty:
         properties = properties.merge(df_spatial, on='postcode', how='left')
         
     properties = properties.rename(columns={'type': 'property_type', 'uprn': 'property_id'})
+    
+    # Match against the exact UPRN coordinate mapping table
+    if not df_coords.empty:
+        properties = properties.merge(df_coords, on='property_id', how='left')
+        
     return properties
+
 # Saves the final dataframe to output path
 def export_to_csv(data, output_folder):
     output_path = output_folder / "property_data.csv"
@@ -84,17 +101,19 @@ def property_process():
     input_file = base_dir / "property_data" / "raw" / "kent_property_data.csv"
     epc_file = base_dir / "property_data" / "raw" / "kent_domestic_energy_performance_certificate.csv"
     spatial_file = base_dir / "postcodes" / "postcodes.csv"
+    coords_file = base_dir / "property_data" / "raw" / "kent_uprn_coordinates.csv"
     output_dir = base_dir / "property_data"
     
     df_raw = load_raw_property_data(input_file)
     df_spatial = get_spatial_lookup(spatial_file)
     df_epc = load_epc_lookup(epc_file)
+    df_coords = load_uprn_coordinates(coords_file)
     
     if df_raw.empty or df_epc.empty:
         print("Error: Missing core raw datasets. Execution halted.")
         return
 
-    processed_registry = build_property_registry(df_raw, df_spatial, df_epc)
+    processed_registry = build_property_registry(df_raw, df_spatial, df_epc, df_coords)
     
     # # Log records missing an EPC reference mapping
     # dropped_epc = processed_registry[processed_registry['property_id'].isna()]
