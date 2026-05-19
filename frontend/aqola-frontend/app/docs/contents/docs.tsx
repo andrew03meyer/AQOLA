@@ -3,11 +3,13 @@
 import ContentsBar from "./ContentsBar";
 import { OctagonAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 
 const Content = () => {
     const router = useRouter()
     return (
+        
         <div className="docs-page">
 
             {/* ── Heading — natural height, never overlaps ── */}
@@ -16,6 +18,39 @@ const Content = () => {
                     <img src="/koala.png" style={{width: "70px", borderRadius:"20px"}} onClick={() => router.push("/")} />
                     <div className="tag" style={{margin:"20px"}}>Documentation</div>
                 </div>
+
+                {/* ── Return to Map Button ── */}
+                <Link 
+                    href="/" 
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        padding: "10px 16px",
+                        backgroundColor: "#1f2937",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        textDecoration: "none",
+                        border: "1px solid #374151",
+                        transition: "background-color 0.2s",
+                        cursor: "pointer"
+                    }}
+                    className="hover:bg-gray-700" 
+                >
+                    {/* Left Facing Arrow SVG */}
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        strokeWidth={2.5} 
+                        stroke="currentColor" 
+                        style={{ width: "16px", height: "16px" }}
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                    </svg>
+                    Return to Map
+                </Link>
             </div>
 
             {/* ── Main content row — fills remaining space ── */}
