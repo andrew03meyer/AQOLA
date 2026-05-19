@@ -12,7 +12,7 @@ const MinimisedChartList = () => {
     };
 
     return (
-        <div className="minimised-bar">
+        <>
             {[...charts].reverse().map((chart: StateDefinition) => (
                 <div key={chart.chartName} className="minimised-element" onClick={() => openChart(chart.chartName, [0, 0])}>
                     <div id="minimised-element-text" className="minimised-text">

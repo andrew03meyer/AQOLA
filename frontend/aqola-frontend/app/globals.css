@@ -4,7 +4,7 @@
   --background: #000000;
   --foreground: #171717;
   /* Tooltips */
-    /* --rt-color-white: #fff;
+  /* --rt-color-white: #fff;
     --rt-color-dark: #222;
     --rt-color-success: #8dc572;
     --rt-color-error: #be6464;
@@ -44,39 +44,39 @@ body {
 
 /* ─── Typography ───────────────────────────────────────────────────── */
 
- h1,
- h2,
- h3,
- h4,
- h5,
- h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: cyan;
   padding: 10px;
 }
 
- p,
- li,
- ul,
- ol,
- span,
- div,
- td {
+p,
+li,
+ul,
+ol,
+span,
+div,
+td {
   color: white;
   padding: 5px;
 }
 
- a {
+a {
   color: white;
   text-decoration: none;
   font-style: italic;
 }
 
- a:hover {
+a:hover {
   text-decoration: underline;
   color: red;
 }
 
- h1 {
+h1 {
   font-size: 24px;
   font-weight: bold;
   margin-top: 16px;
@@ -85,7 +85,7 @@ body {
   text-align: center;
 }
 
- h2 {
+h2 {
   font-size: 20px;
   font-weight: bold;
   margin-top: 12px;
@@ -93,7 +93,7 @@ body {
   padding-bottom: 0;
 }
 
- h3 {
+h3 {
   font-size: 18px;
   font-weight: bold;
   margin-top: 8px;
@@ -166,6 +166,7 @@ tr {
 .leaflet-control-zoom-in:hover span {
   color: cyan;
 }
+
 .leaflet-control-zoom {
   border: none;
 }
@@ -215,8 +216,8 @@ tr {
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  /* gap: 18px; */
-  /* padding: 14px 20px; */
+  gap: 18px;
+  padding: 14px 20px;
   border-radius: 40px;
   background: rgba(60, 90, 100, 0.65);
   backdrop-filter: blur(10px);
@@ -233,14 +234,11 @@ tr {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  /* background: rgba(120, 180, 185, 0.85); */
+  background: rgba(120, 180, 185, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s ease;
-  padding: 0;
-  margin: 0;
-  background: none;
 }
 
 /* ─── Data select ──────────────────────────────────────────────────── */
@@ -288,25 +286,32 @@ tr {
   background: rgba(15, 30, 40, 0.85);
 }
 
+/* File 1 had align-items: center; file 2 had it commented out.
+   Keeping file 1's version as it is more complete. */
 .window-titlebar {
   flex-shrink: 0;
   height: 36px;
   display: flex;
-  /* align-items: center; */
+  align-items: center;
   justify-content: flex-end;
-  padding: 2px;
+  padding: 0 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   cursor: grab;
 }
 
-.window-content {
-  flex: 1;
-  overflow: auto;
-  z-index: 2000;
-  width: 99%;
-  height: 95%;
-  margin-top: 5%;
-  position: absolute;
+/* File 1 used a standalone .button class; file 2 scoped to .window-titlebar button.
+   Keeping both for full coverage. */
+.button {
+  background: none;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 4px;
 }
 
 .window-titlebar button {
@@ -320,7 +325,6 @@ tr {
   font-size: 16px;
   line-height: 1;
   padding: 0 4px;
-  /* margin-left: 10px; */
   align-items: center;
   align-content: center;
   text-align: center;
@@ -329,6 +333,35 @@ tr {
 .button:hover {
   color: cyan;
   font-weight: bold;
+}
+
+/* File 1 used position: absolute with top: 36px; file 2 used flex + margin-top.
+   Keeping file 1's version as it is cleaner. */
+.window-content {
+  position: absolute;
+  top: 36px;
+  /* sit directly below the title bar; no margin-top overlap */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  z-index: 2000;
+}
+
+/* ─── Minimised windows ────────────────────────────────────────────── */
+
+/* File 1 had this container; file 2 did not — kept from file 1 */
+.minimised-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: none;
+  gap: 8px;
+  z-index: 3000;
+  padding: 8px;
 }
 
 .minimised-element {
@@ -450,7 +483,6 @@ tr {
 }
 
 .contents-items {
-  /* width: 100%; */
   background-color: rgba(255, 255, 255, 0.1);
   margin-top: 20px;
   padding: 20px;
@@ -458,10 +490,10 @@ tr {
   flex-direction: column;
   align-items: center;
   min-width: 50%;
-  /* text-align: center; */
 }
 
 /* ─── Tags ─────────────────────────────────────────────────────────── */
+
 .tag {
   background-color: teal;
   color: white;
@@ -469,10 +501,8 @@ tr {
   font-weight: bold;
   height: fit-content;
   border-radius: 4px;
-  /* align-self: flex-start; */
   align-items: center;
   text-align: center;
-  /* margin: 20px; */
 }
 
 .tag a:hover {
