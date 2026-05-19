@@ -82,7 +82,12 @@ const Polygons = () => {
           max_lng: bounds.getEast(),
         });
       } else if (areaType === "flood") {
-        boundaries = getFloodBoundaries();
+        boundaries = getFloodBoundaries({
+          min_lat: bounds.getSouth(),
+          max_lat: bounds.getNorth(),
+          min_lng: bounds.getWest(),
+          max_lng: bounds.getEast(),
+        });
       }
 
       // If we can't find the boundaries from the API

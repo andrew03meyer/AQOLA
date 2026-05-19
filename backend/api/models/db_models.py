@@ -75,7 +75,7 @@ class FloodOccurrences(Base):
     boundary = Column(Geometry('GEOMETRY', srid=4326))
 
 class PostcodeFloodOccurrences(Base):
-    __tablename__ = "postcodes_flood_occurrences"
+    __tablename__ = "postcode_flood_occurrences"
 
     postcode = Column(String, primary_key=True)
     rec_out_id = Column(String, primary_key=True)

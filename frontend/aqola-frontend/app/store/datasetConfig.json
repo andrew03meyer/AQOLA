@@ -29,7 +29,15 @@
     ]
   },
   "flood_occurrences": {
-    "graphs": ["flood_occurrences_history"],
-    "areaLayers": [{ "areaType": "flood", "minZoom": 7 }]
+    "graphs": [
+      "flood_occurrences_history",
+      "flood_occurrences_by_source",
+      "flood_occurrences_by_cause",
+      "flood_occurrences_by_type"
+    ],
+    "areaLayers": [
+      { "areaType": "flood", "minZoom": 7, "maxZoom": 14 },
+      { "areaType": "postcode", "minZoom": 14 }
+    ]
   }
 }

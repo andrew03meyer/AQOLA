@@ -68,3 +68,102 @@ async def list_flood_occurrence_timelines(
         raise HTTPException(status_code=404, detail="No flood occurrence records found.")
 
     return {str(int(row.year)): row.count for row in results}
+
+
+@router.get("/by-source")
+async def flood_occurrences_by_source(
+    postcodes: list[str] = Query(default=[]),
+    db: Session = Depends(get_db)
+):
+    """Flood counts grouped by flood_src."""
+    query = db.query(
+        FloodOccurrences.flood_src,
+        func.count(FloodOccurrences.rec_out_id).label("count")
+    )
+
+    if postcodes:
+        query = (
+            query
+            .select_from(FloodOccurrences)
+            .join(
+                PostcodeFloodOccurrences,
+                PostcodeFloodOccurrences.rec_out_id == FloodOccurrences.rec_out_id
+            )
+            .filter(PostcodeFloodOccurrences.postcode.in_(postcodes))
+        )
+
+    results = query.group_by(FloodOccurrences.flood_src).all()
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No flood occurrence records found.")
+
+    return [
+        {"source": row.flood_src, "count": row.count}
+        for row in results
+    ]
+
+
+@router.get("/by-cause")
+async def flood_occurrences_by_cause(
+    postcodes: list[str] = Query(default=[]),
+    db: Session = Depends(get_db)
+):
+    """Flood counts grouped by flood_caus."""
+    query = db.query(
+        FloodOccurrences.flood_caus,
+        func.count(FloodOccurrences.rec_out_id).label("count")
+    )
+    
+    if postcodes:
+        query = (
+            query
+            .select_from(FloodOccurrences)
+            .join(
+                PostcodeFloodOccurrences,
+                PostcodeFloodOccurrences.rec_out_id == FloodOccurrences.rec_out_id
+            )
+            .filter(PostcodeFloodOccurrences.postcode.in_(postcodes))
+        )
+
+    results = query.group_by(FloodOccurrences.flood_caus).all()
+
+    if not results:
+        raise HTTPException(status_code=404, detail="No flood occurrence records found.")
+
+    return [
+        {"cause": row.flood_caus, "count": row.count}
+        for row in results
+    ]
+
+@router.get("/by-type")
+async def flood_occurrences_by_type(
+    postcodes: list[str] = Query(default=[]),
+    db: Session = Depends(get_db)
+):
+    query = db.query(FloodOccurrences)
+
+    if postcodes:
+        query = (
+            query
+            .select_from(FloodOccurrences)
+            .join(
+                PostcodeFloodOccurrences,
+                PostcodeFloodOccurrences.rec_out_id == FloodOccurrences.rec_out_id
+            )
+            .filter(PostcodeFloodOccurrences.postcode.in_(postcodes))
+        )
+
+    fluvial = query.filter(FloodOccurrences.fluvial_f == True).count()
+    coastal = query.filter(FloodOccurrences.coastal_f == True).count()
+    tidal = query.filter(FloodOccurrences.tidal_f == True).count()
+    total = query.count()
+
+    if total == 0:
+        raise HTTPException(status_code=404, detail="No flood occurrence records found.")
+
+    return {
+        "fluvial": fluvial,
+        "coastal": coastal,
+        "tidal": tidal,
+        "total": total
+    }
