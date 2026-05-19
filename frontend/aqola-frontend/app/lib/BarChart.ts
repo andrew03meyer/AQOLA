@@ -152,7 +152,7 @@ export const school_gender_demographics_by_phase = async (
   const rawData = apiResponse.data["gender-demographics"];
 
   // Ordering to make sure x axis education phases are chronological
-  const phaseOrder = ["Primary", "Secondary", "16 to 18"];
+  const phaseOrder = ["Primary", "Secondary", "Further Education"];
   const uniquePhases = Array.from(new Set(rawData.map((d) => d.phase))).sort(
     (a, b) => phaseOrder.indexOf(a) - phaseOrder.indexOf(b),
   );
