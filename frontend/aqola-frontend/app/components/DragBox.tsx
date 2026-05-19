@@ -57,9 +57,9 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
 
             focusChart(chartName)
             
-            clearAreas()
-            // clearChartState(chartName);
-            updateChartState(chartName)
+            // clearAreas()
+            clearChartState(chartName);
+            // updateChartState(chartName)
             
             // if (editingChanged) {
             //   toggleDatasetWideEditing();

@@ -1,6 +1,6 @@
 import { useActiveAreaLayer, useAppStore } from "@/app/store/AppStore";
 import { useState, useEffect, useRef } from "react";
-import { getAvailableCharts } from "../ChartConfig";
+import { fetchChartData, getAvailableCharts } from "../ChartConfig";
 
 const useChartOrchestrator = () => {
   // AppStore Variable Refs
@@ -19,7 +19,8 @@ const useChartOrchestrator = () => {
   const getFocusedChart = useAppStore((state) => state.getFocusedChart);
   const updateChartState = useAppStore((state) => state.updateChartState);
   const setDataset = useAppStore((state) => state.setDataset);
-
+  const clearChartCalled = useAppStore((state) => state.clearChartCalled)
+  const resetClearChartCalled = useAppStore((state) => state.resetClearChartCalled)
   const [activeChartId, setActiveChartId] = useState(""); // mainly used for determining if the user has changed dataset
   const availableCharts = getAvailableCharts(selectedDataset);
 
@@ -60,19 +61,24 @@ const useChartOrchestrator = () => {
 
   // Update chart state if the active chart's dataset is the same as the user selected dataset
   const updateLiveChart = async () => {
-    if (findOpenChartFromName(activeChartId)?.selectedDataset == selectedDataset) {
+    if (findOpenChartFromName(activeChartId)?.selectedDataset == selectedDataset && !clearChartCalled) {
       console.log("change to openCarts")
       console.log(getFocusedChart())
       console.log("active cart id")
       console.log(activeChartId)
       updateChartState(activeChartId);
+    } if (clearChartCalled){
+      console.log("swapping the toggle to false")
+      resetClearChartCalled()
     }
+    console.log("clearChartCalled: " + clearChartCalled)
   };
   // Updates the currently active chart when selectedAreas changes
   useEffect(() => {
     if (activeChartId === getFocusedChart()?.chartName) {
       updateLiveChart();
     }
+    console.log(selectedAreas)
   }, [selectedAreas]);
 
   // Removes chart from stack, and refocuses, clears currently selected areas

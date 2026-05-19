@@ -32,7 +32,10 @@ export default function Charts() {
 
         let changedCharts: StateDefinition[] = [];
         if (openCharts.length > 0) {
-            changedCharts = JSON.stringify(prevSelectedAreasRef.current) == JSON.stringify(selectedAreas) ? [] : openCharts.filter((chart) => chart.selectedDataset == getFocusedChart()?.selectedDataset);
+            changedCharts = 
+                JSON.stringify(prevSelectedAreasRef.current) == JSON.stringify(getFocusedChart()?.selectedAreas) 
+                ? [] 
+                : openCharts.filter((chart) => chart.selectedDataset == getFocusedChart()?.selectedDataset);
         }
 
         console.log("----------------------\nchangedCharts\n---------------")

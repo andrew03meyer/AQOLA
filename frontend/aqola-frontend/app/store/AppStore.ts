@@ -9,6 +9,7 @@ type AppStore = {
   selectedDataset: string;
   currentZoom: number;
   datasetWideEditing: boolean;
+  clearChartCalled: boolean;
 
   toggleArea: (area: string) => void;
   clearAreas: () => void;
@@ -32,6 +33,7 @@ type AppStore = {
   updateChartLocation: (chartName: string, pos: [number, number]) => void;
   toggleDatasetWideEditing: () => void;
   clearChartState: (chartName: string) => void;
+  resetClearChartCalled: () => void;
 };
 
 const useAppStore = create<AppStore>((set, get) => ({
@@ -41,6 +43,11 @@ const useAppStore = create<AppStore>((set, get) => ({
   selectedDataset: "crime",
   currentZoom: 7, // Decently zoomed out
   datasetWideEditing: true,
+  clearChartCalled: false,
+
+resetClearChartCalled: () => {
+  set((state) => ({ clearChartCalled: false }))
+},
 
 toggleDatasetWideEditing: () => {
   set((state) => ({ datasetWideEditing: !state.datasetWideEditing }))
@@ -257,9 +264,11 @@ updateChartState: (chartName) =>
           : g,
       ),
       selectedAreas: [],
-      selectedDataset: state.findOpenChartFromName(chartName)?.selectedDataset
+      selectedDataset: state.findOpenChartFromName(chartName)?.selectedDataset,
+      clearChartCalled: true
     })),
-}));
+  }
+));
 
 // gets the areaLayer for a given zoom and dataset.
 const useActiveAreaLayer = (): AreaLayer | null => {
