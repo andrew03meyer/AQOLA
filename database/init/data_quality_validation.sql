@@ -147,6 +147,50 @@ WITH completeness_failures AS (
     SELECT 'property_transactions', 'ALL', 'TABLE IS EMPTY', '0'
     WHERE (SELECT COUNT(*) FROM property_transactions) = 0
     
+    -- Flood Occurrences
+    SELECT 'flood_occurrences', 'name', 'Logical Null (Empty/Spaces)', rec_out_id::text
+    FROM flood_occurrences WHERE name ~ '^\s*$'
+    UNION ALL
+    SELECT 'flood_occurrences', 'start_date', 'Future Date (Logical Error)', rec_out_id::text
+    FROM flood_occurrences WHERE start_date > CURRENT_DATE
+    UNION ALL
+    SELECT 'flood_occurrences', 'end_date', 'End Before Start', rec_out_id::text
+    FROM flood_occurrences WHERE end_date < start_date
+    UNION ALL
+    SELECT 'flood_occurrences', 'flood_src', 'Logical Null (Empty/Spaces)', rec_out_id::text
+    FROM flood_occurrences WHERE flood_src IS NULL OR flood_src ~ '^\s*$'
+    UNION ALL
+    SELECT 'flood_occurrences', 'flood_caus', 'Logical Null (Empty/Spaces)', rec_out_id::text
+    FROM flood_occurrences WHERE flood_caus IS NULL OR flood_caus ~ '^\s*$'
+    UNION ALL
+    SELECT 'flood_occurrences', 'boundary', 'Empty Geometry', rec_out_id::text
+    FROM flood_occurrences WHERE ST_IsEmpty(boundary)
+    UNION ALL
+    SELECT 'flood_occurrences', 'fluvial_f/coastal_f/tidal_f', 'All Flags False', rec_out_id::text
+    FROM flood_occurrences WHERE fluvial_f = false AND coastal_f = false AND tidal_f = false
+    UNION ALL
+    SELECT 'flood_occurrences', 'ALL', 'TABLE IS EMPTY', '0'
+    WHERE (SELECT COUNT(*) FROM flood_occurrences) = 0
+
+    UNION ALL
+
+    -- Postcode Flood Occurrences (Junction Table)
+    SELECT 'postcode_flood_occurrences', 'postcode', 'Logical Null (Empty/Spaces)', id::text
+    FROM postcode_flood_occurrences WHERE postcode IS NULL OR postcode ~ '^\s*$'
+    UNION ALL
+    SELECT 'postcode_flood_occurrences', 'rec_out_id', 'Orphaned Record (No Matching Flood)', id::text
+    FROM postcode_flood_occurrences pfo
+    WHERE NOT EXISTS (
+        SELECT 1 FROM flood_occurrences fo WHERE fo.rec_out_id = pfo.rec_out_id
+    )
+    UNION ALL
+    SELECT 'postcode_flood_occurrences', 'postcode,rec_out_id', 'Duplicate Junction Entry', MIN(id)::text
+    FROM postcode_flood_occurrences
+    GROUP BY postcode, rec_out_id HAVING COUNT(*) > 1
+    UNION ALL
+    SELECT 'postcode_flood_occurrences', 'ALL', 'TABLE IS EMPTY', '0'
+    WHERE (SELECT COUNT(*) FROM postcode_flood_occurrences) = 0
+
 )
 SELECT tbl, col, issue, COUNT(*) AS issue_count, ARRAY_AGG(row_id) AS failing_ids
 FROM completeness_failures

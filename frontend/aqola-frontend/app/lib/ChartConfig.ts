@@ -12,10 +12,15 @@ import {
   flood_risk_frequency_by_postcode,
   crime_rate_by_lsoa,
   crime_rate_by_lsoa_cumulative,
+  get_flood_occurrences_by_source,
+  get_flood_occurrences_by_cause,
 } from "./BarChart";
 import { ChartData } from "./ChartModels";
 import { get_school_ofsted_history } from "./LineChart";
-import { flood_risk_frequency_by_postcode_spider } from "./SpiderDiagram";
+import {
+  flood_risk_frequency_by_postcode_spider,
+  get_flood_occurrences_by_type,
+} from "./SpiderDiagram";
 
 type DatasetKey = keyof typeof datasetConfig;
 
@@ -67,6 +72,10 @@ const apiCallMap: Record<string, (areas: string[]) => Promise<ChartData>> = {
   //Flood Occurrences API calls
   // =============================================================================================
   flood_occurrences_history: (areas) => get_flood_occurrences_history(areas),
+  flood_occurrences_by_source: (areas) =>
+    get_flood_occurrences_by_source(areas),
+  flood_occurrences_by_cause: (areas) => get_flood_occurrences_by_cause(areas),
+  flood_occurrences_by_type: (areas) => get_flood_occurrences_by_type(areas),
 };
 
 // Gets available charts from datasetConfig.json

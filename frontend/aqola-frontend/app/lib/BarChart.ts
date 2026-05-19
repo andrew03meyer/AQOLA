@@ -6,6 +6,8 @@ import type {
 import type { SchoolCounts } from "./ApiModels";
 import type { BarChartResponse } from "./ChartModels";
 import { COLOR } from "./constants";
+import qs from "qs";
+import { values } from "lodash";
 
 // method naming convention <area>_<xlabel>_<ylabel>_<bars>
 
@@ -472,4 +474,71 @@ export const crime_rate_by_lsoa_cumulative = async (
   };
 
   return bar_return;
+};
+
+export const get_flood_occurrences_by_source = async (
+  postcodes?: string[],
+): Promise<BarChartResponse> => {
+  const params = postcodes?.length
+    ? "?" + qs.stringify({ postcodes }, { arrayFormat: "repeat" })
+    : "";
+
+  const response = await api.get(`/flood-occurrences/by-source${params}`);
+  const data: { source: string; count: number }[] = response.data;
+
+  const groups = [
+    {
+      name: "Flood Sources",
+      bars: data.map((row, i) => ({
+        bar_name: row.source,
+        value: row.count,
+        color: COLOR[i % COLOR.length],
+      })),
+    },
+  ];
+
+  return {
+    chartType: "bar",
+    type: "flood_occurrences",
+    area: "postcode",
+    chart: {
+      groups,
+      title: "Flood Occurrences by Source",
+      xlabel: "Flood Source",
+      ylabel: "Number of Floods",
+    },
+  };
+};
+
+export const get_flood_occurrences_by_cause = async (
+  postcodes?: string[],
+): Promise<BarChartResponse> => {
+  const params = postcodes?.length
+    ? "?" + qs.stringify({ postcodes }, { arrayFormat: "repeat" })
+    : "";
+  const response = await api.get(`/flood-occurrences/by-cause${params}`);
+  const data: { cause: string; count: number }[] = response.data;
+
+  const groups = [
+    {
+      name: "Flood Causes",
+      bars: data.map((row, i) => ({
+        bar_name: row.cause,
+        value: row.count,
+        color: COLOR[i % COLOR.length],
+      })),
+    },
+  ];
+
+  return {
+    chartType: "bar",
+    type: "flood_occurrences",
+    area: "postcode",
+    chart: {
+      groups,
+      title: "Flood Occurrences by Cause",
+      xlabel: "Flood Cause",
+      ylabel: "Number of Floods",
+    },
+  };
 };

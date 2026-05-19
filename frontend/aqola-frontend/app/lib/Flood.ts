@@ -1,7 +1,17 @@
 import { api } from "./Api";
 import { FloodGeoJson, FloodPolygonResponse } from "./PolygonModels";
+import { getPostcodeBoundaries } from "./Postcode";
 
-export const getFloodBoundaries = async (): Promise<FloodGeoJson[]> => {
+type BoundsParams = {
+  min_lat: number;
+  max_lat: number;
+  min_lng: number;
+  max_lng: number;
+};
+
+export const getFloodBoundaries = async (
+  bounds: BoundsParams,
+): Promise<FloodGeoJson[]> => {
   const response = await api.get(`/flood-occurrences/`);
 
   console.log("found " + response.data.length + "  floods");

@@ -1,6 +1,7 @@
 import type { SpiderDiagramResponse } from "./ChartModels";
 import axios from "axios";
 import { COLOR } from "./constants";
+import qs from "qs";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
@@ -62,4 +63,32 @@ export const flood_risk_frequency_by_postcode_spider = async (
     },
   };
   return spider_return;
+};
+
+export const get_flood_occurrences_by_type = async (
+  postcodes?: string[],
+): Promise<SpiderDiagramResponse> => {
+  const params = "?" + qs.stringify({ postcodes }, { arrayFormat: "repeat" });
+  const response = await api.get(`/flood-occurrences/by-type${params}`);
+  const data: { fluvial: number; coastal: number; tidal: number } =
+    response.data;
+
+  const group = Object.entries(data)
+    .filter(([key]) => key !== "total")
+    .map(([key, value]) => ({
+      plot_name: "Selected Areas",
+      axis: key.charAt(0).toUpperCase() + key.slice(1),
+      value,
+      color: COLOR[0],
+    }));
+  console.log(group);
+  return {
+    chartType: "spider",
+    type: "flood_occurrences",
+    area: "postcode",
+    chart: {
+      groups: [group],
+      title: "Flood Type Profile",
+    },
+  };
 };

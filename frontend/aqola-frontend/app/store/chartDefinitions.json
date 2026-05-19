@@ -106,5 +106,29 @@
     "dataset": "flood_occurrences",
     "apiCall": "flood_occurrences_history",
     "icon": "fi fi-rs-raindrops"
+  },
+  {
+    "id": "flood_occurrences_by_source",
+    "label": "Count of flood occurrences by source.",
+    "chartComponent": "bar",
+    "dataset": "flood_occurrences",
+    "apiCall": "flood_occurrences_by_source",
+    "icon": "fi fi-rs-house-flood"
+  },
+  {
+    "id": "flood_occurrences_by_cause",
+    "label": "Count of flood occurrences by cause.",
+    "chartComponent": "bar",
+    "dataset": "flood_occurrences",
+    "apiCall": "flood_occurrences_by_cause",
+    "icon": "fi fi-rs-source-document-alt"
+  },
+  {
+    "id": "flood_occurrences_by_type",
+    "label": "Count of flood occurrences by type.",
+    "chartComponent": "spider",
+    "dataset": "flood_occurrences",
+    "apiCall": "flood_occurrences_by_type",
+    "icon": "fi fi-rs-spider-web"
   }
 ]
