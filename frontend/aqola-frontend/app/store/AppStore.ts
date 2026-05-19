@@ -191,35 +191,36 @@ toggleDatasetWideEditing: () => {
     }),
 
   // Updates the state of a chart in openCharts by name
-  updateChartState: (chartName) =>
-    set((state) => {
-      if(!state.datasetWideEditing){
-        return {
-          openCharts: state.openCharts.map((g) =>
-            g.chartName === chartName
-              ? {
-                  ...g,
-                  selectedAreas: [...get().selectedAreas],
-                  selectedDataset: get().selectedDataset,
-                }
-              : g,
-          ),
-        };
-      } else {
-        const changedCharts = state.openCharts.filter((chart) => chart.chartName == chartName)
-        return {
-          openCharts: state.openCharts.map((g) =>
-            g.selectedDataset == state.findOpenChartFromName(chartName)?.selectedDataset
-              ? {
-                  ...g,
-                  selectedAreas: [...get().selectedAreas],
-                  selectedDataset: state.findOpenChartFromName(chartName)?.selectedDataset,
-                }
-              : g,
-          ),
-        };
-      }
-    }),
+updateChartState: (chartName) =>
+  set((state) => {
+    if (!state.datasetWideEditing) {
+      return {
+        openCharts: state.openCharts.map((g) =>
+          g.chartName === chartName
+            ? {
+                ...g,
+                selectedAreas: [...get().selectedAreas],
+                selectedDataset: get().selectedDataset,
+              }
+            : g,
+        ),
+      };
+    } else {
+      const targetDataset = state.findOpenChartFromName(chartName)?.selectedDataset;
+      if (!targetDataset) return state;
+      return {
+        openCharts: state.openCharts.map((g) =>
+          g.selectedDataset === targetDataset
+            ? {
+                ...g,
+                selectedAreas: [...get().selectedAreas],
+                selectedDataset: get().selectedDataset,
+              }
+            : g,
+        ),
+      };
+    }
+  }),
 
   // Returns the top chart in the stack
   getFocusedChart: () => {
@@ -255,7 +256,8 @@ toggleDatasetWideEditing: () => {
             }
           : g,
       ),
-      selectedAreas: []
+      selectedAreas: [],
+      selectedDataset: state.findOpenChartFromName(chartName)?.selectedDataset
     })),
 }));
 

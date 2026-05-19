@@ -56,8 +56,9 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
             // }
 
             focusChart(chartName)
-            // clearChartState(chartName);
+            
             clearAreas()
+            // clearChartState(chartName);
             updateChartState(chartName)
             
             // if (editingChanged) {
