@@ -36,7 +36,7 @@ export const ofsted_frequency_by_band = async (): Promise<BarChartResponse> => {
     chart: {
       groups: [
         {
-          name: "Kent School Performance",
+          name: "",
           bars: [
             {
               bar_name: "Outstanding",
