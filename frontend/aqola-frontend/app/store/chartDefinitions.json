@@ -106,8 +106,8 @@
     "dataset": "flood_occurrences",
     "apiCall": "flood_occurrences_history",
     "icon": "fi fi-rs-raindrops",
-    "blurb": "Shows the count of flood occurrences, over time. Each line represents a different source of flooding."
-    
+    "blurb": "Shows the count of flood occurrences, over time. Each line represents a different source of flooding.",
+    "src": "koala-no-bckgr.png"
   },
   {
     "id": "flood_occurrences_by_source",
@@ -116,7 +116,8 @@
     "dataset": "flood_occurrences",
     "apiCall": "flood_occurrences_by_source",
     "icon": "fi fi-rs-house-flood",
-    "blurb": "A bar chart showing the count of flood occurrences, separated by source. Each group of bars represents a different area."
+    "blurb": "A bar chart showing the count of flood occurrences, separated by source. Each group of bars represents a different area.",
+    "src": "flood_risk_frequency.png"
   },
   {
     "id": "flood_occurrences_by_cause",
@@ -125,7 +126,8 @@
     "dataset": "flood_occurrences",
     "apiCall": "flood_occurrences_by_cause",
     "icon": "fi fi-rs-source-document-alt",
-    "blurb": "A bar chart showing the count of flood occurrences, separated by cause. Each group of bars represents a different area."
+    "blurb": "A bar chart showing the count of flood occurrences, separated by cause. Each group of bars represents a different area.",
+    "src": "flood_risk_frequency.png"
   },
   {
     "id": "flood_occurrences_by_type",
@@ -134,6 +136,8 @@
     "dataset": "flood_occurrences",
     "apiCall": "flood_occurrences_by_type",
     "icon": "fi fi-rs-spider-web",
-    "blurb": "A spider chart showing the count of flood occurrences, separated by type. Each spoke represents a different type of flooding."
+    "blurb": "A spider chart showing the count of flood occurrences, separated by type. Each spoke represents a different type of flooding.",
+    "src": "flood_risk_frequency_spider.png"
+    
   }
 ]

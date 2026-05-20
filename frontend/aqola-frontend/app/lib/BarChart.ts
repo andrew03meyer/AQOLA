@@ -506,6 +506,7 @@ export const get_flood_occurrences_by_source = async (
       title: "Flood Occurrences by Source",
       xlabel: "Flood Source",
       ylabel: "Number of Floods",
+      scaleType: "linear",
     },
   };
 };
@@ -539,6 +540,7 @@ export const get_flood_occurrences_by_cause = async (
       title: "Flood Occurrences by Cause",
       xlabel: "Flood Cause",
       ylabel: "Number of Floods",
+      scaleType: "linear",
     },
   };
 };
