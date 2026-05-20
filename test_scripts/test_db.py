@@ -61,7 +61,26 @@ EXPECTED_COLUMNS = {
     ('property_transactions', 'property_id', 'integer', 'NO'),               # INT (FK)
     ('property_transactions', 'sale_date', 'date', 'NO'),                    # DATE
     ('property_transactions', 'price', 'integer', 'NO')                     # INT
-    }
+    
+    ('flood_occurrences', 'rec_out_id', 'integer', 'NO'),
+    ('flood_occurrences', 'rec_grp_id', 'integer', 'YES'),
+    ('flood_occurrences', 'name', 'character varying', 'NO'),
+    ('flood_occurrences', 'start_date', 'date', 'YES'),
+    ('flood_occurrences', 'end_date', 'date', 'YES'),
+    ('flood_occurrences', 'flood_src', 'character varying', 'YES'),
+    ('flood_occurrences', 'flood_caus', 'character varying', 'YES'),
+    ('flood_occurrences', 'hfm_status', 'character varying', 'YES'),
+    ('flood_occurrences', 'data_src', 'character varying', 'YES'),
+    ('flood_occurrences', 'fluvial_f', 'boolean', 'YES'),
+    ('flood_occurrences', 'coastal_f', 'boolean', 'YES'),
+    ('flood_occurrences', 'tidal_f', 'boolean', 'YES'),
+    ('flood_occurrences', 'boundary', 'USER-DEFINED', 'YES'),
+
+    ('postcode_flood_occurrences', 'id', 'integer', 'NO'),
+    ('postcode_flood_occurrences', 'postcode', 'character varying', 'NO'),
+    ('postcode_flood_occurrences', 'rec_out_id', 'integer', 'NO'),
+
+}
 
 # Format: (table, type, column)
 EXPECTED_KEYS = {
