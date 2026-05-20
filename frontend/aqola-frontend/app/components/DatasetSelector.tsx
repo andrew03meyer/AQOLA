@@ -68,25 +68,28 @@ export default function DataSelector() {
         <Tooltip
           id={"state-save-tooltip"}
           className="tooltip"
-          style={{ 
-              // maxWidth: "50%", 
-              borderRadius:"10px",
-              zIndex: 4000
+          style={{
+            // maxWidth: "50%",
+            borderRadius: "10px",
+            zIndex: 4000,
           }}
           // delayHide={500}
           content="Save your work, to upload later."
         />
       </div>
 
-      <div className="top-nav-contents" data-tooltip-id={"dataset-level-editing-tooltip"} >
+      <div
+        className="top-nav-contents"
+        data-tooltip-id={"dataset-level-editing-tooltip"}
+      >
         <Toggle />
         <Tooltip
           id={"dataset-level-editing-tooltip"}
           className="tooltip"
-          style={{ 
-              // maxWidth: "50%", 
-              borderRadius:"10px",
-              zIndex: 4000
+          style={{
+            // maxWidth: "50%",
+            borderRadius: "10px",
+            zIndex: 4000,
           }}
           // delayHide={500}
           content="Toggle on for same dataset graphs to match. Off allows individual chart editing"
@@ -95,7 +98,9 @@ export default function DataSelector() {
 
       <div className="top-nav-contents">
         {/* Documentation Button */}
-        <div><a href="/docs">Documentation</a></div>
+        <div>
+          <a href="/docs">Documentation</a>
+        </div>
       </div>
     </div>
   );

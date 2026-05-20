@@ -13,15 +13,21 @@ const useChartOrchestrator = () => {
   const clearAreas = useAppStore((state) => state.clearAreas);
   const openChart = useAppStore((state) => state.openChart);
   const addAreas = useAppStore((state) => state.addAreas);
-  const findOpenChartFromName = useAppStore((state) => state.findOpenChartFromName);
-  const findMinimisedChartFromName = useAppStore((state) => state.findMinimisedChartFromName)
+  const findOpenChartFromName = useAppStore(
+    (state) => state.findOpenChartFromName,
+  );
+  const findMinimisedChartFromName = useAppStore(
+    (state) => state.findMinimisedChartFromName,
+  );
   const focusChart = useAppStore((state) => state.focusChart);
   const removeOpenChart = useAppStore((state) => state.removeOpenChart);
   const getFocusedChart = useAppStore((state) => state.getFocusedChart);
   const updateChartState = useAppStore((state) => state.updateChartState);
   const setDataset = useAppStore((state) => state.setDataset);
-  const clearChartCalled = useAppStore((state) => state.clearChartCalled)
-  const resetClearChartCalled = useAppStore((state) => state.resetClearChartCalled)
+  const clearChartCalled = useAppStore((state) => state.clearChartCalled);
+  const resetClearChartCalled = useAppStore(
+    (state) => state.resetClearChartCalled,
+  );
   const [activeChartId, setActiveChartId] = useState(""); // mainly used for determining if the user has changed dataset
   const availableCharts = getAvailableCharts(selectedDataset);
 
@@ -43,7 +49,6 @@ const useChartOrchestrator = () => {
     }
   }, [selectedDataset]);
 
-
   // Update activeChart ID when stack changes
   // Keeps local ref up to date
   useEffect(() => {
@@ -53,7 +58,8 @@ const useChartOrchestrator = () => {
   // Update selected areas and dataset when active chart updates
   useEffect(() => {
     // If there is an active chart, change the dataset match
-    const activeChartDataset = findOpenChartFromName(activeChartId)?.selectedDataset;
+    const activeChartDataset =
+      findOpenChartFromName(activeChartId)?.selectedDataset;
     if (activeChartDataset) {
       setDataset(activeChartDataset);
     }
@@ -62,24 +68,29 @@ const useChartOrchestrator = () => {
 
   // Update chart state if the active chart's dataset is the same as the user selected dataset
   const updateLiveChart = async () => {
-    if (findOpenChartFromName(activeChartId)?.selectedDataset == selectedDataset && !clearChartCalled) {
-      console.log("change to openCarts")
-      console.log(getFocusedChart())
-      console.log("active cart id")
-      console.log(activeChartId)
+    if (
+      findOpenChartFromName(activeChartId)?.selectedDataset ==
+        selectedDataset &&
+      !clearChartCalled
+    ) {
+      console.log("change to openCarts");
+      console.log(getFocusedChart());
+      console.log("active cart id");
+      console.log(activeChartId);
       updateChartState(activeChartId);
-    } if (clearChartCalled){
-      console.log("swapping the toggle to false")
-      resetClearChartCalled()
     }
-    console.log("clearChartCalled: " + clearChartCalled)
+    if (clearChartCalled) {
+      console.log("swapping the toggle to false");
+      resetClearChartCalled();
+    }
+    console.log("clearChartCalled: " + clearChartCalled);
   };
   // Updates the currently active chart when selectedAreas changes
   useEffect(() => {
     if (activeChartId === getFocusedChart()?.chartName) {
       updateLiveChart();
     }
-    console.log(selectedAreas)
+    console.log(selectedAreas);
   }, [selectedAreas]);
 
   // Removes chart from stack, and refocuses, clears currently selected areas
@@ -93,10 +104,9 @@ const useChartOrchestrator = () => {
   const triggerChart = async (chartId: string) => {
     // if not in the stack, add the chart and set it as activeChartId
     if (findOpenChartFromName(chartId) === undefined) {
-      const pos = 100 + (10 * openCharts.length);
+      const pos = 100 + 10 * openCharts.length;
       openChart(chartId, [pos, pos]);
-    }
-    else {
+    } else {
       focusChart(chartId);
     }
     setActiveChartId(chartId);

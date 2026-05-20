@@ -31,17 +31,17 @@ export default function LineChart({
   const isSchoolData = data.type === "school_data";
   const x = isDate
     ? d3.scaleTime(
-      [d3.min(xVals), d3.max(xVals)],
-      [marginLeft, chartWidth - marginRight]
-    )
+        [d3.min(xVals), d3.max(xVals)],
+        [marginLeft, chartWidth - marginRight],
+      )
     : d3.scaleLinear(
-      [d3.min(xVals), d3.max(xVals)],
-      [marginLeft, chartWidth - marginRight]
-    );
-  const y = d3.scaleLinear(
-    isSchoolData ? [4, 1] : [0, d3.max([...yVals])],
-    [height - marginBottom, marginTop],
-  );
+        [d3.min(xVals), d3.max(xVals)],
+        [marginLeft, chartWidth - marginRight],
+      );
+  const y = d3.scaleLinear(isSchoolData ? [4, 1] : [0, d3.max([...yVals])], [
+    height - marginBottom,
+    marginTop,
+  ]);
 
   // generates the line path for each line in the data input
   const lineGen = d3
@@ -49,47 +49,54 @@ export default function LineChart({
     .x((d) => x(d[0]))
     .y((d) => y(d[1]));
 
- // create the x & y axis, title, and x & y labels using d3
+  // create the x & y axis, title, and x & y labels using d3
   useEffect(() => {
     // Wipe the slate completely clean
     d3.select(xLabel.current).selectAll("*").remove();
     d3.select(yLabel.current).selectAll("*").remove();
     d3.select(svg.current).selectAll(".chart-title").remove();
 
-    // Define the exact axes 
+    // Define the exact axes
     const xAxis = d3.axisBottom(x);
-    const yAxis = isSchoolData 
-      ? d3.axisLeft(y).tickValues([1, 2, 3, 4]).tickFormat(d => {return {1: "Outstanding ", 2: "Good ", 3: "Satisfactory ", 4: "Inadequate "}[d]}) // Strict 1,2,3,4
+    const yAxis = isSchoolData
+      ? d3
+          .axisLeft(y)
+          .tickValues([1, 2, 3, 4])
+          .tickFormat((d) => {
+            return {
+              1: "Outstanding ",
+              2: "Good ",
+              3: "Satisfactory ",
+              4: "Inadequate ",
+            }[d];
+          }) // Strict 1,2,3,4
       : d3.axisLeft(y);
     const axisOffset = isSchoolData ? -40 : 0;
 
     // Draw X Axis
-    d3.select(xLabel.current)
-      .call(xAxis)
+    d3.select(xLabel.current).call(xAxis);
 
     // Draw Y Axis
-    d3.select(yLabel.current)
-      .call(yAxis)
-
+    d3.select(yLabel.current).call(yAxis);
   }, [x, y, data, chartWidth, height, isSchoolData, marginLeft, marginTop]);
 
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
-      style={{ width: '100%', height: '100%', display: 'block' }}
+      style={{ width: "100%", height: "100%", display: "block" }}
       preserveAspectRatio="xMidYMid meet"
-      >
-
+    >
       {/* add title */}
-        <text 
-          x={chartWidth / 2} 
-          y={marginTop / 2 + 5} 
-          fill="white" 
-          textAnchor="middle" 
-          fontSize="18px">
-            { data.chart.title }
-        </text>
-        
+      <text
+        x={chartWidth / 2}
+        y={marginTop / 2 + 5}
+        fill="white"
+        textAnchor="middle"
+        fontSize="18px"
+      >
+        {data.chart.title}
+      </text>
+
       {y.ticks(isSchoolData ? 4 : undefined).map((tick, i) => (
         <line
           key={i}
@@ -103,7 +110,7 @@ export default function LineChart({
         />
       ))}
 
-        {/* X-Axis Label same style as BarChart.jsx */}
+      {/* X-Axis Label same style as BarChart.jsx */}
       <text
         x={chartWidth / 2}
         y={height - 5}
@@ -127,7 +134,11 @@ export default function LineChart({
       </text>
 
       {/* add the axis to the chart */}
-      <g ref={xLabel} transform={`translate(0,${height - marginBottom})`} fill="white" />
+      <g
+        ref={xLabel}
+        transform={`translate(0,${height - marginBottom})`}
+        fill="white"
+      />
       <g ref={yLabel} transform={`translate(${marginLeft},0)`} fill="white" />
 
       {/* for each line in the data input */}
@@ -164,13 +175,13 @@ export default function LineChart({
           <g>
             <circle
               cx={width - 250}
-              cy={marginTop + (i * 15)}
+              cy={marginTop + i * 15}
               r="6"
               fill={line.color}
             />
             <text
               x={width - 240}
-              y={marginTop + (i * 15)}
+              y={marginTop + i * 15}
               fill="white"
               dominantBaseline="middle"
             >

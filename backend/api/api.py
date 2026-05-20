@@ -26,6 +26,7 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://84.8.152.6:3000"],
