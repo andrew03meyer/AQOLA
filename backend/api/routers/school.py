@@ -135,7 +135,7 @@ async def get_school_gender_demographics(
     school_phase = case(
         (School.is_primary == True, "Primary"),
         (School.is_secondary == True, "Secondary"),
-        (School.is_post16 == True, "16 to 18"),
+        (School.is_post16 == True, "Further Education"),
         else_="Other"
     ).label("phase")
     

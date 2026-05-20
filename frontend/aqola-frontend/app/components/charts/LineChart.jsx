@@ -66,25 +66,10 @@ export default function LineChart({
     // Draw X Axis
     d3.select(xLabel.current)
       .call(xAxis)
-      .append("text")
-      .attr("x", chartWidth / 2)
-      .attr("y", 35)
-      .attr("fill", "white")
-      .attr("text-anchor", "middle")
-      .attr("font-weight", "normal")
-      .text(data.chart.xlabel);
 
     // Draw Y Axis
     d3.select(yLabel.current)
       .call(yAxis)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("x", -height / 2)
-      .attr("y", -35 + axisOffset) 
-      .attr("fill", "white")
-      .attr("text-anchor", "middle")
-      .attr("font-weight", "normal")
-      .text(data.chart.ylabel);
 
   }, [x, y, data, chartWidth, height, isSchoolData, marginLeft, marginTop]);
 
@@ -98,12 +83,48 @@ export default function LineChart({
       {/* add title */}
         <text 
           x={chartWidth / 2} 
-          // y={marginTop / 2} 
+          y={marginTop / 2 + 5} 
           fill="white" 
           textAnchor="middle" 
-          fontSize="20px">
+          fontSize="18px">
             { data.chart.title }
         </text>
+        
+      {y.ticks(isSchoolData ? 4 : undefined).map((tick, i) => (
+        <line
+          key={i}
+          x1={marginLeft}
+          x2={chartWidth - marginRight}
+          y1={y(tick)}
+          y2={y(tick)}
+          stroke="white"
+          strokeOpacity={0.15}
+          strokeWidth={1}
+        />
+      ))}
+
+        {/* X-Axis Label same style as BarChart.jsx */}
+      <text
+        x={chartWidth / 2}
+        y={height - 5}
+        textAnchor="middle"
+        fontSize="16px"
+        fill="lightgrey"
+      >
+        {data.chart.xlabel}
+      </text>
+
+      {/* Y-Axis Label same style as BarChart.jsx) */}
+      <text
+        transform="rotate(-90)"
+        x={-(height / 2)}
+        y={15}
+        textAnchor="middle"
+        fontSize="16px"
+        fill="lightgrey"
+      >
+        {data.chart.ylabel}
+      </text>
 
       {/* add the axis to the chart */}
       <g ref={xLabel} transform={`translate(0,${height - marginBottom})`} fill="white" />

@@ -69,6 +69,7 @@ export const ofsted_frequency_by_band = async (): Promise<BarChartResponse> => {
       title: "Kent Ofsted Performance",
       xlabel: "Ofsted Rating",
       ylabel: "Number of Schools",
+      scaleType: "linear"
     },
   };
 
@@ -133,6 +134,7 @@ export const ofsted_frequency_yearly = async (
       title: "Kent Ofsted Rankings (Over Time)",
       xlabel: "Academic Year",
       ylabel: "Number of Schools",
+      scaleType: "linear"
     },
   };
 
@@ -150,7 +152,7 @@ export const school_gender_demographics_by_phase = async (
   const rawData = apiResponse.data["gender-demographics"];
 
   // Ordering to make sure x axis education phases are chronological
-  const phaseOrder = ["Primary", "Secondary", "16 to 18"];
+  const phaseOrder = ["Primary", "Secondary", "Further Education"];
   const uniquePhases = Array.from(new Set(rawData.map((d) => d.phase))).sort(
     (a, b) => phaseOrder.indexOf(a) - phaseOrder.indexOf(b),
   );
@@ -166,7 +168,7 @@ export const school_gender_demographics_by_phase = async (
     const phaseData = rawData.filter((d) => d.phase === phase);
 
     const bars = phaseData.map((d) => ({
-      bar_name: d.gender,
+      bar_name: d.gender + " Schools",
       value: d.count,
       color: genderColours[d.gender] || "grey",
     }));
@@ -218,6 +220,7 @@ export const flood_risk_frequency_by_postcode = async (
         title: "Kent Postcode Flood Risks",
         xlabel: "Postcodes",
         ylabel: "Number of Houses",
+        scaleType: "linear"
       },
     };
   }
@@ -249,6 +252,45 @@ export const flood_risk_frequency_by_postcode = async (
     ],
   }));
 
+  // const totalHousesInRisk = response.data.reduce((total: number, item: any) => {
+  //   return (
+  //     total + 
+  //     item.frs_count_high + 
+  //     item.frs_count_medium + 
+  //     item.frs_count_low +
+  //     item.frs_count_very_low
+  //   );
+  // }, 0)
+
+  // console.log("TOALLALSLSLSL")
+  // console.log(totalHousesInRisk)
+
+  // if (totalHousesInRisk == 0) {
+  //   return {
+  //     chartType: "bar",
+  //     type: "flood_data",
+  //     area: "postcode",
+
+  //     chart: {
+  //       groups: [
+  //         {
+  //           name: "null",
+  //           bars: [
+  //             {
+  //               bar_name: "none",
+  //               value: 0,
+  //               color: "black",
+  //             },
+  //           ],
+  //         },
+  //       ],
+  //       title: "Kent Postcode Flood Risks",
+  //       xlabel: "Postcodes",
+  //       ylabel: "Number of Houses",
+  //     },
+  //   };
+  // }
+
   const bar_return: BarChartResponse = {
     chartType: "bar",
     type: "flood_data",
@@ -259,6 +301,7 @@ export const flood_risk_frequency_by_postcode = async (
       title: "Kent Postcode Flood Risks",
       xlabel: "Postcodes",
       ylabel: "Number of Houses",
+      scaleType: "linear"
     },
   };
   return bar_return;
@@ -291,6 +334,7 @@ export const crime_rate_by_lsoa = async (
         title: "Crime Rate by LSOA (over all time)",
         xlabel: "Crime Type per LSOA",
         ylabel: "Number of Crimes",
+        scaleType: "linear"
       }
     });
   }
@@ -341,6 +385,7 @@ export const crime_rate_by_lsoa = async (
       title: "Crime Rate by LSOA (over all time)",
       xlabel: "LSOAs",
       ylabel: "Number of Crimes",
+      scaleType: "linear"
     },
   };
 
@@ -371,9 +416,10 @@ export const crime_rate_by_lsoa_cumulative = async (
             ],
           },
         ],
-        title: "Cumulative Crime Rate Across LSOAs (over all time)",
+        title: "Sum of Crime Rate Across LSOAs (over all time)",
         xlabel: "Crime Types",
         ylabel: "Number of Crimes",
+        scaleType: "linear"
       }
     })
   }
@@ -421,6 +467,7 @@ export const crime_rate_by_lsoa_cumulative = async (
       title: "Cumulative Crime Rate Across LSOAs (over all time)",
       xlabel: "Crime Types",
       ylabel: "Number of Crimes",
+      scaleType: "linear"
     },
   };
 
