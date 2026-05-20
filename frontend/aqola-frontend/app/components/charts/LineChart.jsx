@@ -89,6 +89,19 @@ export default function LineChart({
           fontSize="18px">
             { data.chart.title }
         </text>
+        
+      {y.ticks(isSchoolData ? 4 : undefined).map((tick, i) => (
+        <line
+          key={i}
+          x1={marginLeft}
+          x2={chartWidth - marginRight}
+          y1={y(tick)}
+          y2={y(tick)}
+          stroke="white"
+          strokeOpacity={0.15}
+          strokeWidth={1}
+        />
+      ))}
 
         {/* X-Axis Label same style as BarChart.jsx */}
       <text

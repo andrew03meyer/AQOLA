@@ -36,7 +36,7 @@ export const ofsted_frequency_by_band = async (): Promise<BarChartResponse> => {
     chart: {
       groups: [
         {
-          name: "",
+          name: "Kent School Performance",
           bars: [
             {
               bar_name: "Outstanding",
@@ -168,7 +168,7 @@ export const school_gender_demographics_by_phase = async (
     const phaseData = rawData.filter((d) => d.phase === phase);
 
     const bars = phaseData.map((d) => ({
-      bar_name: d.gender,
+      bar_name: d.gender + " Schools",
       value: d.count,
       color: genderColours[d.gender] || "grey",
     }));
@@ -416,7 +416,7 @@ export const crime_rate_by_lsoa_cumulative = async (
             ],
           },
         ],
-        title: "Cumulative Crime Rate Across LSOAs (over all time)",
+        title: "Sum of Crime Rate Across LSOAs (over all time)",
         xlabel: "Crime Types",
         ylabel: "Number of Crimes",
         scaleType: "linear"
