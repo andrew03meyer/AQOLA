@@ -1,7 +1,7 @@
 import { useAppStore } from "@/app/store/AppStore";
 import { SchoolMarkers } from "./SchoolMarkers";
 import { getSchools } from "../../lib/Api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { School } from "../../lib/ApiModels";
 import { Polygons } from "./Polygons";
 import { useMapEvents } from "react-leaflet";
@@ -11,17 +11,6 @@ const MapOrchestrator = () => {
   const setZoom = useAppStore((state) => state.setZoom);
   const [schools, setSchools] = useState<School[]>([]);
 
-  // Fetch schools data when the component mounts
-  const fetchSchools = async () => {
-    try {
-      const data = await getSchools();
-      setSchools(data);
-    } catch (err) {
-      console.error("Failed to fetch schools:", err);
-    }
-  };
-
-  // On map move or zoom, sets the zoom level in app store.
   const map = useMapEvents({
     moveend: () => {
       setZoom(map.getZoom());
@@ -31,14 +20,28 @@ const MapOrchestrator = () => {
     },
   });
 
-  // Return polygon/marker components based on the selected dataset
-  if (selectedDataset) {
-    if (selectedDataset == "schools") {
+  // Fetch schools only when selectedDataset changes to "schools"
+  useEffect(() => {
+    if (selectedDataset === "schools") {
+      const fetchSchools = async () => {
+        try {
+          const data = await getSchools();
+          setSchools(data);
+        } catch (err) {
+          console.error("Failed to fetch schools:", err);
+        }
+      };
       fetchSchools();
-      return <SchoolMarkers schools={schools} />;
     }
-    return <Polygons />;
+  }, [selectedDataset]);
+
+  if (!selectedDataset) return null;
+
+  if (selectedDataset === "schools") {
+    return <SchoolMarkers schools={schools} />;
   }
+
+  return <Polygons />;
 };
 
 export default MapOrchestrator;
