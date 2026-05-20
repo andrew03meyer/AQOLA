@@ -14,7 +14,7 @@ export type BarChartResponse = {
     title: string;
     xlabel: string;
     ylabel: string;
-    scaleType?: string;
+    scaleType: string;
   };
 };
 

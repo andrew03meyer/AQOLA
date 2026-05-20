@@ -16,7 +16,7 @@ const MinimisedChartList = () => {
             {[...charts].reverse().map((chart: StateDefinition) => (
                 <div key={chart.chartName} className="minimised-element" onClick={() => openChart(chart.chartName, [0, 0])}>
                     <div id="minimised-element-text" className="minimised-text">
-                        {chart.chartName}
+                        {chart.chartName.replaceAll("_", " ")}
                     </div>
                     <div onClick={(e) => removeFunction(e, chart.chartName)} className="minimised-close">
                         ✕
