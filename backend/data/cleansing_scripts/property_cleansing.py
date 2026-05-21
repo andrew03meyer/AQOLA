@@ -4,7 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from testing.error_logging import error_process
 
-# standardises the full address
+# Standardises the full address
 def standardise_address_key(address_series):
     return address_series.astype(str).str.lower().str.replace(r'[^a-z0-9]', '', regex=True)
 
@@ -34,16 +34,22 @@ def load_epc_lookup(epc_path):
         print(f"Warning: energy price certificate dataset not found at {epc_path}")
         return pd.DataFrame()
     
-    df = pd.read_csv(epc_path, usecols=['address', 'uprn', 'total_floor_area'])
-    df = df.dropna(subset=['uprn', 'total_floor_area'])
+    df = pd.read_csv(epc_path, usecols=['address', 'postcode', 'uprn', 'total_floor_area'])
+    
+    null_postcodes = df['postcode'].isna().sum()
+    if null_postcodes > 0:
+        print(f"Found {null_postcodes} records with missing postcodes. The records have been dropped from the lookup.")
+        
+    df = df.dropna(subset=['uprn', 'total_floor_area', 'postcode'])
     
     df['clean_epc_addr'] = standardise_address_key(df['address'])
+    df['postcode'] = df['postcode'].astype(str).str.replace(r'\s+', '', regex=True).str.upper()
     df['uprn'] = df['uprn'].astype(str).str.split('.').str[0].str.strip()
     df['square_metres'] = df['total_floor_area'].astype(int)
     
-    return df[['clean_epc_addr', 'uprn', 'square_metres']]
+    return df[['clean_epc_addr', 'postcode', 'uprn', 'square_metres']]
 
-# load the exact Ordnance Survey UPRN coordinates lookup
+# Load the exact Ordnance Survey UPRN coordinates lookup
 def load_uprn_coordinates(coords_path):
     if not coords_path.exists():
         print(f"Warning: UPRN coordinates file not found at {coords_path}")
@@ -75,7 +81,7 @@ def build_property_registry(df_kent, df_spatial, df_epc, df_coords):
     properties['clean_prop_addr'] = standardise_address_key(properties['full_address'])
     
     # Match against EPC dataset for uprn and floor area metrics
-    properties = properties.merge(df_epc, left_on='clean_prop_addr', right_on='clean_epc_addr', how='left')
+    properties = properties.merge(df_epc, left_on=['clean_prop_addr', 'postcode'], right_on=['clean_epc_addr', 'postcode'], how='left')
     
     # Match against spatial lookup to get LSOA
     if not df_spatial.empty:
@@ -127,7 +133,7 @@ def property_process():
                 "impact": ["Excluded from database ingestion; no structural square metres metric available"],
                 "cause": ["Address string matching failed against government EPC registry references"]
             })
-            
+    
     valid_registry = processed_registry.dropna(subset=['property_id']).copy()
     
     # Log records missing an LSOA link
@@ -145,7 +151,6 @@ def property_process():
             
     # Drop rows missing structural data or boundary contexts
     valid_registry = valid_registry.dropna(subset=['lsoa_id', 'latitude', 'longitude'])
-    
     # Enforce database uniqueness constraints using UPRN
     valid_registry = valid_registry.drop_duplicates(subset=['property_id'])
     
