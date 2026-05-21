@@ -6,7 +6,7 @@
       "crime_rate_by_lsoa",
       "crime_rate_by_lsoa_cumulative"
     ],
-    "areaLayers": [{ "areaType": "lsoa", "minZoom": 8 }]
+    "areaLayers": [{ "areaType": "lsoa", "minZoom": 12 }]
   },
   "schools": {
     "graphs": [
