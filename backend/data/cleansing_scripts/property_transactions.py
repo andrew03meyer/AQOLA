@@ -89,6 +89,23 @@ def property_transactions_process():
     right_on=['clean_prop_addr', 'postcode'], 
     how='left'
     )
+    
+    unmatched_transactions = df_merged[df_merged['clean_prop_addr'].isna()]
+
+    if not unmatched_transactions.empty:
+        print(f"{len(unmatched_transactions)} transactions failed to link to a property.")
+        trans_errors = [
+            {
+                "data": [f"Transaction ID: {row['transaction_id']}"],
+                "where": ["property_transactions_cleansing -> merge_process"],
+                "desc": ["Transaction merge failure"],
+                "impact": ["Excluded from dashboard; property reference not found"],
+                "cause": ["Address/Postcode combination does not exist in registry"]
+            }
+            for row in unmatched_transactions[['transaction_id']].to_dict('records')
+        ]
+    
+    error_process_batch(trans_errors)
 
     
     def calculate_price_per_sqm(row):
