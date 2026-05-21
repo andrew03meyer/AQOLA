@@ -9,6 +9,7 @@ from cleansing_scripts.school_cleansing import school_process
 from cleansing_scripts.flood_cleansing import flood_process
 from cleansing_scripts.property_cleansing import property_process
 from cleansing_scripts.property_transactions import property_transactions_process
+from cleansing_scripts.kent_property_averages import property_averages_process
 from ingestion import initialise_db, ingest_table, get_rows, get_row_count
 from pathlib import Path
 from testing.reference_checks import reference_check_process
@@ -65,7 +66,7 @@ def run_csv_creation(missingCSVs):
     if "kent_property_averages" in missingCSVs:
         # print("=======================================================================")
         print("Creating Kent Property Averages Data CSV...")
-        property_transactions_process()
+        property_averages_process()
 # ensures that the LSOA CSV is present, and if there's more than one to be ingest, that both the LSOA and postcodes table are there
 def ingest_process(dataPath):
     presentCSVs = get_present_CSVs(dataPath)
