@@ -59,7 +59,7 @@ def run_csv_creation(missingCSVs):
         # print("=======================================================================")
         print("Creating Property Data CSV...")
         property_process()
-    if "property_transactions_data" in missingCSVs:
+    if "property_transactions" in missingCSVs:
         # print("=======================================================================")
         print("Creating Property Transactions Data CSV...")
         property_transactions_process()
