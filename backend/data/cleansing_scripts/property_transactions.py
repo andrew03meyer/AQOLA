@@ -3,7 +3,7 @@ import os
 import numpy as np
 from pathlib import Path
 from dotenv import load_dotenv
-from testing.error_logging import error_process
+from testing.error_logging import error_process_batch
 
 # Standardises the full address
 def standardise_address_key(address_series):
@@ -57,15 +57,19 @@ def property_transactions_process():
     # Logging the dropped rows in error log
     if not missing_postcodes.empty:
         print(f"Logging {len(missing_postcodes)} transactions with missing postcodes...")
-        for _, row in missing_postcodes.iterrows():
-            errNoPostcode = {
-                "data": [f"Transaction ID: {row['transaction_id']}"], 
+        
+        trans_errors = [
+            {
+                "data": [f"Transaction ID: {row['transaction_id']}"],
                 "where": ["property_transactions_cleansing -> clean_transactions"],
                 "desc": ["Transaction dropped due to missing postcode"],
                 "impact": ["Sale record excluded; cannot be linked to a specific property"],
                 "cause": ["Postcode field is NaN in the raw Land Registry data"]
             }
-            error_process(errNoPostcode)
+            for row in missing_postcodes[['transaction_id']].to_dict('records')
+        ]
+        
+    error_process_batch(trans_errors)
     
     # Drop rows with missing postcodes
     df_trans = df_trans.dropna(subset=['postcode'])

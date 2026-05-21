@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from testing.error_logging import error_process
+from testing.error_logging import error_process_batch
 
 # Standardises the full address
 def standardise_address_key(address_series):
@@ -125,14 +125,18 @@ def property_process():
     dropped_epc = processed_registry[processed_registry['property_id'].isna()]
     if not dropped_epc.empty:
         print(f"Logging {len(dropped_epc)} unmatched EPC records...")
-        for _, row in dropped_epc.iterrows():
-            error_process({
-                "data": [f"{row['full_address']}, {row['postcode']}"],
-                "where": ["property_cleansing -> build_property_registry"],
-                "desc": ["Property dropped: no matching uprn found in EPC dataset"],
-                "impact": ["Excluded from database ingestion; no structural square metres metric available"],
-                "cause": ["Address string matching failed against government EPC registry references"]
-            })
+        epc_errors = [
+            {
+                "data": [f"Address: {row['full_address']}, Postcode: {row['postcode']}"],
+                "where": ["property_cleansing.py"],
+                "desc": ["Missing target EPC reference mapping match"],
+                "impact":["Property omitted from structural metric dashboard"],
+                "cause": ["Address/Postcode lookup failed to match EPC registry"]
+            }
+            for row in dropped_epc[['full_address', 'postcode']].to_dict('records')
+        ]
+    
+    error_process_batch(epc_errors)
     
     valid_registry = processed_registry.dropna(subset=['property_id']).copy()
     
@@ -140,14 +144,19 @@ def property_process():
     dropped_lsoa = valid_registry[valid_registry['lsoa_id'].isna()]
     if not dropped_lsoa.empty:
         print(f"Logging {len(dropped_lsoa)} unmatched spatial records...")
-        for _, row in dropped_lsoa.iterrows():
-            error_process({
-                "data": [f"UPRN: {row['property_id']}, Address: {row['full_address']}"],
+    
+        lsoa_errors = [
+            {
+                "data": [f"UPRN: {row['property_id']}, Address: {row['full_address']}",],
                 "where": ["property_cleansing -> spatial_validation"],
                 "desc": ["Property dropped: no spatial lsoa link"],
-                "impact": ["Excluded from database ingestion due to missing spatial coordinates boundary contexts"],
-                "cause": ["Postcode reference could not be resolved against master postcodes lookup schema"]
-            })
+                "impact": ["Excluded from ingestion due to missing boundary context"],
+                "cause": ["Postcode could not be resolved against master lookup schema"]
+            }
+            for row in dropped_lsoa[['property_id', 'full_address']].to_dict('records')
+        ]
+    
+    error_process_batch(lsoa_errors)
             
     # Drop rows missing structural data or boundary contexts
     valid_registry = valid_registry.dropna(subset=['lsoa_id', 'latitude', 'longitude'])
