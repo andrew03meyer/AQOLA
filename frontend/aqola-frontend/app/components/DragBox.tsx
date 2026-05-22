@@ -46,6 +46,7 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
       <div className="window-titlebar">
         <InformationIcon content={getChartDefinition(chartName)} />
         <Eraser 
+          className="button"
           data-tooltip-id= {chartName + "eraser-tooltip"}
           onClick={() => {
             // let editingChanged = false;
@@ -65,8 +66,7 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
             //   toggleDatasetWideEditing();
             //   editingChanged = false;
             // }
-          }} 
-          className="titlebar-contents"
+          }}
           style={{
               // visibility: getFocusedChart()?.chartName === chartName ? "visible" : "hidden"
           }}
@@ -79,12 +79,12 @@ const Window = ({ children, chartName, zIndex  }: WindowProps) => {
             borderRadius: "10px",
             zIndex: 4000
           }}
-          delayHide={500}
+          // delayHide={500}
           content="Clear areas for this chart"
         />
 
-        <button onClick={() => minimiseChart && minimiseChart(chartName, [x, y])}> - </button>
-        <button onClick={() => removeOpenChart(chartName)}> ✕ </button>
+        <button className="button" onClick={() => minimiseChart && minimiseChart(chartName, [x, y])}> - </button>
+        <button className="button" onClick={() => removeOpenChart(chartName)}> ✕ </button>
       </div>
 
       {/* Window contents */}

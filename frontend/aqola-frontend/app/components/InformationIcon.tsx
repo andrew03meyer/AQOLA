@@ -25,7 +25,7 @@ const InformationalIcon = ({ content }: InformationalIconProps) => {
         >
             <BadgeInfo
                 data-tooltip-id={content.id + "-info-tooltip"}
-                className="titlebar-contents"
+                className="button"
             />
             <Tooltip
                 id={content.id + "-info-tooltip"}

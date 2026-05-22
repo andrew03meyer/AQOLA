@@ -7,7 +7,7 @@ function Toggle(){
 
   return (
     <label className="relative inline-flex items-center cursor-pointer gap-3">
-      <input type="checkbox" className="sr-only peer" defaultChecked onChange={toggleDatasetWideEditing}/>
+      <input type="checkbox" className="sr-only peer" defaultChecked onChange={() => setTimeout(toggleDatasetWideEditing, 0)}/>
       <span className="relative w-11 h-6 bg-gray-200 rounded-full 
         peer-checked:bg-cyan-500
         after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
