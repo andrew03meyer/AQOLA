@@ -73,3 +73,36 @@ class School(Base):
     latitude = Column(DECIMAL(9, 6))
     longitude = Column(DECIMAL(9, 6))
     centroid = Column(Geometry('POINT', srid=4326))
+
+class Property(Base):
+    __tablename__ = "property_data"
+
+    property_id = Column(String(15), primary_key=True, nullable=False)
+    full_address = Column(String, nullable=False)
+    postcode = Column(String(10), ForeignKey('postcodes.postcode', ondelete='CASCADE'), nullable=False, index=True)
+    lsoa_id = Column(String(20), ForeignKey('lsoas.lsoa_id', ondelete='CASCADE'), nullable=False, index=True)
+    property_type = Column(String(1), nullable=False)
+    square_metres = Column(Integer, nullable=False)
+    latitude = Column(DECIMAL(9, 6), nullable=False)
+    longitude = Column(DECIMAL(9, 6), nullable=False)
+
+
+class PropertyTransaction(Base):
+    __tablename__ = "property_transactions"
+
+    transaction_id = Column(String(45), primary_key=True, nullable=False)
+    sale_date = Column(String, primary_key=True, nullable=False)
+    property_id = Column(String(15), ForeignKey('property_data.property_id', ondelete='CASCADE'))
+    is_new_build = Column(String(1), nullable=False)
+    price = Column(Integer, nullable=False)
+    price_per_sqm = Column(Integer)
+
+
+class KentPropertyAverage(Base):
+    __tablename__ = "kent_property_averages"
+
+    property_type = Column(String(1), primary_key=True, nullable=False)
+    period = Column(String(7), primary_key=True, nullable=False)
+    avg_price = Column(Integer, nullable=False)
+    avg_price_sqm = Column(Integer)
+    count = Column(Integer, nullable=False)
