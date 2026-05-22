@@ -2,6 +2,7 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 -- Drop child tables first (those that reference others)
 DROP TABLE IF EXISTS property_transactions;
 DROP TABLE IF EXISTS property_data;
+DROP TABLE IF EXISTS kent_property_averages;
 DROP TABLE IF EXISTS school_data;
 DROP TABLE IF EXISTS flood_data;
 DROP TABLE IF EXISTS crime_data;
@@ -75,22 +76,35 @@ CREATE TABLE IF NOT EXISTS school_data (
 );
 
 CREATE TABLE IF NOT EXISTS property_data (
-    property_id SERIAL PRIMARY KEY, 
+    property_id VARCHAR(15) PRIMARY KEY, 
     full_address TEXT NOT NULL,        
     postcode VARCHAR(10) NOT NULL REFERENCES postcodes(postcode) ON DELETE CASCADE,
     lsoa_id VARCHAR(20) NOT NULL REFERENCES lsoas(lsoa_id) ON DELETE CASCADE,
     property_type CHAR(1) NOT NULL,   -- D, S, T, F, O
-    property_age CHAR(1) NOT NULL,     -- Y = a newly built property, N = an established residential building
-    centroid GEOMETRY(POINT, 4326) NOT NULL,
+    square_metres INT NOT NULL,
     latitude DECIMAL(9,6) NOT NULL,
     longitude DECIMAL(9,6) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS property_transactions (
-    transaction_id VARCHAR(45) PRIMARY KEY,
-    property_id INT NOT NULL REFERENCES property_data(property_id) ON DELETE CASCADE,
+    transaction_id VARCHAR(45),
+    property_id VARCHAR(15) REFERENCES property_data(property_id) ON DELETE CASCADE,
+    is_new_build CHAR(1) NOT NULL,     -- Y = a newly built property, N = an established residential building
     sale_date DATE NOT NULL,
-    price INT NOT NULL
+    price INT NOT NULL,
+    price_per_sqm INT,
+
+    PRIMARY KEY (transaction_id, sale_date)
+);
+
+CREATE TABLE IF NOT EXISTS kent_property_averages (
+     property_type CHAR(1) NOT NULL,   -- D, S, T, F (discount O for averages)
+     period VARCHAR(7) NOT NULL,  --e.g. Q1-1995 meaning 1st quarter months in 1995
+     avg_price INT NOT NULL,
+     avg_price_sqm INT,
+     count INT NOT NULL,
+
+     PRIMARY KEY (property_type, period)
 );
 
 

@@ -9,7 +9,8 @@ AND table_name IN (
     'spatial_ref_sys',
     'school_data',
     'property_data',
-    'property_transactions'
+    'property_transactions',
+    'kent_property_averages'
 );
 
 -- Query to check the correct columns, data types are present in each table and NULL constraints enforced
@@ -26,7 +27,8 @@ AND table_name IN (
     'crime_data',
     'school_data',
     'property_data',
-    'property_transactions')
+    'property_transactions',
+    'kent_property_averages')
 ORDER BY table_name, column_name;
 
 -- Query to check the relational constraints (Primary and Foreign Keys)
@@ -46,6 +48,7 @@ AND tc.table_name IN (
     'crime_data', 
     'school_data', 
     'property_data',
-    'property_transactions')
+    'property_transactions',
+    'kent_property_averages')
 AND tc.constraint_type IN ('PRIMARY KEY', 'FOREIGN KEY')
 ORDER BY tc.table_name;

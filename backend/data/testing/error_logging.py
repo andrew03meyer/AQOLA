@@ -30,3 +30,11 @@ def format_error(d):
 def error_process(d):
     df = format_error(d)
     add_error_to_logs(df)
+
+# Processes a list of error dictionaries in one go to improve performance.
+def error_process_batch(errors):
+    all_dfs = [format_error(error) for error in errors]
+
+    batch_df = pd.concat(all_dfs, ignore_index=True)
+    
+    add_error_to_logs(batch_df)

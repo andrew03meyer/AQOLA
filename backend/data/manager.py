@@ -9,6 +9,7 @@ from cleansing_scripts.school_cleansing import school_process
 from cleansing_scripts.flood_cleansing import flood_process
 from cleansing_scripts.property_cleansing import property_process
 from cleansing_scripts.property_transactions import property_transactions_process
+from cleansing_scripts.kent_property_averages import property_averages_process
 from ingestion import initialise_db, ingest_table, get_rows, get_row_count
 from pathlib import Path
 from testing.reference_checks import reference_check_process
@@ -58,10 +59,14 @@ def run_csv_creation(missingCSVs):
         # print("=======================================================================")
         print("Creating Property Data CSV...")
         property_process()
-    if "property_transactions_data" in missingCSVs:
+    if "property_transactions" in missingCSVs:
         # print("=======================================================================")
         print("Creating Property Transactions Data CSV...")
         property_transactions_process()
+    if "kent_property_averages" in missingCSVs:
+        # print("=======================================================================")
+        print("Creating Kent Property Averages Data CSV...")
+        property_averages_process()
 # ensures that the LSOA CSV is present, and if there's more than one to be ingest, that both the LSOA and postcodes table are there
 def ingest_process(dataPath):
     presentCSVs = get_present_CSVs(dataPath)
@@ -101,17 +106,35 @@ def run_ingest(ingestCSVs, dataPath):
     # get_rows(5, "postcodes")
     get_row_count("postcodes")
     
-    # Ingest property data here because it is a parent table to property_transactions (referential integrity)
+   # ingest property data as it is the parent entity containing uprn
     property_data_path = dataPath / "property_data" / "property_data.csv"
     if property_data_path.exists():
         print("=======================================================================")
-        print("Ingesting property_data data...")
+        print("Ingesting property_data...")
         ingest_table(property_data_path, "property_data", filtered_postcodes)
-        
-        # Remove from list so loop does not ingest it again
         if property_data_path in ingestCSVs: 
             ingestCSVs.remove(property_data_path)
         get_row_count("property_data")
+
+    # ingest property transactions as they reference property UPRNs
+    transactions_path = dataPath / "property_transactions" / "property_transactions.csv"
+    if transactions_path.exists():
+        print("=======================================================================")
+        print("Ingesting property_transactions data...")
+        ingest_table(transactions_path, "property_transactions", filtered_postcodes)
+        if transactions_path in ingestCSVs:
+            ingestCSVs.remove(transactions_path)
+        get_row_count("property_transactions")
+
+    # ingest property averages after property data with transactions is in
+    averages_path = dataPath / "property_averages" / "kent_property_averages.csv"
+    if averages_path.exists():
+        print("=======================================================================")
+        print("Ingesting kent_property_averages data...")
+        ingest_table(averages_path, "kent_property_averages", filtered_postcodes)
+        if averages_path in ingestCSVs:
+            ingestCSVs.remove(averages_path)
+        get_row_count("kent_property_averages")
 
 
     # then ingest everything else

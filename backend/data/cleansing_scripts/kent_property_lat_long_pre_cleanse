@@ -1,0 +1,70 @@
+'''NOTE: This pre cleansing script was made to filter longitude and latitude property data only for Kent.
+
+The original dataset osopenuprn_206205 was far too large (2 million + MB) which would be too much for the normal cleansing scripts to process.
+
+From the original government dataset, only the potential necessary columns for the schema were filtered and compiled to get Kent lat/long property data'''
+
+import pandas as pd
+import csv
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
+base_dir = Path(os.getenv("DATA_PATH_DEV"))
+
+def extract_os_coordinates():
+    # Define File Paths
+    large_os_file = base_dir / "property_data" / "raw" / "osopenuprn_202605.csv" 
+    cleaned_property_registry = base_dir / "property_data" / "property_data.csv"
+    output_lookup_file = base_dir / "property_data" /"raw"/ "kent_uprn_coordinates.csv"
+
+    if not cleaned_property_registry.exists():
+        print("Error: Please run property_cleansing.py first so we know which UPRNs to look for.")
+        return
+        
+    if not large_os_file.exists():
+        print(f"Error: OS Open UPRN file not found at {large_os_file}")
+        return
+
+    # Loading and formatting target UPRNs
+    prop_df = pd.read_csv(cleaned_property_registry, usecols=['property_id'])
+    
+    # Fix potential decimal artifacts (.0) when converting to text strings
+    target_uprns = set(prop_df['property_id'].astype(str).str.split('.').str[0].str.strip())
+    print(f"Loaded {len(target_uprns)} target UPRNs to match against.")
+
+    matched_count = 0
+    
+    with open(large_os_file, mode='r', encoding='utf-8-sig') as f_in, \
+         open(output_lookup_file, mode='w', newline='', encoding='utf-8') as f_out:
+         
+        reader = csv.DictReader(f_in)
+        writer = csv.writer(f_out)
+        writer.writerow(["property_id", "latitude", "longitude"])
+        
+        for row in reader:
+            # Normalise keys to lowercase and strip whitespace vulnerabilities
+            clean_row = {str(k).strip().lower(): str(v).strip() for k, v in row.items() if k is not None}
+            
+            # Extract attributes using standard lowercase keys safely
+            uprn_raw = clean_row.get('uprn', '')
+            # Clean up the incoming UPRN string just in case it has a decimal point too
+            uprn = uprn_raw.split('.')[0]
+            
+            if uprn in target_uprns:
+                lat = clean_row.get('latitude', '')
+                lon = clean_row.get('longitude', '')
+                
+                if lat and lon:
+                    writer.writerow([uprn, lat, lon])
+                    matched_count += 1
+                    
+                    if matched_count % 10000 == 0:
+                        print(f"-> Successfully extracted {matched_count} Kent matches...")
+
+    print(f"\nExtracted {matched_count} matches. Saved to {output_lookup_file.name}")
+
+if __name__ == "__main__":
+    extract_os_coordinates()

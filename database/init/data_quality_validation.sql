@@ -123,9 +123,6 @@ WITH completeness_failures AS (
     SELECT 'property_data', 'longitude', 'Out of Kent Bounds', property_id::text
     FROM property_data WHERE longitude NOT BETWEEN 0.01 AND 1.47
     UNION ALL
-    SELECT 'property_data', 'centroid', 'Empty Geometry', property_id::text
-    FROM property_data WHERE ST_IsEmpty(centroid)
-    UNION ALL
     SELECT 'property_data', 'ALL', 'TABLE IS EMPTY', '0'
     WHERE (SELECT COUNT(*) FROM property_data) = 0
 
@@ -146,6 +143,33 @@ WITH completeness_failures AS (
     UNION ALL
     SELECT 'property_transactions', 'ALL', 'TABLE IS EMPTY', '0'
     WHERE (SELECT COUNT(*) FROM property_transactions) = 0
+
+    UNION ALL
+
+    -- Kent Property Averages
+    SELECT 'kent_property_averages', 'property_type', 'Invalid Type Code (O or other)', property_type || ' / ' || period
+    FROM kent_property_averages WHERE property_type NOT IN ('D', 'S', 'T', 'F')
+    UNION ALL
+    SELECT 'kent_property_averages', 'period', 'Malformed Period Format (Expected QX-YYYY)', property_type || ' / ' || period
+    FROM kent_property_averages WHERE period !~ '^Q[1-4]-[0-9]{4}$'
+    UNION ALL
+    SELECT 'kent_property_averages', 'period', 'Future Period Era (> 2026)', property_type || ' / ' || period
+    FROM kent_property_averages WHERE SPLIT_PART(period, '-', 2)::INT > 2026
+    UNION ALL
+    SELECT 'kent_property_averages', 'period', 'Pre-Data Period Era (< 1995)', property_type || ' / ' || period
+    FROM kent_property_averages WHERE SPLIT_PART(period, '-', 2)::INT < 1995
+    UNION ALL
+    SELECT 'kent_property_averages', 'avg_price', 'Negative or Zero Average Price', property_type || ' / ' || period
+    FROM kent_property_averages WHERE avg_price <= 0
+    UNION ALL
+    SELECT 'kent_property_averages', 'avg_price_sqm', 'Negative or Zero Price per SQM', property_type || ' / ' || period
+    FROM kent_property_averages WHERE avg_price_sqm <= 0
+    UNION ALL
+    SELECT 'kent_property_averages', 'count', 'Negative or Zero Transaction Count', property_type || ' / ' || period
+    FROM kent_property_averages WHERE count <= 0
+    UNION ALL
+    SELECT 'kent_property_averages', 'ALL', 'TABLE IS EMPTY', '0'
+    WHERE (SELECT COUNT(*) FROM kent_property_averages) = 0
     
 )
 SELECT tbl, col, issue, COUNT(*) AS issue_count, ARRAY_AGG(row_id) AS failing_ids
