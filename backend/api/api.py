@@ -5,6 +5,7 @@ from api.routers import lsoas
 from api.routers import crime as crime_full
 from api.routers import flood as flood_full
 from api.routers import school as school_full
+from api.routers import property
 from api.routers import database
 
 origins =[
@@ -43,3 +44,4 @@ app.include_router(crime_full.router, prefix="/crime")
 app.include_router(flood_full.router, prefix="/flood")
 app.include_router(school_full.router, prefix="/school")
 app.include_router(database.router, prefix="/database")
+app.include_router(property.router, prefix="/property")
