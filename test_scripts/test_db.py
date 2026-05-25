@@ -50,27 +50,27 @@ EXPECTED_COLUMNS = {
     ('school_data', 'latitude', 'numeric', 'YES'),                  # DECIMAL (Nullable)
     ('school_data', 'longitude', 'numeric', 'YES'),                  # DECIMAL (Nullable)
     
-    ('property_data', 'property_id', 'integer', 'NO'),                # SERIAL
+    ('property_data', 'property_id', 'character varying', 'NO'),                # VARCHAR(20)
     ('property_data', 'full_address', 'text', 'NO'),                  # TEXT
     ('property_data', 'postcode', 'character varying', 'NO'),       # VARCHAR(10) (FK)
     ('property_data', 'lsoa_id', 'character varying', 'NO'),       # VARCHAR(20) (FK)
     ('property_data', 'property_type', 'character', 'NO'),            # CHAR(1)
-    ('property_data', 'square_metres', 'character', 'NO'),          # INT
+    ('property_data', 'square_metres', 'integer', 'NO'),          # INT
     ('property_data', 'latitude', 'numeric', 'NO'),                  # DECIMAL (Nullable)
     ('property_data', 'longitude', 'numeric', 'NO'),                  # DECIMAL (Nullable)
 
     ('property_transactions', 'transaction_id', 'character varying', 'NO'), # VARCHAR(45)
-    ('property_transactions', 'property_id', 'integer', 'YES'),               # INT (FK)
+    ('property_transactions', 'property_id', 'character varying', 'YES'),               # VARCHAR(20) (FK)
     ('property_transactions', 'sale_date', 'date', 'NO'),                    # DATE
     ('property_transactions', 'is_new_build', 'character', 'NO'),            # INT
     ('property_transactions', 'price', 'integer', 'NO'),                     # INT
     ('property_transactions', 'price_per_sqm', 'integer', 'YES'),             # INT
     
     ('kent_property_averages', 'property_type', 'character', 'NO'),          # CHAR(1)
-    ('kent_property_averages', 'period', 'character', 'NO'),          # CHAR(1)
+    ('kent_property_averages', 'period', 'character varying', 'NO'),          # CHAR(1)
     ('kent_property_averages', 'avg_price', 'integer', 'NO'),          # CHAR(1)
     ('kent_property_averages', 'avg_price_sqm', 'integer', 'YES'),          # CHAR(1)
-    ('kent_property_averages', 'count', 'integer', 'No')          # CHAR(1)
+    ('kent_property_averages', 'count', 'integer', 'NO')          # CHAR(1)
     }
 
 # Format: (table, type, column)
