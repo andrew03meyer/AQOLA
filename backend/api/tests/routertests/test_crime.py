@@ -63,11 +63,11 @@ class TestCrimeRateTotal:
 
 class TestCrimeRateByType:
     def test_status_200(self):
-        response = client.get("/crime/crime-rate?lsoas=E01023983")
+        response = client.get("/crime/crime-rate-by-type?lsoas=E01023983")
         assert response.status_code == 200
 
     def test_returns_lsoa_key(self):
-        response = client.get("/crime/crime-rate?lsoas=E01023983")
+        response = client.get("/crime/crime-rate-by-type?lsoas=E01023983")
         data = response.json()
         assert "E01023983" in data
 
