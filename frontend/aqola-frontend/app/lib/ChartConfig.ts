@@ -12,6 +12,7 @@ import {
 import { ChartData } from "./ChartModels";
 import { get_school_ofsted_history } from "./LineChart";
 import { flood_risk_frequency_by_postcode_spider } from "./SpiderDiagram";
+import {get_kent_price_sqm_averages, get_kent_price_averages} from "./LineChart";
 
 type DatasetKey = keyof typeof datasetConfig;
 
@@ -49,6 +50,12 @@ const apiCallMap: Record<string, (areas: string[]) => Promise<ChartData>> = {
     flood_risk_frequency_by_postcode(areas),
   flood_risk_frequency_by_postcode_spider: (areas) =>
     flood_risk_frequency_by_postcode_spider(areas),
+
+  // =============================================================================================
+  // Property API Calls (Static Regional Profiles)
+  // =============================================================================================
+  get_kent_price_sqm_averages: () => get_kent_price_sqm_averages(),
+  get_kent_price_averages: () => get_kent_price_averages()
 };
 
 // Gets available charts from datasetConfig.json

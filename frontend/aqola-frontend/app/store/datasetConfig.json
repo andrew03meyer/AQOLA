@@ -21,11 +21,11 @@
     "graphs": ["flood_risk_frequency", "flood_risk_frequency_spider"],
     "areaLayers": [{ "areaType": "postcode", "minZoom": 13 }]
   },
-  "housing": {
-    "graphs": [""],
-    "areaLayers": [
-      { "areaType": "lsoa", "minZoom": 8, "maxZoom": 14 },
-      { "areaType": "postcode", "minZoom": 14 }
-    ]
+  "properties": {
+    "graphs": [
+      "kent_price_sqm_over_time",
+      "kent_price_over_time"
+    ],
+    "areaLayers": [{ "areaType": "property_id", "minZoom": 15 }]
   }
 }

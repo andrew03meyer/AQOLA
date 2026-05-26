@@ -4,6 +4,7 @@ import type { LineChartResponse } from "./ChartModels";
 import axios from "axios";
 import type { School } from "./ApiModels"
 import { COLOR } from "./constants"
+import type { KentAverage } from "./ApiModels";
 
 // method naming convention <area>_<xlabel>_<ylabel>_<lines>
 
@@ -227,5 +228,101 @@ export const get_school_ofsted_history = async (
       xlabel: "Year",
       ylabel: "Ofsted Ranking",
     },
+  };
+};
+
+
+/**
+ * Normalises a quarter token string (e.g., "Q1-1995") into a valid JavaScript Date object
+ */
+const parseQuarterToDate = (periodStr: string): Date => {
+  const [quarter, year] = periodStr.split("-");
+  const quarterMonthMap: Record<string, string> = {
+    Q1: "02", // February
+    Q2: "05", // May
+    Q3: "08", // August
+    Q4: "11"  // November
+  };
+  return new Date(`${year}-${quarterMonthMap[quarter] || "01"}-01`);
+};
+
+const PROPERTY_TYPE_LABELS: Record<string, string> = {
+  "D": "Detached",
+  "S": "Semi-Detached",
+  "T": "Terraced",
+  "F": "Flat"
+};
+
+
+const PROPERTY_TYPE_COLOURS: Record<string, string> = {
+  "D": "#3B82F6", // Blue
+  "S": "#10B981", // Green
+  "T": "#F97316", // Orange
+  "F": "#8B5CF6"  // Violet
+};
+
+// --- API FETCH FUNCTIONS FOR STATIC KENT AVERAGES ---
+
+export const get_kent_price_sqm_averages = async (): Promise<LineChartResponse> => {
+  const apiResponse = await api.get("/property/kent-averages");
+  const rawData: KentAverage[] = apiResponse.data;
+
+  const groups: Record<string, [Date, number][]> = { D: [], S: [], T: [], F: [] };
+
+  rawData.forEach((row) => {
+    if (groups[row.property_type]) {
+      groups[row.property_type].push([parseQuarterToDate(row.period), row.avg_price_sqm]);
+    }
+  });
+
+  const lines = Object.keys(groups).map((typeKey) => ({
+    line_name: PROPERTY_TYPE_LABELS[typeKey] || typeKey,
+    coords: groups[typeKey].sort((a, b) => a[0].getTime() - b[0].getTime()),
+    // Assign the exact map color code corresponding to this key
+    color: PROPERTY_TYPE_COLOURS[typeKey] || "#3B82F6" 
+  }));
+
+  return {
+    chartType: "line",
+    type: "property_data",
+    area: "property",
+    chart: {
+      lines,
+      title: "Kent Average Property Price per M²",
+      xlabel: "Timeline",
+      ylabel: "Price per m² (£)"
+    }
+  };
+};
+
+export const get_kent_price_averages = async (): Promise<LineChartResponse> => {
+  const apiResponse = await api.get("/property/kent-averages");
+  const rawData: KentAverage[] = apiResponse.data;
+
+  const groups: Record<string, [Date, number][]> = { D: [], S: [], T: [], F: [] };
+
+  rawData.forEach((row) => {
+    if (groups[row.property_type]) {
+      groups[row.property_type].push([parseQuarterToDate(row.period), row.avg_price]);
+    }
+  });
+
+  const lines = Object.keys(groups).map((typeKey) => ({
+    line_name: PROPERTY_TYPE_LABELS[typeKey] || typeKey,
+    coords: groups[typeKey].sort((a, b) => a[0].getTime() - b[0].getTime()),
+    // Maintain the exact same matching map colour synchronization
+    color: PROPERTY_TYPE_COLOURS[typeKey] || "#3B82F6" 
+  }));
+
+  return {
+    chartType: "line",
+    type: "property_data",
+    area: "property",
+    chart: {
+      lines,
+      title: "Kent Average Overall Property Price Over Time",
+      xlabel: "Timeline",
+      ylabel: "Average Value (£)"
+    }
   };
 };

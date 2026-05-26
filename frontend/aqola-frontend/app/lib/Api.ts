@@ -1,5 +1,5 @@
 import axios from "axios";
-import { School } from "./ApiModels";
+import { Property, School } from "./ApiModels";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000",
@@ -14,5 +14,10 @@ export const hello = async () => {
 
 export const getSchools = async (): Promise<School[]> => {
   const response = await api.get("/school/");
+  return response.data;
+};
+
+export const getProperties = async (): Promise<Property[]> => {
+  const response = await api.get("/property/");
   return response.data;
 };

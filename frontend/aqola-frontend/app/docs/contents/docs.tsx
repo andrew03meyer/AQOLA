@@ -217,12 +217,14 @@ const Content = () => {
                                     <td>XXX</td>
                                 </tr>
                                 <tr>
-                                    <td>House Pricing</td>
-                                    <td><a href="https://data.police.uk/data/">TO BE FILLED OUT</a></td>
-                                    <td>TO BE FILLED OUT</td>
-                                    <td>XXXX</td>
-                                    <td>XXX</td>
-                                    <td>XXX</td>
+                                    <td>Property Pricing</td>
+                                    <td><a href="https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads">Government Data — Property prices </a> <br></br>
+                                    <a href="https://get-energy-performance-data.communities.gov.uk/">Government Data — Energy performance data </a></td>
+                                    <td><a>Information on all property sales in England and Wales that are sold for value</a> <br></br>
+                                    <a>This dataset was used to obtain property ids and their size in square metres</a></td>
+                                    <td>1995 - 2026</td>
+                                    <td>CSV</td>
+                                    <td>Early 2026</td>
                                 </tr>
                                 <tr>
                                     <td>Housing Developments</td>

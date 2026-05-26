@@ -98,5 +98,26 @@
     "icon": "fi fi-rs-spider-web",
     "blurb": "Shows the count of houses at certain levels of risk from flooding. Each spoke on the chart represents a risk factor. The more houses that are in a certain risk factor, the further the point, on that spoke, is from the center. A polygon is drawn for each selected area.",
     "src": "flood_risk_frequency_spider.png"
+  },
+  {
+    "id": "kent_price_over_time",
+    "label": "Average Property Price",
+    "chartComponent": "line",
+    "dataset": "properties",
+    "apiCall": "get_kent_price_averages",
+    "icon": "fi fi-rs-chart-line-up",
+    "blurb": "A macro metric timeline highlighting overall shifting valuations for different property types throughout Kent from 1995 onwards.",
+    "src": "kent_prices.png"
+  },
+  {
+    "id": "kent_price_sqm_over_time",
+    "label": "Average Price per M²",
+    "chartComponent": "line",
+    "dataset": "properties",
+    "apiCall": "get_kent_price_sqm_averages",
+    "icon": "fi fi-rs-chart-line-up",
+    "blurb": "A continuous line chart displaying the historical average sales value per square metre across the whole of Kent, categorised explicitly by physical building layout type.",
+    "src": "kent_price_sqm.png"
   }
+
 ]
