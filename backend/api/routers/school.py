@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 
-@router.get("/")
+@router.get("/", response_model=List[SchoolResponse])
 async def list_schools(
     lsoas: Optional[List[str]] = Query(default=None),
     postcodes: Optional[List[str]] = Query(default=None),

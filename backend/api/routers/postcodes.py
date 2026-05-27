@@ -24,7 +24,7 @@ async def list_postcodes(
     )
 
     if postcodes:
-        query = query.filter(Postcode.postcode.in_(postcodes))
+        query = query.filter(Postcode.postcode.in_([postcode.replace(" ", "") for postcode in postcodes]))
     
     results = query.all()
 
