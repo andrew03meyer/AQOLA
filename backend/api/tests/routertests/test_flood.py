@@ -48,13 +48,13 @@ class TestGetRiskBand:
     def test_returns_risk_band_instance(self):
         response = client.get("/flood/risk-band?postcodes=CT31HP")
         data = response.json()
-        assert "postcode" in data
-        assert "frs_band" in data
+        assert "postcode" in data[0]
+        assert "frs_band" in data[0]
 
     def test_returns_correct_postcode(self):
         response = client.get("/flood/risk-band?postcodes=CT31HP")
         data = response.json()
-        assert data["postcode"] == "CT31HP"
+        assert data[0]["postcode"] == "CT31HP"
 
     def test_404_for_unknown_postcode(self):
         response = client.get("/flood/risk-band?postcodes=ZZ99ZZ")

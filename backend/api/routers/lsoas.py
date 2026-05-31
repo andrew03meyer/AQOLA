@@ -11,9 +11,16 @@ from geoalchemy2.functions import ST_AsGeoJSON, ST_Intersects, ST_MakeEnvelope
 from api.models.response_models.polygon import GeometryModel
 from api.models.response_models.lsoa import LsoaResponse, LsoaPolygonResponse
 from api.models.db_models import Lsoa
+from geoalchemy2.shape import to_shape
 
 router = APIRouter()
 
+def wkb_to_geometry_dict(wkb_element) -> dict:
+    shape = to_shape(wkb_element)
+    return {
+        "type": shape.geom_type,
+        "coordinates": list(shape.__geo_interface__["coordinates"])
+    }
 
 @router.get("/", response_model=List[LsoaResponse])
 async def list_lsoas(
@@ -35,10 +42,12 @@ async def list_lsoas(
 
     return [
         LsoaResponse(
-            lsoa_id= result.lsoa_id,
-            area_name = result.area_name,
-            population= result.population,
-            area_sq_km= result.area_sq_km,
+            lsoa_id=result.lsoa_id,
+            area_name=result.area_name,
+            population=result.population,
+            area_sq_km=result.area_sq_km,
+            boundary=wkb_to_geometry_dict(result.boundary),
+            centroid=wkb_to_geometry_dict(result.centroid),
         )
         for result in results
     ]

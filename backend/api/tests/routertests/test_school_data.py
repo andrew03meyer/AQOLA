@@ -4,17 +4,17 @@ from fastapi import FastAPI
 from backend.api.routers.school import router
 
 app = FastAPI()
-app.include_router(router, prefix="/schools")
+app.include_router(router, prefix="/school")
 client = TestClient(app)
 
 
 class TestListSchools:
     def test_status_200(self):
-        response = client.get("/schools/")
+        response = client.get("/school/")
         assert response.status_code == 200
 
     def test_returns_school_instance(self):
-        response = client.get("/schools/")
+        response = client.get("/school/")
         data = response.json()
         assert len(data) > 0
         first = data[0]
@@ -32,43 +32,43 @@ class TestListSchools:
         assert "longitude" in first
 
     def test_filter_by_lsoa(self):
-        response = client.get("/schools/?lsoas=E01023983")
+        response = client.get("/school/?lsoas=E01024013")
         assert response.status_code == 200
         data = response.json()
         for item in data:
-            assert item["lsoa_id"] == "E01023983"
+            assert item["lsoa_id"] == "E01024013"
 
     def test_filter_by_multiple_lsoas(self):
-        response = client.get("/schools/?lsoas=E01023983&lsoas=E01023984")
+        response = client.get("/school/?lsoas=E01024013&lsoas=E01023984")
         assert response.status_code == 200
         data = response.json()
         returned_lsoas = {item["lsoa_id"] for item in data}
-        assert returned_lsoas.issubset({"E01023983", "E01023984"})
+        assert returned_lsoas.issubset({"E01024013", "E01023984"})
 
     def test_filter_by_postcode(self):
-        response = client.get("/schools/?postcodes=SW1A1AA")
+        response = client.get("/school/?postcodes=ME104SE")
         assert response.status_code == 200
         data = response.json()
         for item in data:
-            assert item["postcode"] == "SW1A1AA"
+            assert item["postcode"] == "ME104SE"
 
     def test_filter_by_lsoa_and_postcode(self):
-        response = client.get("/schools/?lsoas=E01023983&postcodes=SW1A1AA")
+        response = client.get("/school/?lsoas=E01024013&postcodes=ME104SE")
         assert response.status_code == 200
 
 
 class TestGetSchoolOfstedCounts:
     def test_status_200(self):
-        response = client.get("/schools/ofsted-count")
+        response = client.get("/school/ofsted-count")
         assert response.status_code == 200
 
     def test_returns_ofsted_rankings_key(self):
-        response = client.get("/schools/ofsted-count")
+        response = client.get("/school/ofsted-count")
         data = response.json()
         assert "ofsted_rankings" in data
 
     def test_returns_ranking_and_count_fields(self):
-        response = client.get("/schools/ofsted-count")
+        response = client.get("/school/ofsted-count")
         data = response.json()
         assert len(data["ofsted_rankings"]) > 0
         first = data["ofsted_rankings"][0]
@@ -76,19 +76,19 @@ class TestGetSchoolOfstedCounts:
         assert "count" in first
 
     def test_filter_by_lsoa(self):
-        response = client.get("/schools/ofsted-count?lsoas=E01023983")
+        response = client.get("/school/ofsted-count?lsoas=E01024013")
         assert response.status_code == 200
         data = response.json()
         assert "ofsted_rankings" in data
 
     def test_filter_by_postcode(self):
-        response = client.get("/schools/ofsted-count?postcodes=SW1A1AA")
+        response = client.get("/school/ofsted-count?postcodes=ME104SE")
         assert response.status_code == 200
         data = response.json()
         assert "ofsted_rankings" in data
 
     def test_counts_are_positive_integers(self):
-        response = client.get("/schools/ofsted-count")
+        response = client.get("/school/ofsted-count")
         data = response.json()
         for entry in data["ofsted_rankings"]:
             assert isinstance(entry["count"], int)
